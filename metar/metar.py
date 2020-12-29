@@ -117,14 +117,19 @@ class Metar:
         """Method parse METAR and return datetime portion
 
         Returns:
-            date_time (string): String in the form of "DDHHMMZ".
+            date_time (tuple): Tuple (Day,Hour,Minute) in UTC.
+            Ex: (29,19,00) => 29th day of month, 19:00 UTC
             This is METAR date time.
 
             False (boolean): Return False if no date time found
         """
         date_time = re.findall(r'\d{6}Z', self.metar)
-        if(len(date_time) == 0):  # No match
+        if(len(date_time) == 0 or len(date_time) > 1):  # No match
             return False
+
+        date_time = date_time[0]
+        date_time = re.sub(r'Z', '', date_time)
+        date_time = (date_time[:2], date_time[2:4], date_time[4:])
 
         return date_time
 
@@ -139,10 +144,17 @@ class Metar:
         """
 
         if("AUTO") in self.metar:
-            re.sub('AUTO ', '', self.metar)  # Space after AUTO
+            re.sub(r'AUTO ', '', self.metar)  # Space after AUTO
             return True
 
         return False
+
+    def analyzeWind(self):
+        search = re.search(r'\d{5}KT', self.metar)
+        if search is not None:
+            wind_total = search.string
+        else:
+            search= re.search(r'\d{5}G\d{2}KT')
 
     def getMetar(self, display=False):
         """Getter metar attribute
@@ -215,4 +227,6 @@ class ReadFileError(Exception):
         super().__init__(self.message)
 
 
+a = Metar('LFPO', 'LFPO 041300Z 27010G25KT 320V040 1200 R26/0400 +RASH BKN040TCU 17/15 Q1015 RETS M2 26791299')
+b = Metar('LFLY')
 pass
