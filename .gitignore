@@ -1,0 +1,6 @@
+Include/
+Scripts/
+Lib/
+pyvenv.cfg
+python-metar.codeworkspace
+.vscode/
