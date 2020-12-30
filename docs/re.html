@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module re</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>re</strong></big></big> (version 2.2.1)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cprogram%20files%5Cpython39%5Clib%5Cre.py">c:\program files\python39\lib\re.py</a><br><a href="https://docs.python.org/3.9/library/re">Module Reference</a></font></td></tr></table>
+    <p><tt>Support&nbsp;for&nbsp;regular&nbsp;expressions&nbsp;(RE).<br>
+&nbsp;<br>
+This&nbsp;module&nbsp;provides&nbsp;regular&nbsp;expression&nbsp;matching&nbsp;operations&nbsp;similar&nbsp;to<br>
+those&nbsp;found&nbsp;in&nbsp;Perl.&nbsp;&nbsp;It&nbsp;supports&nbsp;both&nbsp;8-bit&nbsp;and&nbsp;Unicode&nbsp;strings;&nbsp;both<br>
+the&nbsp;pattern&nbsp;and&nbsp;the&nbsp;strings&nbsp;being&nbsp;processed&nbsp;can&nbsp;contain&nbsp;null&nbsp;bytes&nbsp;and<br>
+characters&nbsp;outside&nbsp;the&nbsp;US&nbsp;ASCII&nbsp;range.<br>
+&nbsp;<br>
+Regular&nbsp;expressions&nbsp;can&nbsp;contain&nbsp;both&nbsp;special&nbsp;and&nbsp;ordinary&nbsp;characters.<br>
+Most&nbsp;ordinary&nbsp;characters,&nbsp;like&nbsp;"A",&nbsp;"a",&nbsp;or&nbsp;"0",&nbsp;are&nbsp;the&nbsp;simplest<br>
+regular&nbsp;expressions;&nbsp;they&nbsp;simply&nbsp;match&nbsp;themselves.&nbsp;&nbsp;You&nbsp;can<br>
+concatenate&nbsp;ordinary&nbsp;characters,&nbsp;so&nbsp;last&nbsp;matches&nbsp;the&nbsp;string&nbsp;'last'.<br>
+&nbsp;<br>
+The&nbsp;special&nbsp;characters&nbsp;are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;any&nbsp;character&nbsp;except&nbsp;a&nbsp;newline.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"^"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"$"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;string&nbsp;or&nbsp;just&nbsp;before&nbsp;the&nbsp;newline&nbsp;at<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"*"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;0&nbsp;or&nbsp;more&nbsp;(greedy)&nbsp;repetitions&nbsp;of&nbsp;the&nbsp;preceding&nbsp;RE.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Greedy&nbsp;means&nbsp;that&nbsp;it&nbsp;will&nbsp;match&nbsp;as&nbsp;many&nbsp;repetitions&nbsp;as&nbsp;possible.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;1&nbsp;or&nbsp;more&nbsp;(greedy)&nbsp;repetitions&nbsp;of&nbsp;the&nbsp;preceding&nbsp;RE.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"?"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;0&nbsp;or&nbsp;1&nbsp;(greedy)&nbsp;of&nbsp;the&nbsp;preceding&nbsp;RE.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*?,+?,??&nbsp;Non-greedy&nbsp;versions&nbsp;of&nbsp;the&nbsp;previous&nbsp;three&nbsp;special&nbsp;characters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{m,n}&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;from&nbsp;m&nbsp;to&nbsp;n&nbsp;repetitions&nbsp;of&nbsp;the&nbsp;preceding&nbsp;RE.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{m,n}?&nbsp;&nbsp;&nbsp;Non-greedy&nbsp;version&nbsp;of&nbsp;the&nbsp;above.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"\\"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Either&nbsp;escapes&nbsp;special&nbsp;characters&nbsp;or&nbsp;signals&nbsp;a&nbsp;special&nbsp;sequence.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Indicates&nbsp;a&nbsp;set&nbsp;of&nbsp;characters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;"^"&nbsp;as&nbsp;the&nbsp;first&nbsp;character&nbsp;indicates&nbsp;a&nbsp;complementing&nbsp;set.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"|"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A|B,&nbsp;creates&nbsp;an&nbsp;RE&nbsp;that&nbsp;will&nbsp;match&nbsp;either&nbsp;A&nbsp;or&nbsp;B.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(...)&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;the&nbsp;RE&nbsp;inside&nbsp;the&nbsp;parentheses.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;contents&nbsp;can&nbsp;be&nbsp;retrieved&nbsp;or&nbsp;matched&nbsp;later&nbsp;in&nbsp;the&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?aiLmsux)&nbsp;The&nbsp;letters&nbsp;set&nbsp;the&nbsp;corresponding&nbsp;flags&nbsp;defined&nbsp;below.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?:...)&nbsp;&nbsp;Non-grouping&nbsp;version&nbsp;of&nbsp;regular&nbsp;parentheses.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?P&lt;name&gt;...)&nbsp;The&nbsp;substring&nbsp;matched&nbsp;by&nbsp;the&nbsp;group&nbsp;is&nbsp;accessible&nbsp;by&nbsp;name.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?P=name)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;the&nbsp;text&nbsp;matched&nbsp;earlier&nbsp;by&nbsp;the&nbsp;group&nbsp;named&nbsp;name.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?#...)&nbsp;&nbsp;A&nbsp;comment;&nbsp;ignored.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?=...)&nbsp;&nbsp;Matches&nbsp;if&nbsp;...&nbsp;matches&nbsp;next,&nbsp;but&nbsp;doesn't&nbsp;consume&nbsp;the&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?!...)&nbsp;&nbsp;Matches&nbsp;if&nbsp;...&nbsp;doesn't&nbsp;match&nbsp;next.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?&lt;=...)&nbsp;Matches&nbsp;if&nbsp;preceded&nbsp;by&nbsp;...&nbsp;(must&nbsp;be&nbsp;fixed&nbsp;length).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?&lt;!...)&nbsp;Matches&nbsp;if&nbsp;not&nbsp;preceded&nbsp;by&nbsp;...&nbsp;(must&nbsp;be&nbsp;fixed&nbsp;length).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(?(id/name)yes|no)&nbsp;Matches&nbsp;yes&nbsp;pattern&nbsp;if&nbsp;the&nbsp;group&nbsp;with&nbsp;id/name&nbsp;matched,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;(optional)&nbsp;no&nbsp;pattern&nbsp;otherwise.<br>
+&nbsp;<br>
+The&nbsp;special&nbsp;sequences&nbsp;consist&nbsp;of&nbsp;"\\"&nbsp;and&nbsp;a&nbsp;character&nbsp;from&nbsp;the&nbsp;list<br>
+below.&nbsp;&nbsp;If&nbsp;the&nbsp;ordinary&nbsp;character&nbsp;is&nbsp;not&nbsp;on&nbsp;the&nbsp;list,&nbsp;then&nbsp;the<br>
+resulting&nbsp;RE&nbsp;will&nbsp;match&nbsp;the&nbsp;second&nbsp;character.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\number&nbsp;&nbsp;Matches&nbsp;the&nbsp;contents&nbsp;of&nbsp;the&nbsp;group&nbsp;of&nbsp;the&nbsp;same&nbsp;number.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;only&nbsp;at&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\Z&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;only&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\b&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;the&nbsp;empty&nbsp;string,&nbsp;but&nbsp;only&nbsp;at&nbsp;the&nbsp;start&nbsp;or&nbsp;end&nbsp;of&nbsp;a&nbsp;word.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;the&nbsp;empty&nbsp;string,&nbsp;but&nbsp;not&nbsp;at&nbsp;the&nbsp;start&nbsp;or&nbsp;end&nbsp;of&nbsp;a&nbsp;word.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\d&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;any&nbsp;decimal&nbsp;digit;&nbsp;equivalent&nbsp;to&nbsp;the&nbsp;set&nbsp;[0-9]&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bytes&nbsp;patterns&nbsp;or&nbsp;string&nbsp;patterns&nbsp;with&nbsp;the&nbsp;ASCII&nbsp;flag.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In&nbsp;string&nbsp;patterns&nbsp;without&nbsp;the&nbsp;ASCII&nbsp;flag,&nbsp;it&nbsp;will&nbsp;match&nbsp;the&nbsp;whole<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;range&nbsp;of&nbsp;Unicode&nbsp;digits.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;any&nbsp;non-digit&nbsp;character;&nbsp;equivalent&nbsp;to&nbsp;[^\d].<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;any&nbsp;whitespace&nbsp;character;&nbsp;equivalent&nbsp;to&nbsp;[&nbsp;\t\n\r\f\v]&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bytes&nbsp;patterns&nbsp;or&nbsp;string&nbsp;patterns&nbsp;with&nbsp;the&nbsp;ASCII&nbsp;flag.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In&nbsp;string&nbsp;patterns&nbsp;without&nbsp;the&nbsp;ASCII&nbsp;flag,&nbsp;it&nbsp;will&nbsp;match&nbsp;the&nbsp;whole<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;range&nbsp;of&nbsp;Unicode&nbsp;whitespace&nbsp;characters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;any&nbsp;non-whitespace&nbsp;character;&nbsp;equivalent&nbsp;to&nbsp;[^\s].<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\w&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;any&nbsp;alphanumeric&nbsp;character;&nbsp;equivalent&nbsp;to&nbsp;[a-zA-Z0-9_]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;bytes&nbsp;patterns&nbsp;or&nbsp;string&nbsp;patterns&nbsp;with&nbsp;the&nbsp;ASCII&nbsp;flag.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In&nbsp;string&nbsp;patterns&nbsp;without&nbsp;the&nbsp;ASCII&nbsp;flag,&nbsp;it&nbsp;will&nbsp;match&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;range&nbsp;of&nbsp;Unicode&nbsp;alphanumeric&nbsp;characters&nbsp;(letters&nbsp;plus&nbsp;digits<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plus&nbsp;underscore).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;With&nbsp;LOCALE,&nbsp;it&nbsp;will&nbsp;match&nbsp;the&nbsp;set&nbsp;[0-9_]&nbsp;plus&nbsp;characters&nbsp;defined<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;letters&nbsp;for&nbsp;the&nbsp;current&nbsp;locale.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\W&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;the&nbsp;complement&nbsp;of&nbsp;\w.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matches&nbsp;a&nbsp;literal&nbsp;backslash.<br>
+&nbsp;<br>
+This&nbsp;module&nbsp;exports&nbsp;the&nbsp;following&nbsp;functions:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Match">Match</a>&nbsp;a&nbsp;regular&nbsp;expression&nbsp;pattern&nbsp;to&nbsp;the&nbsp;beginning&nbsp;of&nbsp;a&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fullmatch&nbsp;<a href="#Match">Match</a>&nbsp;a&nbsp;regular&nbsp;expression&nbsp;pattern&nbsp;to&nbsp;all&nbsp;of&nbsp;a&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;search&nbsp;&nbsp;&nbsp;&nbsp;Search&nbsp;a&nbsp;string&nbsp;for&nbsp;the&nbsp;presence&nbsp;of&nbsp;a&nbsp;pattern.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sub&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Substitute&nbsp;occurrences&nbsp;of&nbsp;a&nbsp;pattern&nbsp;found&nbsp;in&nbsp;a&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;subn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Same&nbsp;as&nbsp;sub,&nbsp;but&nbsp;also&nbsp;return&nbsp;the&nbsp;number&nbsp;of&nbsp;substitutions&nbsp;made.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;split&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Split&nbsp;a&nbsp;string&nbsp;by&nbsp;the&nbsp;occurrences&nbsp;of&nbsp;a&nbsp;pattern.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;findall&nbsp;&nbsp;&nbsp;Find&nbsp;all&nbsp;occurrences&nbsp;of&nbsp;a&nbsp;pattern&nbsp;in&nbsp;a&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;finditer&nbsp;&nbsp;Return&nbsp;an&nbsp;iterator&nbsp;yielding&nbsp;a&nbsp;<a href="#Match">Match</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;each&nbsp;match.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;compile&nbsp;&nbsp;&nbsp;Compile&nbsp;a&nbsp;pattern&nbsp;into&nbsp;a&nbsp;<a href="#Pattern">Pattern</a>&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;purge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clear&nbsp;the&nbsp;regular&nbsp;expression&nbsp;cache.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;escape&nbsp;&nbsp;&nbsp;&nbsp;Backslash&nbsp;all&nbsp;non-alphanumerics&nbsp;in&nbsp;a&nbsp;string.<br>
+&nbsp;<br>
+Each&nbsp;function&nbsp;other&nbsp;than&nbsp;purge&nbsp;and&nbsp;escape&nbsp;can&nbsp;take&nbsp;an&nbsp;optional&nbsp;'flags'&nbsp;argument<br>
+consisting&nbsp;of&nbsp;one&nbsp;or&nbsp;more&nbsp;of&nbsp;the&nbsp;following&nbsp;module&nbsp;constants,&nbsp;joined&nbsp;by&nbsp;"|".<br>
+A,&nbsp;L,&nbsp;and&nbsp;U&nbsp;are&nbsp;mutually&nbsp;exclusive.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;ASCII&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;string&nbsp;patterns,&nbsp;make&nbsp;\w,&nbsp;\W,&nbsp;\b,&nbsp;\B,&nbsp;\d,&nbsp;\D<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;the&nbsp;corresponding&nbsp;ASCII&nbsp;character&nbsp;categories<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rather&nbsp;than&nbsp;the&nbsp;whole&nbsp;Unicode&nbsp;categories,&nbsp;which&nbsp;is&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;bytes&nbsp;patterns,&nbsp;this&nbsp;flag&nbsp;is&nbsp;the&nbsp;only&nbsp;available<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;behaviour&nbsp;and&nbsp;needn't&nbsp;be&nbsp;specified.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;I&nbsp;&nbsp;IGNORECASE&nbsp;&nbsp;Perform&nbsp;case-insensitive&nbsp;matching.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;LOCALE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Make&nbsp;\w,&nbsp;\W,&nbsp;\b,&nbsp;\B,&nbsp;dependent&nbsp;on&nbsp;the&nbsp;current&nbsp;locale.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;M&nbsp;&nbsp;MULTILINE&nbsp;&nbsp;&nbsp;"^"&nbsp;matches&nbsp;the&nbsp;beginning&nbsp;of&nbsp;lines&nbsp;(after&nbsp;a&nbsp;newline)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;well&nbsp;as&nbsp;the&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$"&nbsp;matches&nbsp;the&nbsp;end&nbsp;of&nbsp;lines&nbsp;(before&nbsp;a&nbsp;newline)&nbsp;as&nbsp;well<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;string.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;S&nbsp;&nbsp;DOTALL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"."&nbsp;matches&nbsp;any&nbsp;character&nbsp;at&nbsp;all,&nbsp;including&nbsp;the&nbsp;newline.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;X&nbsp;&nbsp;VERBOSE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ignore&nbsp;whitespace&nbsp;and&nbsp;comments&nbsp;for&nbsp;nicer&nbsp;looking&nbsp;RE's.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;U&nbsp;&nbsp;UNICODE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;compatibility&nbsp;only.&nbsp;Ignored&nbsp;for&nbsp;string&nbsp;patterns&nbsp;(it<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;the&nbsp;default),&nbsp;and&nbsp;forbidden&nbsp;for&nbsp;bytes&nbsp;patterns.<br>
+&nbsp;<br>
+This&nbsp;module&nbsp;also&nbsp;defines&nbsp;an&nbsp;exception&nbsp;'<a href="#error">error</a>'.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="_locale.html">_locale</a><br>
+<a href="copyreg.html">copyreg</a><br>
+</td><td width="25%" valign=top><a href="enum.html">enum</a><br>
+<a href="functools.html">functools</a><br>
+</td><td width="25%" valign=top><a href="sre_compile.html">sre_compile</a><br>
+<a href="sre_parse.html">sre_parse</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#Exception">builtins.Exception</a>(<a href="builtins.html#BaseException">builtins.BaseException</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="re.html#error">error</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="re.html#Match">Match</a>
+</font></dt><dt><font face="helvetica, arial"><a href="re.html#Pattern">Pattern</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Match">class <strong>Match</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;result&nbsp;of&nbsp;re.<a href="#-match">match</a>()&nbsp;and&nbsp;re.<a href="#-search">search</a>().<br>
+<a href="#Match">Match</a>&nbsp;objects&nbsp;always&nbsp;have&nbsp;a&nbsp;boolean&nbsp;value&nbsp;of&nbsp;True.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Match-__copy__"><strong>__copy__</strong></a>(self, /)</dt></dl>
+
+<dl><dt><a name="Match-__deepcopy__"><strong>__deepcopy__</strong></a>(self, memo, /)</dt></dl>
+
+<dl><dt><a name="Match-__getitem__"><strong>__getitem__</strong></a>(self, key, /)</dt><dd><tt>Return&nbsp;self[key].</tt></dd></dl>
+
+<dl><dt><a name="Match-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="Match-end"><strong>end</strong></a>(self, group=0, /)</dt><dd><tt>Return&nbsp;index&nbsp;of&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;substring&nbsp;matched&nbsp;by&nbsp;group.</tt></dd></dl>
+
+<dl><dt><a name="Match-expand"><strong>expand</strong></a>(self, /, template)</dt><dd><tt>Return&nbsp;the&nbsp;string&nbsp;obtained&nbsp;by&nbsp;doing&nbsp;backslash&nbsp;substitution&nbsp;on&nbsp;the&nbsp;string&nbsp;template,&nbsp;as&nbsp;done&nbsp;by&nbsp;the&nbsp;<a href="#-sub">sub</a>()&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="Match-group"><strong>group</strong></a>(...)</dt><dd><tt><a href="#Match-group">group</a>([group1,&nbsp;...])&nbsp;-&gt;&nbsp;str&nbsp;or&nbsp;tuple.<br>
+Return&nbsp;subgroup(s)&nbsp;of&nbsp;the&nbsp;match&nbsp;by&nbsp;indices&nbsp;or&nbsp;names.<br>
+For&nbsp;0&nbsp;returns&nbsp;the&nbsp;entire&nbsp;match.</tt></dd></dl>
+
+<dl><dt><a name="Match-groupdict"><strong>groupdict</strong></a>(self, /, default=None)</dt><dd><tt>Return&nbsp;a&nbsp;dictionary&nbsp;containing&nbsp;all&nbsp;the&nbsp;named&nbsp;subgroups&nbsp;of&nbsp;the&nbsp;match,&nbsp;keyed&nbsp;by&nbsp;the&nbsp;subgroup&nbsp;name.<br>
+&nbsp;<br>
+default<br>
+&nbsp;&nbsp;Is&nbsp;used&nbsp;for&nbsp;groups&nbsp;that&nbsp;did&nbsp;not&nbsp;participate&nbsp;in&nbsp;the&nbsp;match.</tt></dd></dl>
+
+<dl><dt><a name="Match-groups"><strong>groups</strong></a>(self, /, default=None)</dt><dd><tt>Return&nbsp;a&nbsp;tuple&nbsp;containing&nbsp;all&nbsp;the&nbsp;subgroups&nbsp;of&nbsp;the&nbsp;match,&nbsp;from&nbsp;1.<br>
+&nbsp;<br>
+default<br>
+&nbsp;&nbsp;Is&nbsp;used&nbsp;for&nbsp;groups&nbsp;that&nbsp;did&nbsp;not&nbsp;participate&nbsp;in&nbsp;the&nbsp;match.</tt></dd></dl>
+
+<dl><dt><a name="Match-span"><strong>span</strong></a>(self, group=0, /)</dt><dd><tt>For&nbsp;match&nbsp;<a href="builtins.html#object">object</a>&nbsp;m,&nbsp;return&nbsp;the&nbsp;2-tuple&nbsp;(m.<a href="#Match-start">start</a>(group),&nbsp;m.<a href="#Match-end">end</a>(group)).</tt></dd></dl>
+
+<dl><dt><a name="Match-start"><strong>start</strong></a>(self, group=0, /)</dt><dd><tt>Return&nbsp;index&nbsp;of&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;substring&nbsp;matched&nbsp;by&nbsp;group.</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="Match-__class_getitem__"><strong>__class_getitem__</strong></a>(...)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>See&nbsp;<a href="http://www.python.org/dev/peps/pep-0585/">PEP&nbsp;585</a></tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>endpos</strong></dt>
+<dd><tt>The&nbsp;index&nbsp;into&nbsp;the&nbsp;string&nbsp;beyond&nbsp;which&nbsp;the&nbsp;RE&nbsp;engine&nbsp;will&nbsp;not&nbsp;go.</tt></dd>
+</dl>
+<dl><dt><strong>lastgroup</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;last&nbsp;matched&nbsp;capturing&nbsp;group.</tt></dd>
+</dl>
+<dl><dt><strong>lastindex</strong></dt>
+<dd><tt>The&nbsp;integer&nbsp;index&nbsp;of&nbsp;the&nbsp;last&nbsp;matched&nbsp;capturing&nbsp;group.</tt></dd>
+</dl>
+<dl><dt><strong>pos</strong></dt>
+<dd><tt>The&nbsp;index&nbsp;into&nbsp;the&nbsp;string&nbsp;at&nbsp;which&nbsp;the&nbsp;RE&nbsp;engine&nbsp;started&nbsp;looking&nbsp;for&nbsp;a&nbsp;match.</tt></dd>
+</dl>
+<dl><dt><strong>re</strong></dt>
+<dd><tt>The&nbsp;regular&nbsp;expression&nbsp;object.</tt></dd>
+</dl>
+<dl><dt><strong>regs</strong></dt>
+</dl>
+<dl><dt><strong>string</strong></dt>
+<dd><tt>The&nbsp;string&nbsp;passed&nbsp;to&nbsp;match()&nbsp;or&nbsp;search().</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Pattern">class <strong>Pattern</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Compiled&nbsp;regular&nbsp;expression&nbsp;<a href="builtins.html#object">object</a>.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Pattern-__copy__"><strong>__copy__</strong></a>(self, /)</dt></dl>
+
+<dl><dt><a name="Pattern-__deepcopy__"><strong>__deepcopy__</strong></a>(self, memo, /)</dt></dl>
+
+<dl><dt><a name="Pattern-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-__hash__"><strong>__hash__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;hash(self).</tt></dd></dl>
+
+<dl><dt><a name="Pattern-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="Pattern-findall"><strong>findall</strong></a>(self, /, string, pos=0, endpos=9223372036854775807)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;non-overlapping&nbsp;matches&nbsp;of&nbsp;pattern&nbsp;in&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-finditer"><strong>finditer</strong></a>(self, /, string, pos=0, endpos=9223372036854775807)</dt><dd><tt>Return&nbsp;an&nbsp;iterator&nbsp;over&nbsp;all&nbsp;non-overlapping&nbsp;matches&nbsp;for&nbsp;the&nbsp;RE&nbsp;pattern&nbsp;in&nbsp;string.<br>
+&nbsp;<br>
+For&nbsp;each&nbsp;match,&nbsp;the&nbsp;iterator&nbsp;returns&nbsp;a&nbsp;match&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-fullmatch"><strong>fullmatch</strong></a>(self, /, string, pos=0, endpos=9223372036854775807)</dt><dd><tt>Matches&nbsp;against&nbsp;all&nbsp;of&nbsp;the&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-match"><strong>match</strong></a>(self, /, string, pos=0, endpos=9223372036854775807)</dt><dd><tt>Matches&nbsp;zero&nbsp;or&nbsp;more&nbsp;characters&nbsp;at&nbsp;the&nbsp;beginning&nbsp;of&nbsp;the&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-scanner"><strong>scanner</strong></a>(self, /, string, pos=0, endpos=9223372036854775807)</dt></dl>
+
+<dl><dt><a name="Pattern-search"><strong>search</strong></a>(self, /, string, pos=0, endpos=9223372036854775807)</dt><dd><tt>Scan&nbsp;through&nbsp;string&nbsp;looking&nbsp;for&nbsp;a&nbsp;match,&nbsp;and&nbsp;return&nbsp;a&nbsp;corresponding&nbsp;match&nbsp;<a href="builtins.html#object">object</a>&nbsp;instance.<br>
+&nbsp;<br>
+Return&nbsp;None&nbsp;if&nbsp;no&nbsp;position&nbsp;in&nbsp;the&nbsp;string&nbsp;matches.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-split"><strong>split</strong></a>(self, /, string, maxsplit=0)</dt><dd><tt>Split&nbsp;string&nbsp;by&nbsp;the&nbsp;occurrences&nbsp;of&nbsp;pattern.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-sub"><strong>sub</strong></a>(self, /, repl, string, count=0)</dt><dd><tt>Return&nbsp;the&nbsp;string&nbsp;obtained&nbsp;by&nbsp;replacing&nbsp;the&nbsp;leftmost&nbsp;non-overlapping&nbsp;occurrences&nbsp;of&nbsp;pattern&nbsp;in&nbsp;string&nbsp;by&nbsp;the&nbsp;replacement&nbsp;repl.</tt></dd></dl>
+
+<dl><dt><a name="Pattern-subn"><strong>subn</strong></a>(self, /, repl, string, count=0)</dt><dd><tt>Return&nbsp;the&nbsp;tuple&nbsp;(new_string,&nbsp;number_of_subs_made)&nbsp;found&nbsp;by&nbsp;replacing&nbsp;the&nbsp;leftmost&nbsp;non-overlapping&nbsp;occurrences&nbsp;of&nbsp;pattern&nbsp;with&nbsp;the&nbsp;replacement&nbsp;repl.</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="Pattern-__class_getitem__"><strong>__class_getitem__</strong></a>(...)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>See&nbsp;<a href="http://www.python.org/dev/peps/pep-0585/">PEP&nbsp;585</a></tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>flags</strong></dt>
+<dd><tt>The&nbsp;regex&nbsp;matching&nbsp;flags.</tt></dd>
+</dl>
+<dl><dt><strong>groupindex</strong></dt>
+<dd><tt>A&nbsp;dictionary&nbsp;mapping&nbsp;group&nbsp;names&nbsp;to&nbsp;group&nbsp;numbers.</tt></dd>
+</dl>
+<dl><dt><strong>groups</strong></dt>
+<dd><tt>The&nbsp;number&nbsp;of&nbsp;capturing&nbsp;groups&nbsp;in&nbsp;the&nbsp;pattern.</tt></dd>
+</dl>
+<dl><dt><strong>pattern</strong></dt>
+<dd><tt>The&nbsp;pattern&nbsp;string&nbsp;from&nbsp;which&nbsp;the&nbsp;RE&nbsp;object&nbsp;was&nbsp;compiled.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="error">class <strong>error</strong></a>(<a href="builtins.html#Exception">builtins.Exception</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#error">error</a>(msg,&nbsp;pattern=None,&nbsp;pos=None)<br>
+&nbsp;<br>
+<a href="builtins.html#Exception">Exception</a>&nbsp;raised&nbsp;for&nbsp;invalid&nbsp;regular&nbsp;expressions.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg:&nbsp;The&nbsp;unformatted&nbsp;<a href="#error">error</a>&nbsp;message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern:&nbsp;The&nbsp;regular&nbsp;expression&nbsp;pattern<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pos:&nbsp;The&nbsp;index&nbsp;in&nbsp;the&nbsp;pattern&nbsp;where&nbsp;compilation&nbsp;failed&nbsp;(may&nbsp;be&nbsp;None)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lineno:&nbsp;The&nbsp;line&nbsp;corresponding&nbsp;to&nbsp;pos&nbsp;(may&nbsp;be&nbsp;None)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;colno:&nbsp;The&nbsp;column&nbsp;corresponding&nbsp;to&nbsp;pos&nbsp;(may&nbsp;be&nbsp;None)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="re.html#error">error</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="error-__init__"><strong>__init__</strong></a>(self, msg, pattern=None, pos=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Static methods inherited from <a href="builtins.html#Exception">builtins.Exception</a>:<br>
+<dl><dt><a name="error-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="error-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="error-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="error-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<dl><dt><a name="error-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="error-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="error-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="error-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="error-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt><a href="builtins.html#Exception">Exception</a>.<a href="#error-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-compile"><strong>compile</strong></a>(pattern, flags=0)</dt><dd><tt>Compile&nbsp;a&nbsp;regular&nbsp;expression&nbsp;pattern,&nbsp;returning&nbsp;a&nbsp;<a href="#Pattern">Pattern</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+ <dl><dt><a name="-escape"><strong>escape</strong></a>(pattern)</dt><dd><tt>Escape&nbsp;special&nbsp;characters&nbsp;in&nbsp;a&nbsp;string.</tt></dd></dl>
+ <dl><dt><a name="-findall"><strong>findall</strong></a>(pattern, string, flags=0)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;non-overlapping&nbsp;matches&nbsp;in&nbsp;the&nbsp;string.<br>
+&nbsp;<br>
+If&nbsp;one&nbsp;or&nbsp;more&nbsp;capturing&nbsp;groups&nbsp;are&nbsp;present&nbsp;in&nbsp;the&nbsp;pattern,&nbsp;return<br>
+a&nbsp;list&nbsp;of&nbsp;groups;&nbsp;this&nbsp;will&nbsp;be&nbsp;a&nbsp;list&nbsp;of&nbsp;tuples&nbsp;if&nbsp;the&nbsp;pattern<br>
+has&nbsp;more&nbsp;than&nbsp;one&nbsp;group.<br>
+&nbsp;<br>
+Empty&nbsp;matches&nbsp;are&nbsp;included&nbsp;in&nbsp;the&nbsp;result.</tt></dd></dl>
+ <dl><dt><a name="-finditer"><strong>finditer</strong></a>(pattern, string, flags=0)</dt><dd><tt>Return&nbsp;an&nbsp;iterator&nbsp;over&nbsp;all&nbsp;non-overlapping&nbsp;matches&nbsp;in&nbsp;the<br>
+string.&nbsp;&nbsp;For&nbsp;each&nbsp;match,&nbsp;the&nbsp;iterator&nbsp;returns&nbsp;a&nbsp;<a href="#Match">Match</a>&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+Empty&nbsp;matches&nbsp;are&nbsp;included&nbsp;in&nbsp;the&nbsp;result.</tt></dd></dl>
+ <dl><dt><a name="-fullmatch"><strong>fullmatch</strong></a>(pattern, string, flags=0)</dt><dd><tt>Try&nbsp;to&nbsp;apply&nbsp;the&nbsp;pattern&nbsp;to&nbsp;all&nbsp;of&nbsp;the&nbsp;string,&nbsp;returning<br>
+a&nbsp;<a href="#Match">Match</a>&nbsp;<a href="builtins.html#object">object</a>,&nbsp;or&nbsp;None&nbsp;if&nbsp;no&nbsp;match&nbsp;was&nbsp;found.</tt></dd></dl>
+ <dl><dt><a name="-match"><strong>match</strong></a>(pattern, string, flags=0)</dt><dd><tt>Try&nbsp;to&nbsp;apply&nbsp;the&nbsp;pattern&nbsp;at&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;string,&nbsp;returning<br>
+a&nbsp;<a href="#Match">Match</a>&nbsp;<a href="builtins.html#object">object</a>,&nbsp;or&nbsp;None&nbsp;if&nbsp;no&nbsp;match&nbsp;was&nbsp;found.</tt></dd></dl>
+ <dl><dt><a name="-purge"><strong>purge</strong></a>()</dt><dd><tt>Clear&nbsp;the&nbsp;regular&nbsp;expression&nbsp;caches</tt></dd></dl>
+ <dl><dt><a name="-search"><strong>search</strong></a>(pattern, string, flags=0)</dt><dd><tt>Scan&nbsp;through&nbsp;string&nbsp;looking&nbsp;for&nbsp;a&nbsp;match&nbsp;to&nbsp;the&nbsp;pattern,&nbsp;returning<br>
+a&nbsp;<a href="#Match">Match</a>&nbsp;<a href="builtins.html#object">object</a>,&nbsp;or&nbsp;None&nbsp;if&nbsp;no&nbsp;match&nbsp;was&nbsp;found.</tt></dd></dl>
+ <dl><dt><a name="-split"><strong>split</strong></a>(pattern, string, maxsplit=0, flags=0)</dt><dd><tt>Split&nbsp;the&nbsp;source&nbsp;string&nbsp;by&nbsp;the&nbsp;occurrences&nbsp;of&nbsp;the&nbsp;pattern,<br>
+returning&nbsp;a&nbsp;list&nbsp;containing&nbsp;the&nbsp;resulting&nbsp;substrings.&nbsp;&nbsp;If<br>
+capturing&nbsp;parentheses&nbsp;are&nbsp;used&nbsp;in&nbsp;pattern,&nbsp;then&nbsp;the&nbsp;text&nbsp;of&nbsp;all<br>
+groups&nbsp;in&nbsp;the&nbsp;pattern&nbsp;are&nbsp;also&nbsp;returned&nbsp;as&nbsp;part&nbsp;of&nbsp;the&nbsp;resulting<br>
+list.&nbsp;&nbsp;If&nbsp;maxsplit&nbsp;is&nbsp;nonzero,&nbsp;at&nbsp;most&nbsp;maxsplit&nbsp;splits&nbsp;occur,<br>
+and&nbsp;the&nbsp;remainder&nbsp;of&nbsp;the&nbsp;string&nbsp;is&nbsp;returned&nbsp;as&nbsp;the&nbsp;final&nbsp;element<br>
+of&nbsp;the&nbsp;list.</tt></dd></dl>
+ <dl><dt><a name="-sub"><strong>sub</strong></a>(pattern, repl, string, count=0, flags=0)</dt><dd><tt>Return&nbsp;the&nbsp;string&nbsp;obtained&nbsp;by&nbsp;replacing&nbsp;the&nbsp;leftmost<br>
+non-overlapping&nbsp;occurrences&nbsp;of&nbsp;the&nbsp;pattern&nbsp;in&nbsp;string&nbsp;by&nbsp;the<br>
+replacement&nbsp;repl.&nbsp;&nbsp;repl&nbsp;can&nbsp;be&nbsp;either&nbsp;a&nbsp;string&nbsp;or&nbsp;a&nbsp;callable;<br>
+if&nbsp;a&nbsp;string,&nbsp;backslash&nbsp;escapes&nbsp;in&nbsp;it&nbsp;are&nbsp;processed.&nbsp;&nbsp;If&nbsp;it&nbsp;is<br>
+a&nbsp;callable,&nbsp;it's&nbsp;passed&nbsp;the&nbsp;<a href="#Match">Match</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;and&nbsp;must&nbsp;return<br>
+a&nbsp;replacement&nbsp;string&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
+ <dl><dt><a name="-subn"><strong>subn</strong></a>(pattern, repl, string, count=0, flags=0)</dt><dd><tt>Return&nbsp;a&nbsp;2-tuple&nbsp;containing&nbsp;(new_string,&nbsp;number).<br>
+new_string&nbsp;is&nbsp;the&nbsp;string&nbsp;obtained&nbsp;by&nbsp;replacing&nbsp;the&nbsp;leftmost<br>
+non-overlapping&nbsp;occurrences&nbsp;of&nbsp;the&nbsp;pattern&nbsp;in&nbsp;the&nbsp;source<br>
+string&nbsp;by&nbsp;the&nbsp;replacement&nbsp;repl.&nbsp;&nbsp;number&nbsp;is&nbsp;the&nbsp;number&nbsp;of<br>
+substitutions&nbsp;that&nbsp;were&nbsp;made.&nbsp;repl&nbsp;can&nbsp;be&nbsp;either&nbsp;a&nbsp;string&nbsp;or&nbsp;a<br>
+callable;&nbsp;if&nbsp;a&nbsp;string,&nbsp;backslash&nbsp;escapes&nbsp;in&nbsp;it&nbsp;are&nbsp;processed.<br>
+If&nbsp;it&nbsp;is&nbsp;a&nbsp;callable,&nbsp;it's&nbsp;passed&nbsp;the&nbsp;<a href="#Match">Match</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;and&nbsp;must<br>
+return&nbsp;a&nbsp;replacement&nbsp;string&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
+ <dl><dt><a name="-template"><strong>template</strong></a>(pattern, flags=0)</dt><dd><tt>Compile&nbsp;a&nbsp;template&nbsp;pattern,&nbsp;returning&nbsp;a&nbsp;<a href="#Pattern">Pattern</a>&nbsp;<a href="builtins.html#object">object</a></tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>A</strong> = re.ASCII<br>
+<strong>ASCII</strong> = re.ASCII<br>
+<strong>DOTALL</strong> = re.DOTALL<br>
+<strong>I</strong> = re.IGNORECASE<br>
+<strong>IGNORECASE</strong> = re.IGNORECASE<br>
+<strong>L</strong> = re.LOCALE<br>
+<strong>LOCALE</strong> = re.LOCALE<br>
+<strong>M</strong> = re.MULTILINE<br>
+<strong>MULTILINE</strong> = re.MULTILINE<br>
+<strong>S</strong> = re.DOTALL<br>
+<strong>U</strong> = re.UNICODE<br>
+<strong>UNICODE</strong> = re.UNICODE<br>
+<strong>VERBOSE</strong> = re.VERBOSE<br>
+<strong>X</strong> = re.VERBOSE<br>
+<strong>__all__</strong> = ['match', 'fullmatch', 'search', 'sub', 'subn', 'split', 'findall', 'finditer', 'compile', 'purge', 'template', 'escape', 'error', 'Pattern', 'Match', 'A', 'I', 'L', 'M', 'S', ...]</td></tr></table>
+</body></html>

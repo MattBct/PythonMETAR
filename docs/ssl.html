@@ -1,0 +1,2047 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module ssl</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>ssl</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cprogram%20files%5Cpython39%5Clib%5Cssl.py">c:\program files\python39\lib\ssl.py</a><br><a href="https://docs.python.org/3.9/library/ssl">Module Reference</a></font></td></tr></table>
+    <p><tt>This&nbsp;module&nbsp;provides&nbsp;some&nbsp;more&nbsp;Pythonic&nbsp;support&nbsp;for&nbsp;SSL.<br>
+&nbsp;<br>
+Object&nbsp;types:<br>
+&nbsp;<br>
+&nbsp;&nbsp;<a href="#SSLSocket">SSLSocket</a>&nbsp;--&nbsp;subtype&nbsp;of&nbsp;<a href="socket.html#socket">socket</a>.<a href="socket.html#socket">socket</a>&nbsp;which&nbsp;does&nbsp;SSL&nbsp;over&nbsp;the&nbsp;<a href="socket.html#socket">socket</a><br>
+&nbsp;<br>
+Exceptions:<br>
+&nbsp;<br>
+&nbsp;&nbsp;<a href="#SSLError">SSLError</a>&nbsp;--&nbsp;exception&nbsp;raised&nbsp;for&nbsp;I/O&nbsp;errors<br>
+&nbsp;<br>
+Functions:<br>
+&nbsp;<br>
+&nbsp;&nbsp;cert_time_to_seconds&nbsp;--&nbsp;convert&nbsp;time&nbsp;string&nbsp;used&nbsp;for&nbsp;certificate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notBefore&nbsp;and&nbsp;notAfter&nbsp;functions&nbsp;to&nbsp;integer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seconds&nbsp;past&nbsp;the&nbsp;Epoch&nbsp;(the&nbsp;time&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned&nbsp;from&nbsp;time.time())<br>
+&nbsp;<br>
+&nbsp;&nbsp;fetch_server_certificate&nbsp;(HOST,&nbsp;PORT)&nbsp;--&nbsp;fetch&nbsp;the&nbsp;certificate&nbsp;provided<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by&nbsp;the&nbsp;server&nbsp;running&nbsp;on&nbsp;HOST&nbsp;at&nbsp;port&nbsp;PORT.&nbsp;&nbsp;No<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation&nbsp;of&nbsp;the&nbsp;certificate&nbsp;is&nbsp;performed.<br>
+&nbsp;<br>
+Integer&nbsp;constants:<br>
+&nbsp;<br>
+SSL_ERROR_ZERO_RETURN<br>
+SSL_ERROR_WANT_READ<br>
+SSL_ERROR_WANT_WRITE<br>
+SSL_ERROR_WANT_X509_LOOKUP<br>
+SSL_ERROR_SYSCALL<br>
+SSL_ERROR_SSL<br>
+SSL_ERROR_WANT_CONNECT<br>
+&nbsp;<br>
+SSL_ERROR_EOF<br>
+SSL_ERROR_INVALID_ERROR_CODE<br>
+&nbsp;<br>
+The&nbsp;following&nbsp;group&nbsp;define&nbsp;certificate&nbsp;requirements&nbsp;that&nbsp;one&nbsp;side&nbsp;is<br>
+allowing/requiring&nbsp;from&nbsp;the&nbsp;other&nbsp;side:<br>
+&nbsp;<br>
+CERT_NONE&nbsp;-&nbsp;no&nbsp;certificates&nbsp;from&nbsp;the&nbsp;other&nbsp;side&nbsp;are&nbsp;required&nbsp;(or&nbsp;will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;looked&nbsp;at&nbsp;if&nbsp;provided)<br>
+CERT_OPTIONAL&nbsp;-&nbsp;certificates&nbsp;are&nbsp;not&nbsp;required,&nbsp;but&nbsp;if&nbsp;provided&nbsp;will&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validated,&nbsp;and&nbsp;if&nbsp;validation&nbsp;fails,&nbsp;the&nbsp;connection&nbsp;will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;also&nbsp;fail<br>
+CERT_REQUIRED&nbsp;-&nbsp;certificates&nbsp;are&nbsp;required,&nbsp;and&nbsp;will&nbsp;be&nbsp;validated,&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;validation&nbsp;fails,&nbsp;the&nbsp;connection&nbsp;will&nbsp;also&nbsp;fail<br>
+&nbsp;<br>
+The&nbsp;following&nbsp;constants&nbsp;identify&nbsp;various&nbsp;SSL&nbsp;protocol&nbsp;variants:<br>
+&nbsp;<br>
+PROTOCOL_SSLv2<br>
+PROTOCOL_SSLv3<br>
+PROTOCOL_SSLv23<br>
+PROTOCOL_TLS<br>
+PROTOCOL_TLS_CLIENT<br>
+PROTOCOL_TLS_SERVER<br>
+PROTOCOL_TLSv1<br>
+PROTOCOL_TLSv1_1<br>
+PROTOCOL_TLSv1_2<br>
+&nbsp;<br>
+The&nbsp;following&nbsp;constants&nbsp;identify&nbsp;various&nbsp;SSL&nbsp;alert&nbsp;message&nbsp;descriptions&nbsp;as&nbsp;per<br>
+<a href="http://www.iana.org/assignments/tls-parameters/tls-parameters.xml#tls-parameters-6">http://www.iana.org/assignments/tls-parameters/tls-parameters.xml#tls-parameters-6</a><br>
+&nbsp;<br>
+ALERT_DESCRIPTION_CLOSE_NOTIFY<br>
+ALERT_DESCRIPTION_UNEXPECTED_MESSAGE<br>
+ALERT_DESCRIPTION_BAD_RECORD_MAC<br>
+ALERT_DESCRIPTION_RECORD_OVERFLOW<br>
+ALERT_DESCRIPTION_DECOMPRESSION_FAILURE<br>
+ALERT_DESCRIPTION_HANDSHAKE_FAILURE<br>
+ALERT_DESCRIPTION_BAD_CERTIFICATE<br>
+ALERT_DESCRIPTION_UNSUPPORTED_CERTIFICATE<br>
+ALERT_DESCRIPTION_CERTIFICATE_REVOKED<br>
+ALERT_DESCRIPTION_CERTIFICATE_EXPIRED<br>
+ALERT_DESCRIPTION_CERTIFICATE_UNKNOWN<br>
+ALERT_DESCRIPTION_ILLEGAL_PARAMETER<br>
+ALERT_DESCRIPTION_UNKNOWN_CA<br>
+ALERT_DESCRIPTION_ACCESS_DENIED<br>
+ALERT_DESCRIPTION_DECODE_ERROR<br>
+ALERT_DESCRIPTION_DECRYPT_ERROR<br>
+ALERT_DESCRIPTION_PROTOCOL_VERSION<br>
+ALERT_DESCRIPTION_INSUFFICIENT_SECURITY<br>
+ALERT_DESCRIPTION_INTERNAL_ERROR<br>
+ALERT_DESCRIPTION_USER_CANCELLED<br>
+ALERT_DESCRIPTION_NO_RENEGOTIATION<br>
+ALERT_DESCRIPTION_UNSUPPORTED_EXTENSION<br>
+ALERT_DESCRIPTION_CERTIFICATE_UNOBTAINABLE<br>
+ALERT_DESCRIPTION_UNRECOGNIZED_NAME<br>
+ALERT_DESCRIPTION_BAD_CERTIFICATE_STATUS_RESPONSE<br>
+ALERT_DESCRIPTION_BAD_CERTIFICATE_HASH_VALUE<br>
+ALERT_DESCRIPTION_UNKNOWN_PSK_IDENTITY</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="socket.html">socket</a><br>
+<a href="_ssl.html">_ssl</a><br>
+</td><td width="25%" valign=top><a href="base64.html">base64</a><br>
+<a href="errno.html">errno</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="sys.html">sys</a><br>
+</td><td width="25%" valign=top><a href="warnings.html">warnings</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="_ssl.html#_SSLContext">_ssl._SSLContext</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="ssl.html#SSLContext">SSLContext</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="builtins.html#OSError">builtins.OSError</a>(<a href="builtins.html#Exception">builtins.Exception</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="ssl.html#SSLError">SSLError</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="ssl.html#SSLCertVerificationError">SSLCertVerificationError</a>(<a href="ssl.html#SSLError">SSLError</a>, <a href="builtins.html#ValueError">builtins.ValueError</a>)
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#SSLEOFError">SSLEOFError</a>
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#SSLSyscallError">SSLSyscallError</a>
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#SSLWantReadError">SSLWantReadError</a>
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#SSLWantWriteError">SSLWantWriteError</a>
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#SSLZeroReturnError">SSLZeroReturnError</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="ssl.html#SSLObject">SSLObject</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="builtins.html#tuple">builtins.tuple</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="ssl.html#DefaultVerifyPaths">DefaultVerifyPaths</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="enum.html#Enum">enum.Enum</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><unknown>.Purpose(<a href="ssl.html#_ASN1Object">_ASN1Object</a>, <a href="enum.html#Enum">enum.Enum</a>)
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="enum.html#IntEnum">enum.IntEnum</a>(<a href="builtins.html#int">builtins.int</a>, <a href="enum.html#Enum">enum.Enum</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="ssl.html#AlertDescription">AlertDescription</a>
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#SSLErrorNumber">SSLErrorNumber</a>
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#TLSVersion">TLSVersion</a>
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#VerifyMode">VerifyMode</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="enum.html#IntFlag">enum.IntFlag</a>(<a href="builtins.html#int">builtins.int</a>, <a href="enum.html#Flag">enum.Flag</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="ssl.html#Options">Options</a>
+</font></dt><dt><font face="helvetica, arial"><a href="ssl.html#VerifyFlags">VerifyFlags</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="socket.html#socket">socket.socket</a>(<a href="_socket.html#socket">_socket.socket</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="ssl.html#SSLSocket">SSLSocket</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="ssl.html#_ASN1Object">_ASN1Object</a>(_ASN1Object)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><unknown>.Purpose(<a href="ssl.html#_ASN1Object">_ASN1Object</a>, <a href="enum.html#Enum">enum.Enum</a>)
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AlertDescription">class <strong>AlertDescription</strong></a>(<a href="enum.html#IntEnum">enum.IntEnum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#AlertDescription">AlertDescription</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#AlertDescription">AlertDescription</a></dd>
+<dd><a href="enum.html#IntEnum">enum.IntEnum</a></dd>
+<dd><a href="builtins.html#int">builtins.int</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>ALERT_DESCRIPTION_ACCESS_DENIED</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_ACCESS_DENIED: 49&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_BAD_CERTIFICATE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_BAD_CERTIFICATE: 42&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_BAD_CERTIFICATE_HASH_VALUE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_BAD_CERTIFICATE_HASH_VALUE: 114&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_BAD_CERTIFICATE_STATUS_RESPONSE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_BAD_CERTIFICATE_STATUS_RESPONSE: 113&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_BAD_RECORD_MAC</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_BAD_RECORD_MAC: 20&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_CERTIFICATE_EXPIRED</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CERTIFICATE_EXPIRED: 45&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_CERTIFICATE_REVOKED</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CERTIFICATE_REVOKED: 44&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_CERTIFICATE_UNKNOWN</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CERTIFICATE_UNKNOWN: 46&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_CERTIFICATE_UNOBTAINABLE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CERTIFICATE_UNOBTAINABLE: 111&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_CLOSE_NOTIFY</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CLOSE_NOTIFY: 0&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_DECODE_ERROR</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_DECODE_ERROR: 50&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_DECOMPRESSION_FAILURE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_DECOMPRESSION_FAILURE: 30&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_DECRYPT_ERROR</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_DECRYPT_ERROR: 51&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_HANDSHAKE_FAILURE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_HANDSHAKE_FAILURE: 40&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_ILLEGAL_PARAMETER</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_ILLEGAL_PARAMETER: 47&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_INSUFFICIENT_SECURITY</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_INSUFFICIENT_SECURITY: 71&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_INTERNAL_ERROR</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_INTERNAL_ERROR: 80&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_NO_RENEGOTIATION</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_NO_RENEGOTIATION: 100&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_PROTOCOL_VERSION</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_PROTOCOL_VERSION: 70&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_RECORD_OVERFLOW</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_RECORD_OVERFLOW: 22&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_UNEXPECTED_MESSAGE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNEXPECTED_MESSAGE: 10&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_UNKNOWN_CA</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNKNOWN_CA: 48&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_UNKNOWN_PSK_IDENTITY</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNKNOWN_PSK_IDENTITY: 115&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_UNRECOGNIZED_NAME</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNRECOGNIZED_NAME: 112&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_UNSUPPORTED_CERTIFICATE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNSUPPORTED_CERTIFICATE: 43&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_UNSUPPORTED_EXTENSION</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNSUPPORTED_EXTENSION: 110&gt;</dl>
+
+<dl><dt><strong>ALERT_DESCRIPTION_USER_CANCELLED</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_USER_CANCELLED: 90&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><strong>CertificateError</strong> = <a name="CertificateError">class SSLCertVerificationError</a>(<a href="ssl.html#SSLError">SSLError</a>, <a href="builtins.html#ValueError">builtins.ValueError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;certificate&nbsp;could&nbsp;not&nbsp;be&nbsp;verified.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLCertVerificationError">SSLCertVerificationError</a></dd>
+<dd><a href="ssl.html#SSLError">SSLError</a></dd>
+<dd><a href="builtins.html#OSError">builtins.OSError</a></dd>
+<dd><a href="builtins.html#ValueError">builtins.ValueError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="ssl.html#SSLError">SSLError</a>:<br>
+<dl><dt><a name="SSLCertVerificationError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLCertVerificationError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLCertVerificationError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><strong>characters_written</strong></dt>
+</dl>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>POSIX&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>filename2</strong></dt>
+<dd><tt>second&nbsp;exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<dl><dt><strong>winerror</strong></dt>
+<dd><tt>Win32&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="SSLCertVerificationError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLCertVerificationError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt>Exception.<a href="#CertificateError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DefaultVerifyPaths">class <strong>DefaultVerifyPaths</strong></a>(<a href="builtins.html#tuple">builtins.tuple</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#DefaultVerifyPaths">DefaultVerifyPaths</a>(cafile,&nbsp;capath,&nbsp;openssl_cafile_env,&nbsp;openssl_cafile,&nbsp;openssl_capath_env,&nbsp;openssl_capath)<br>
+&nbsp;<br>
+<a href="#DefaultVerifyPaths">DefaultVerifyPaths</a>(cafile,&nbsp;capath,&nbsp;openssl_cafile_env,&nbsp;openssl_cafile,&nbsp;openssl_capath_env,&nbsp;openssl_capath)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#DefaultVerifyPaths">DefaultVerifyPaths</a></dd>
+<dd><a href="builtins.html#tuple">builtins.tuple</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="DefaultVerifyPaths-__getnewargs__"><strong>__getnewargs__</strong></a>(self)</dt><dd><tt>Return&nbsp;self&nbsp;as&nbsp;a&nbsp;plain&nbsp;<a href="builtins.html#tuple">tuple</a>.&nbsp;&nbsp;Used&nbsp;by&nbsp;copy&nbsp;and&nbsp;pickle.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;nicely&nbsp;formatted&nbsp;representation&nbsp;string</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-_asdict"><strong>_asdict</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;new&nbsp;dict&nbsp;which&nbsp;maps&nbsp;field&nbsp;names&nbsp;to&nbsp;their&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-_replace"><strong>_replace</strong></a>(self, /, **kwds)</dt><dd><tt>Return&nbsp;a&nbsp;new&nbsp;<a href="#DefaultVerifyPaths">DefaultVerifyPaths</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;replacing&nbsp;specified&nbsp;fields&nbsp;with&nbsp;new&nbsp;values</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="DefaultVerifyPaths-_make"><strong>_make</strong></a>(iterable)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Make&nbsp;a&nbsp;new&nbsp;<a href="#DefaultVerifyPaths">DefaultVerifyPaths</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;from&nbsp;a&nbsp;sequence&nbsp;or&nbsp;iterable</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="DefaultVerifyPaths-__new__"><strong>__new__</strong></a>(_cls, cafile, capath, openssl_cafile_env, openssl_cafile, openssl_capath_env, openssl_capath)</dt><dd><tt>Create&nbsp;new&nbsp;instance&nbsp;of&nbsp;<a href="#DefaultVerifyPaths">DefaultVerifyPaths</a>(cafile,&nbsp;capath,&nbsp;openssl_cafile_env,&nbsp;openssl_cafile,&nbsp;openssl_capath_env,&nbsp;openssl_capath)</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>cafile</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;0</tt></dd>
+</dl>
+<dl><dt><strong>capath</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;1</tt></dd>
+</dl>
+<dl><dt><strong>openssl_cafile_env</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;2</tt></dd>
+</dl>
+<dl><dt><strong>openssl_cafile</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;3</tt></dd>
+</dl>
+<dl><dt><strong>openssl_capath_env</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;4</tt></dd>
+</dl>
+<dl><dt><strong>openssl_capath</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;5</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>_field_defaults</strong> = {}</dl>
+
+<dl><dt><strong>_fields</strong> = ('cafile', 'capath', 'openssl_cafile_env', 'openssl_cafile', 'openssl_capath_env', 'openssl_capath')</dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<br>
+<dl><dt><a name="DefaultVerifyPaths-__add__"><strong>__add__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self+value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__contains__"><strong>__contains__</strong></a>(self, key, /)</dt><dd><tt>Return&nbsp;key&nbsp;in&nbsp;self.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__getitem__"><strong>__getitem__</strong></a>(self, key, /)</dt><dd><tt>Return&nbsp;self[key].</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__hash__"><strong>__hash__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;hash(self).</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__iter__"><strong>__iter__</strong></a>(self, /)</dt><dd><tt>Implement&nbsp;iter(self).</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__len__"><strong>__len__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;len(self).</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__mul__"><strong>__mul__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self*value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-__rmul__"><strong>__rmul__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;value*self.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-count"><strong>count</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;number&nbsp;of&nbsp;occurrences&nbsp;of&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultVerifyPaths-index"><strong>index</strong></a>(self, value, start=0, stop=9223372036854775807, /)</dt><dd><tt>Return&nbsp;first&nbsp;index&nbsp;of&nbsp;value.<br>
+&nbsp;<br>
+Raises&nbsp;<a href="builtins.html#ValueError">ValueError</a>&nbsp;if&nbsp;the&nbsp;value&nbsp;is&nbsp;not&nbsp;present.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<br>
+<dl><dt><a name="DefaultVerifyPaths-__class_getitem__"><strong>__class_getitem__</strong></a>(...)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>See&nbsp;<a href="http://www.python.org/dev/peps/pep-0585/">PEP&nbsp;585</a></tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Options">class <strong>Options</strong></a>(<a href="enum.html#IntFlag">enum.IntFlag</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Options">Options</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#Options">Options</a></dd>
+<dd><a href="enum.html#IntFlag">enum.IntFlag</a></dd>
+<dd><a href="builtins.html#int">builtins.int</a></dd>
+<dd><a href="enum.html#Flag">enum.Flag</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>OP_ALL</strong> = &lt;Options.OP_ALL: -2147483564&gt;</dl>
+
+<dl><dt><strong>OP_CIPHER_SERVER_PREFERENCE</strong> = &lt;Options.OP_CIPHER_SERVER_PREFERENCE: 4194304&gt;</dl>
+
+<dl><dt><strong>OP_ENABLE_MIDDLEBOX_COMPAT</strong> = &lt;Options.OP_ENABLE_MIDDLEBOX_COMPAT: 1048576&gt;</dl>
+
+<dl><dt><strong>OP_NO_COMPRESSION</strong> = &lt;Options.OP_NO_COMPRESSION: 131072&gt;</dl>
+
+<dl><dt><strong>OP_NO_RENEGOTIATION</strong> = &lt;Options.OP_NO_RENEGOTIATION: 1073741824&gt;</dl>
+
+<dl><dt><strong>OP_NO_SSLv2</strong> = &lt;Options.OP_NO_SSLv2: 0&gt;</dl>
+
+<dl><dt><strong>OP_NO_SSLv3</strong> = &lt;Options.OP_NO_SSLv3: 33554432&gt;</dl>
+
+<dl><dt><strong>OP_NO_TICKET</strong> = &lt;Options.OP_NO_TICKET: 16384&gt;</dl>
+
+<dl><dt><strong>OP_NO_TLSv1</strong> = &lt;Options.OP_NO_TLSv1: 67108864&gt;</dl>
+
+<dl><dt><strong>OP_NO_TLSv1_1</strong> = &lt;Options.OP_NO_TLSv1_1: 268435456&gt;</dl>
+
+<dl><dt><strong>OP_NO_TLSv1_2</strong> = &lt;Options.OP_NO_TLSv1_2: 134217728&gt;</dl>
+
+<dl><dt><strong>OP_NO_TLSv1_3</strong> = &lt;Options.OP_NO_TLSv1_3: 536870912&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Purpose">class <strong>Purpose</strong></a>(<a href="ssl.html#_ASN1Object">ssl._ASN1Object</a>, <a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Purpose">Purpose</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+<a href="#SSLContext">SSLContext</a>&nbsp;purpose&nbsp;flags&nbsp;with&nbsp;X509v3&nbsp;Extended&nbsp;Key&nbsp;Usage&nbsp;objects<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd>Purpose</dd>
+<dd><a href="ssl.html#_ASN1Object">ssl._ASN1Object</a></dd>
+<dd>ssl._ASN1Object</dd>
+<dd><a href="builtins.html#tuple">builtins.tuple</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>CLIENT_AUTH</strong> = &lt;Purpose.CLIENT_AUTH: _ASN1Object(nid=130, short...Client Authentication', oid='1.3.6.1.5.5.7.3.2')&gt;</dl>
+
+<dl><dt><strong>SERVER_AUTH</strong> = &lt;Purpose.SERVER_AUTH: _ASN1Object(nid=129, short...Server Authentication', oid='1.3.6.1.5.5.7.3.1')&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLCertVerificationError">class <strong>SSLCertVerificationError</strong></a>(<a href="ssl.html#SSLError">SSLError</a>, <a href="builtins.html#ValueError">builtins.ValueError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;certificate&nbsp;could&nbsp;not&nbsp;be&nbsp;verified.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLCertVerificationError">SSLCertVerificationError</a></dd>
+<dd><a href="ssl.html#SSLError">SSLError</a></dd>
+<dd><a href="builtins.html#OSError">builtins.OSError</a></dd>
+<dd><a href="builtins.html#ValueError">builtins.ValueError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="ssl.html#SSLError">SSLError</a>:<br>
+<dl><dt><a name="SSLCertVerificationError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLCertVerificationError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLCertVerificationError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><strong>characters_written</strong></dt>
+</dl>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>POSIX&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>filename2</strong></dt>
+<dd><tt>second&nbsp;exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<dl><dt><strong>winerror</strong></dt>
+<dd><tt>Win32&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="SSLCertVerificationError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="SSLCertVerificationError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLCertVerificationError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt>Exception.<a href="#SSLCertVerificationError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLContext">class <strong>SSLContext</strong></a>(<a href="_ssl.html#_SSLContext">_ssl._SSLContext</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SSLContext">SSLContext</a>(protocol=&amp;lt;_SSLMethod.PROTOCOL_TLS:&nbsp;2&amp;gt;,&nbsp;*args,&nbsp;**kwargs)<br>
+&nbsp;<br>
+An&nbsp;<a href="#SSLContext">SSLContext</a>&nbsp;holds&nbsp;various&nbsp;SSL-related&nbsp;configuration&nbsp;options&nbsp;and<br>
+data,&nbsp;such&nbsp;as&nbsp;certificates&nbsp;and&nbsp;possibly&nbsp;a&nbsp;private&nbsp;key.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLContext">SSLContext</a></dd>
+<dd><a href="_ssl.html#_SSLContext">_ssl._SSLContext</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SSLContext-load_default_certs"><strong>load_default_certs</strong></a>(self, purpose=&lt;Purpose.SERVER_AUTH: _ASN1Object(nid=129, shortname='serverAuth', longname='TLS Web Server Authentication', oid='1.3.6.1.5.5.7.3.1')&gt;)</dt></dl>
+
+<dl><dt><a name="SSLContext-set_alpn_protocols"><strong>set_alpn_protocols</strong></a>(self, alpn_protocols)</dt></dl>
+
+<dl><dt><a name="SSLContext-set_npn_protocols"><strong>set_npn_protocols</strong></a>(self, npn_protocols)</dt></dl>
+
+<dl><dt><a name="SSLContext-set_servername_callback"><strong>set_servername_callback</strong></a>(self, server_name_callback)</dt></dl>
+
+<dl><dt><a name="SSLContext-wrap_bio"><strong>wrap_bio</strong></a>(self, incoming, outgoing, server_side=False, server_hostname=None, session=None)</dt></dl>
+
+<dl><dt><a name="SSLContext-wrap_socket"><strong>wrap_socket</strong></a>(self, sock, server_side=False, do_handshake_on_connect=True, suppress_ragged_eofs=True, server_hostname=None, session=None)</dt></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="SSLContext-__new__"><strong>__new__</strong></a>(cls, protocol=&lt;_SSLMethod.PROTOCOL_TLS: 2&gt;, *args, **kwargs)</dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Readonly properties defined here:<br>
+<dl><dt><strong>protocol</strong></dt>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>hostname_checks_common_name</strong></dt>
+</dl>
+<dl><dt><strong>maximum_version</strong></dt>
+</dl>
+<dl><dt><strong>minimum_version</strong></dt>
+</dl>
+<dl><dt><strong>options</strong></dt>
+</dl>
+<dl><dt><strong>verify_flags</strong></dt>
+</dl>
+<dl><dt><strong>verify_mode</strong></dt>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>sslobject_class</strong> = &lt;class 'ssl.SSLObject'&gt;<dd><tt>This&nbsp;class&nbsp;implements&nbsp;an&nbsp;interface&nbsp;on&nbsp;top&nbsp;of&nbsp;a&nbsp;low-level&nbsp;SSL&nbsp;<a href="builtins.html#object">object</a>&nbsp;as<br>
+implemented&nbsp;by&nbsp;OpenSSL.&nbsp;This&nbsp;<a href="builtins.html#object">object</a>&nbsp;captures&nbsp;the&nbsp;state&nbsp;of&nbsp;an&nbsp;SSL&nbsp;connection<br>
+but&nbsp;does&nbsp;not&nbsp;provide&nbsp;any&nbsp;network&nbsp;IO&nbsp;itself.&nbsp;IO&nbsp;needs&nbsp;to&nbsp;be&nbsp;performed<br>
+through&nbsp;separate&nbsp;"BIO"&nbsp;objects&nbsp;which&nbsp;are&nbsp;OpenSSL's&nbsp;IO&nbsp;abstraction&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;does&nbsp;not&nbsp;have&nbsp;a&nbsp;public&nbsp;constructor.&nbsp;Instances&nbsp;are&nbsp;returned&nbsp;by<br>
+``<a href="#SSLContext">SSLContext</a>.wrap_bio``.&nbsp;This&nbsp;class&nbsp;is&nbsp;typically&nbsp;used&nbsp;by&nbsp;framework&nbsp;authors<br>
+that&nbsp;want&nbsp;to&nbsp;implement&nbsp;asynchronous&nbsp;IO&nbsp;for&nbsp;SSL&nbsp;through&nbsp;memory&nbsp;buffers.<br>
+&nbsp;<br>
+When&nbsp;compared&nbsp;to&nbsp;``<a href="#SSLSocket">SSLSocket</a>``,&nbsp;this&nbsp;<a href="builtins.html#object">object</a>&nbsp;lacks&nbsp;the&nbsp;following&nbsp;features:<br>
+&nbsp;<br>
+&nbsp;*&nbsp;Any&nbsp;form&nbsp;of&nbsp;network&nbsp;IO,&nbsp;including&nbsp;methods&nbsp;such&nbsp;as&nbsp;``recv``&nbsp;and&nbsp;``send``.<br>
+&nbsp;*&nbsp;The&nbsp;``do_handshake_on_connect``&nbsp;and&nbsp;``suppress_ragged_eofs``&nbsp;machinery.</tt></dl>
+
+<dl><dt><strong>sslsocket_class</strong> = &lt;class 'ssl.SSLSocket'&gt;<dd><tt>This&nbsp;class&nbsp;implements&nbsp;a&nbsp;subtype&nbsp;of&nbsp;<a href="socket.html#socket">socket</a>.<a href="socket.html#socket">socket</a>&nbsp;that&nbsp;wraps<br>
+the&nbsp;underlying&nbsp;OS&nbsp;<a href="socket.html#socket">socket</a>&nbsp;in&nbsp;an&nbsp;SSL&nbsp;context&nbsp;when&nbsp;necessary,&nbsp;and<br>
+provides&nbsp;read&nbsp;and&nbsp;write&nbsp;methods&nbsp;over&nbsp;that&nbsp;channel.</tt></dl>
+
+<hr>
+Methods inherited from <a href="_ssl.html#_SSLContext">_ssl._SSLContext</a>:<br>
+<dl><dt><a name="SSLContext-cert_store_stats"><strong>cert_store_stats</strong></a>(self, /)</dt><dd><tt>Returns&nbsp;quantities&nbsp;of&nbsp;loaded&nbsp;X.509&nbsp;certificates.<br>
+&nbsp;<br>
+X.509&nbsp;certificates&nbsp;with&nbsp;a&nbsp;CA&nbsp;extension&nbsp;and&nbsp;certificate&nbsp;revocation&nbsp;lists<br>
+inside&nbsp;the&nbsp;context's&nbsp;cert&nbsp;store.<br>
+&nbsp;<br>
+NOTE:&nbsp;Certificates&nbsp;in&nbsp;a&nbsp;capath&nbsp;directory&nbsp;aren't&nbsp;loaded&nbsp;unless&nbsp;they&nbsp;have<br>
+been&nbsp;used&nbsp;at&nbsp;least&nbsp;once.</tt></dd></dl>
+
+<dl><dt><a name="SSLContext-get_ca_certs"><strong>get_ca_certs</strong></a>(self, /, binary_form=False)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;dicts&nbsp;with&nbsp;information&nbsp;of&nbsp;loaded&nbsp;CA&nbsp;certs.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;optional&nbsp;argument&nbsp;is&nbsp;True,&nbsp;returns&nbsp;a&nbsp;DER-encoded&nbsp;copy&nbsp;of&nbsp;the&nbsp;CA<br>
+certificate.<br>
+&nbsp;<br>
+NOTE:&nbsp;Certificates&nbsp;in&nbsp;a&nbsp;capath&nbsp;directory&nbsp;aren't&nbsp;loaded&nbsp;unless&nbsp;they&nbsp;have<br>
+been&nbsp;used&nbsp;at&nbsp;least&nbsp;once.</tt></dd></dl>
+
+<dl><dt><a name="SSLContext-get_ciphers"><strong>get_ciphers</strong></a>(self, /)</dt></dl>
+
+<dl><dt><a name="SSLContext-load_cert_chain"><strong>load_cert_chain</strong></a>(self, /, certfile, keyfile=None, password=None)</dt></dl>
+
+<dl><dt><a name="SSLContext-load_dh_params"><strong>load_dh_params</strong></a>(self, path, /)</dt></dl>
+
+<dl><dt><a name="SSLContext-load_verify_locations"><strong>load_verify_locations</strong></a>(self, /, cafile=None, capath=None, cadata=None)</dt></dl>
+
+<dl><dt><a name="SSLContext-session_stats"><strong>session_stats</strong></a>(self, /)</dt></dl>
+
+<dl><dt><a name="SSLContext-set_ciphers"><strong>set_ciphers</strong></a>(self, cipherlist, /)</dt></dl>
+
+<dl><dt><a name="SSLContext-set_default_verify_paths"><strong>set_default_verify_paths</strong></a>(self, /)</dt></dl>
+
+<dl><dt><a name="SSLContext-set_ecdh_curve"><strong>set_ecdh_curve</strong></a>(self, name, /)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="_ssl.html#_SSLContext">_ssl._SSLContext</a>:<br>
+<dl><dt><strong>check_hostname</strong></dt>
+</dl>
+<dl><dt><strong>keylog_filename</strong></dt>
+</dl>
+<dl><dt><strong>num_tickets</strong></dt>
+<dd><tt>Control&nbsp;the&nbsp;number&nbsp;of&nbsp;TLSv1.3&nbsp;session&nbsp;tickets</tt></dd>
+</dl>
+<dl><dt><strong>post_handshake_auth</strong></dt>
+</dl>
+<dl><dt><strong>sni_callback</strong></dt>
+<dd><tt>Set&nbsp;a&nbsp;callback&nbsp;that&nbsp;will&nbsp;be&nbsp;called&nbsp;when&nbsp;a&nbsp;server&nbsp;name&nbsp;is&nbsp;provided&nbsp;by&nbsp;the&nbsp;SSL/TLS&nbsp;client&nbsp;in&nbsp;the&nbsp;SNI&nbsp;extension.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;argument&nbsp;is&nbsp;None&nbsp;then&nbsp;the&nbsp;callback&nbsp;is&nbsp;disabled.&nbsp;The&nbsp;method&nbsp;is&nbsp;called<br>
+with&nbsp;the&nbsp;SSLSocket,&nbsp;the&nbsp;server&nbsp;name&nbsp;as&nbsp;a&nbsp;string,&nbsp;and&nbsp;the&nbsp;SSLContext&nbsp;object.<br>
+See&nbsp;<a href="http://www.rfc-editor.org/rfc/rfc6066.txt">RFC&nbsp;6066</a>&nbsp;for&nbsp;details&nbsp;of&nbsp;the&nbsp;SNI&nbsp;extension.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLEOFError">class <strong>SSLEOFError</strong></a>(<a href="ssl.html#SSLError">SSLError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>SSL/TLS&nbsp;connection&nbsp;terminated&nbsp;abruptly.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLEOFError">SSLEOFError</a></dd>
+<dd><a href="ssl.html#SSLError">SSLError</a></dd>
+<dd><a href="builtins.html#OSError">builtins.OSError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="ssl.html#SSLError">SSLError</a>:<br>
+<dl><dt><a name="SSLEOFError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLEOFError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLEOFError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLEOFError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><strong>characters_written</strong></dt>
+</dl>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>POSIX&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>filename2</strong></dt>
+<dd><tt>second&nbsp;exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<dl><dt><strong>winerror</strong></dt>
+<dd><tt>Win32&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="SSLEOFError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLEOFError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLEOFError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SSLEOFError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="SSLEOFError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLEOFError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt>Exception.<a href="#SSLEOFError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLError">class <strong>SSLError</strong></a>(<a href="builtins.html#OSError">builtins.OSError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>An&nbsp;error&nbsp;occurred&nbsp;in&nbsp;the&nbsp;SSL&nbsp;implementation.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLError">SSLError</a></dd>
+<dd><a href="builtins.html#OSError">builtins.OSError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SSLError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><strong>characters_written</strong></dt>
+</dl>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>POSIX&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>filename2</strong></dt>
+<dd><tt>second&nbsp;exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<dl><dt><strong>winerror</strong></dt>
+<dd><tt>Win32&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="SSLError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SSLError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="SSLError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt>Exception.<a href="#SSLError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLErrorNumber">class <strong>SSLErrorNumber</strong></a>(<a href="enum.html#IntEnum">enum.IntEnum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SSLErrorNumber">SSLErrorNumber</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLErrorNumber">SSLErrorNumber</a></dd>
+<dd><a href="enum.html#IntEnum">enum.IntEnum</a></dd>
+<dd><a href="builtins.html#int">builtins.int</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>SSL_ERROR_EOF</strong> = &lt;SSLErrorNumber.SSL_ERROR_EOF: 8&gt;</dl>
+
+<dl><dt><strong>SSL_ERROR_INVALID_ERROR_CODE</strong> = &lt;SSLErrorNumber.SSL_ERROR_INVALID_ERROR_CODE: 10&gt;</dl>
+
+<dl><dt><strong>SSL_ERROR_SSL</strong> = &lt;SSLErrorNumber.SSL_ERROR_SSL: 1&gt;</dl>
+
+<dl><dt><strong>SSL_ERROR_SYSCALL</strong> = &lt;SSLErrorNumber.SSL_ERROR_SYSCALL: 5&gt;</dl>
+
+<dl><dt><strong>SSL_ERROR_WANT_CONNECT</strong> = &lt;SSLErrorNumber.SSL_ERROR_WANT_CONNECT: 7&gt;</dl>
+
+<dl><dt><strong>SSL_ERROR_WANT_READ</strong> = &lt;SSLErrorNumber.SSL_ERROR_WANT_READ: 2&gt;</dl>
+
+<dl><dt><strong>SSL_ERROR_WANT_WRITE</strong> = &lt;SSLErrorNumber.SSL_ERROR_WANT_WRITE: 3&gt;</dl>
+
+<dl><dt><strong>SSL_ERROR_WANT_X509_LOOKUP</strong> = &lt;SSLErrorNumber.SSL_ERROR_WANT_X509_LOOKUP: 4&gt;</dl>
+
+<dl><dt><strong>SSL_ERROR_ZERO_RETURN</strong> = &lt;SSLErrorNumber.SSL_ERROR_ZERO_RETURN: 6&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLObject">class <strong>SSLObject</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SSLObject">SSLObject</a>(*args,&nbsp;**kwargs)<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;implements&nbsp;an&nbsp;interface&nbsp;on&nbsp;top&nbsp;of&nbsp;a&nbsp;low-level&nbsp;SSL&nbsp;<a href="builtins.html#object">object</a>&nbsp;as<br>
+implemented&nbsp;by&nbsp;OpenSSL.&nbsp;This&nbsp;<a href="builtins.html#object">object</a>&nbsp;captures&nbsp;the&nbsp;state&nbsp;of&nbsp;an&nbsp;SSL&nbsp;connection<br>
+but&nbsp;does&nbsp;not&nbsp;provide&nbsp;any&nbsp;network&nbsp;IO&nbsp;itself.&nbsp;IO&nbsp;needs&nbsp;to&nbsp;be&nbsp;performed<br>
+through&nbsp;separate&nbsp;"BIO"&nbsp;objects&nbsp;which&nbsp;are&nbsp;OpenSSL's&nbsp;IO&nbsp;abstraction&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;does&nbsp;not&nbsp;have&nbsp;a&nbsp;public&nbsp;constructor.&nbsp;Instances&nbsp;are&nbsp;returned&nbsp;by<br>
+``<a href="#SSLContext">SSLContext</a>.wrap_bio``.&nbsp;This&nbsp;class&nbsp;is&nbsp;typically&nbsp;used&nbsp;by&nbsp;framework&nbsp;authors<br>
+that&nbsp;want&nbsp;to&nbsp;implement&nbsp;asynchronous&nbsp;IO&nbsp;for&nbsp;SSL&nbsp;through&nbsp;memory&nbsp;buffers.<br>
+&nbsp;<br>
+When&nbsp;compared&nbsp;to&nbsp;``<a href="#SSLSocket">SSLSocket</a>``,&nbsp;this&nbsp;<a href="builtins.html#object">object</a>&nbsp;lacks&nbsp;the&nbsp;following&nbsp;features:<br>
+&nbsp;<br>
+&nbsp;*&nbsp;Any&nbsp;form&nbsp;of&nbsp;network&nbsp;IO,&nbsp;including&nbsp;methods&nbsp;such&nbsp;as&nbsp;``recv``&nbsp;and&nbsp;``send``.<br>
+&nbsp;*&nbsp;The&nbsp;``do_handshake_on_connect``&nbsp;and&nbsp;``suppress_ragged_eofs``&nbsp;machinery.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SSLObject-__init__"><strong>__init__</strong></a>(self, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-cipher"><strong>cipher</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;currently&nbsp;selected&nbsp;cipher&nbsp;as&nbsp;a&nbsp;3-<a href="builtins.html#tuple">tuple</a>&nbsp;``(name,<br>
+ssl_version,&nbsp;secret_bits)``.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-compression"><strong>compression</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;current&nbsp;compression&nbsp;algorithm&nbsp;in&nbsp;use,&nbsp;or&nbsp;``None``&nbsp;if<br>
+compression&nbsp;was&nbsp;not&nbsp;negotiated&nbsp;or&nbsp;not&nbsp;supported&nbsp;by&nbsp;one&nbsp;of&nbsp;the&nbsp;peers.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-do_handshake"><strong>do_handshake</strong></a>(self)</dt><dd><tt>Start&nbsp;the&nbsp;SSL/TLS&nbsp;handshake.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-get_channel_binding"><strong>get_channel_binding</strong></a>(self, cb_type='tls-unique')</dt><dd><tt>Get&nbsp;channel&nbsp;binding&nbsp;data&nbsp;for&nbsp;current&nbsp;connection.&nbsp;&nbsp;Raise&nbsp;<a href="builtins.html#ValueError">ValueError</a><br>
+if&nbsp;the&nbsp;requested&nbsp;`cb_type`&nbsp;is&nbsp;not&nbsp;supported.&nbsp;&nbsp;Return&nbsp;bytes&nbsp;of&nbsp;the&nbsp;data<br>
+or&nbsp;None&nbsp;if&nbsp;the&nbsp;data&nbsp;is&nbsp;not&nbsp;available&nbsp;(e.g.&nbsp;before&nbsp;the&nbsp;handshake).</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-getpeercert"><strong>getpeercert</strong></a>(self, binary_form=False)</dt><dd><tt>Returns&nbsp;a&nbsp;formatted&nbsp;version&nbsp;of&nbsp;the&nbsp;data&nbsp;in&nbsp;the&nbsp;certificate&nbsp;provided<br>
+by&nbsp;the&nbsp;other&nbsp;end&nbsp;of&nbsp;the&nbsp;SSL&nbsp;channel.<br>
+&nbsp;<br>
+Return&nbsp;None&nbsp;if&nbsp;no&nbsp;certificate&nbsp;was&nbsp;provided,&nbsp;{}&nbsp;if&nbsp;a&nbsp;certificate&nbsp;was<br>
+provided,&nbsp;but&nbsp;not&nbsp;validated.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-pending"><strong>pending</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;bytes&nbsp;that&nbsp;can&nbsp;be&nbsp;read&nbsp;immediately.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-read"><strong>read</strong></a>(self, len=1024, buffer=None)</dt><dd><tt>Read&nbsp;up&nbsp;to&nbsp;'len'&nbsp;bytes&nbsp;from&nbsp;the&nbsp;SSL&nbsp;<a href="builtins.html#object">object</a>&nbsp;and&nbsp;return&nbsp;them.<br>
+&nbsp;<br>
+If&nbsp;'buffer'&nbsp;is&nbsp;provided,&nbsp;read&nbsp;into&nbsp;this&nbsp;buffer&nbsp;and&nbsp;return&nbsp;the&nbsp;number&nbsp;of<br>
+bytes&nbsp;read.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-selected_alpn_protocol"><strong>selected_alpn_protocol</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;currently&nbsp;selected&nbsp;ALPN&nbsp;protocol&nbsp;as&nbsp;a&nbsp;string,&nbsp;or&nbsp;``None``<br>
+if&nbsp;a&nbsp;next&nbsp;protocol&nbsp;was&nbsp;not&nbsp;negotiated&nbsp;or&nbsp;if&nbsp;ALPN&nbsp;is&nbsp;not&nbsp;supported&nbsp;by&nbsp;one<br>
+of&nbsp;the&nbsp;peers.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-selected_npn_protocol"><strong>selected_npn_protocol</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;currently&nbsp;selected&nbsp;NPN&nbsp;protocol&nbsp;as&nbsp;a&nbsp;string,&nbsp;or&nbsp;``None``<br>
+if&nbsp;a&nbsp;next&nbsp;protocol&nbsp;was&nbsp;not&nbsp;negotiated&nbsp;or&nbsp;if&nbsp;NPN&nbsp;is&nbsp;not&nbsp;supported&nbsp;by&nbsp;one<br>
+of&nbsp;the&nbsp;peers.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-shared_ciphers"><strong>shared_ciphers</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;ciphers&nbsp;shared&nbsp;by&nbsp;the&nbsp;client&nbsp;during&nbsp;the&nbsp;handshake&nbsp;or<br>
+None&nbsp;if&nbsp;this&nbsp;is&nbsp;not&nbsp;a&nbsp;valid&nbsp;server&nbsp;connection.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-unwrap"><strong>unwrap</strong></a>(self)</dt><dd><tt>Start&nbsp;the&nbsp;SSL&nbsp;shutdown&nbsp;handshake.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-verify_client_post_handshake"><strong>verify_client_post_handshake</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SSLObject-version"><strong>version</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;string&nbsp;identifying&nbsp;the&nbsp;protocol&nbsp;version&nbsp;used&nbsp;by&nbsp;the<br>
+current&nbsp;SSL&nbsp;channel.</tt></dd></dl>
+
+<dl><dt><a name="SSLObject-write"><strong>write</strong></a>(self, data)</dt><dd><tt>Write&nbsp;'data'&nbsp;to&nbsp;the&nbsp;SSL&nbsp;<a href="builtins.html#object">object</a>&nbsp;and&nbsp;return&nbsp;the&nbsp;number&nbsp;of&nbsp;bytes<br>
+written.<br>
+&nbsp;<br>
+The&nbsp;'data'&nbsp;argument&nbsp;must&nbsp;support&nbsp;the&nbsp;buffer&nbsp;interface.</tt></dd></dl>
+
+<hr>
+Readonly properties defined here:<br>
+<dl><dt><strong>server_hostname</strong></dt>
+<dd><tt>The&nbsp;currently&nbsp;set&nbsp;server&nbsp;hostname&nbsp;(for&nbsp;SNI),&nbsp;or&nbsp;``None``&nbsp;if&nbsp;no<br>
+server&nbsp;hostname&nbsp;is&nbsp;set.</tt></dd>
+</dl>
+<dl><dt><strong>server_side</strong></dt>
+<dd><tt>Whether&nbsp;this&nbsp;is&nbsp;a&nbsp;server-side&nbsp;socket.</tt></dd>
+</dl>
+<dl><dt><strong>session_reused</strong></dt>
+<dd><tt>Was&nbsp;the&nbsp;client&nbsp;session&nbsp;reused&nbsp;during&nbsp;handshake</tt></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>context</strong></dt>
+<dd><tt>The&nbsp;SSLContext&nbsp;that&nbsp;is&nbsp;currently&nbsp;in&nbsp;use.</tt></dd>
+</dl>
+<dl><dt><strong>session</strong></dt>
+<dd><tt>The&nbsp;SSLSession&nbsp;for&nbsp;client&nbsp;socket.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLSocket">class <strong>SSLSocket</strong></a>(<a href="socket.html#socket">socket.socket</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SSLSocket">SSLSocket</a>(*args,&nbsp;**kwargs)<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;implements&nbsp;a&nbsp;subtype&nbsp;of&nbsp;<a href="socket.html#socket">socket</a>.<a href="socket.html#socket">socket</a>&nbsp;that&nbsp;wraps<br>
+the&nbsp;underlying&nbsp;OS&nbsp;<a href="socket.html#socket">socket</a>&nbsp;in&nbsp;an&nbsp;SSL&nbsp;context&nbsp;when&nbsp;necessary,&nbsp;and<br>
+provides&nbsp;read&nbsp;and&nbsp;write&nbsp;methods&nbsp;over&nbsp;that&nbsp;channel.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLSocket">SSLSocket</a></dd>
+<dd><a href="socket.html#socket">socket.socket</a></dd>
+<dd><a href="_socket.html#socket">_socket.socket</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SSLSocket-__init__"><strong>__init__</strong></a>(self, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(<a href="#SSLSocket-type">type</a>(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-accept"><strong>accept</strong></a>(self)</dt><dd><tt>Accepts&nbsp;a&nbsp;new&nbsp;connection&nbsp;from&nbsp;a&nbsp;remote&nbsp;client,&nbsp;and&nbsp;returns<br>
+a&nbsp;<a href="builtins.html#tuple">tuple</a>&nbsp;containing&nbsp;that&nbsp;new&nbsp;connection&nbsp;wrapped&nbsp;with&nbsp;a&nbsp;server-side<br>
+SSL&nbsp;channel,&nbsp;and&nbsp;the&nbsp;address&nbsp;of&nbsp;the&nbsp;remote&nbsp;client.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-cipher"><strong>cipher</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;currently&nbsp;selected&nbsp;cipher&nbsp;as&nbsp;a&nbsp;3-<a href="builtins.html#tuple">tuple</a>&nbsp;``(name,<br>
+ssl_version,&nbsp;secret_bits)``.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-compression"><strong>compression</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;current&nbsp;compression&nbsp;algorithm&nbsp;in&nbsp;use,&nbsp;or&nbsp;``None``&nbsp;if<br>
+compression&nbsp;was&nbsp;not&nbsp;negotiated&nbsp;or&nbsp;not&nbsp;supported&nbsp;by&nbsp;one&nbsp;of&nbsp;the&nbsp;peers.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-connect"><strong>connect</strong></a>(self, addr)</dt><dd><tt>Connects&nbsp;to&nbsp;remote&nbsp;ADDR,&nbsp;and&nbsp;then&nbsp;wraps&nbsp;the&nbsp;connection&nbsp;in<br>
+an&nbsp;SSL&nbsp;channel.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-connect_ex"><strong>connect_ex</strong></a>(self, addr)</dt><dd><tt>Connects&nbsp;to&nbsp;remote&nbsp;ADDR,&nbsp;and&nbsp;then&nbsp;wraps&nbsp;the&nbsp;connection&nbsp;in<br>
+an&nbsp;SSL&nbsp;channel.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-do_handshake"><strong>do_handshake</strong></a>(self, block=False)</dt><dd><tt>Start&nbsp;the&nbsp;SSL/TLS&nbsp;handshake.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-dup"><strong>dup</strong></a>(self)</dt><dd><tt><a href="#SSLSocket-dup">dup</a>()&nbsp;-&gt;&nbsp;<a href="socket.html#socket">socket</a>&nbsp;<a href="builtins.html#object">object</a><br>
+&nbsp;<br>
+Duplicate&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>.&nbsp;Return&nbsp;a&nbsp;new&nbsp;<a href="socket.html#socket">socket</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;connected&nbsp;to&nbsp;the&nbsp;same<br>
+system&nbsp;resource.&nbsp;The&nbsp;new&nbsp;<a href="socket.html#socket">socket</a>&nbsp;is&nbsp;non-inheritable.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-get_channel_binding"><strong>get_channel_binding</strong></a>(self, cb_type='tls-unique')</dt><dd><tt>Get&nbsp;channel&nbsp;binding&nbsp;data&nbsp;for&nbsp;current&nbsp;connection.&nbsp;&nbsp;Raise&nbsp;<a href="builtins.html#ValueError">ValueError</a><br>
+if&nbsp;the&nbsp;requested&nbsp;`cb_type`&nbsp;is&nbsp;not&nbsp;supported.&nbsp;&nbsp;Return&nbsp;bytes&nbsp;of&nbsp;the&nbsp;data<br>
+or&nbsp;None&nbsp;if&nbsp;the&nbsp;data&nbsp;is&nbsp;not&nbsp;available&nbsp;(e.g.&nbsp;before&nbsp;the&nbsp;handshake).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-getpeercert"><strong>getpeercert</strong></a>(self, binary_form=False)</dt><dd><tt>Returns&nbsp;a&nbsp;formatted&nbsp;version&nbsp;of&nbsp;the&nbsp;data&nbsp;in&nbsp;the&nbsp;certificate&nbsp;provided<br>
+by&nbsp;the&nbsp;other&nbsp;end&nbsp;of&nbsp;the&nbsp;SSL&nbsp;channel.<br>
+&nbsp;<br>
+Return&nbsp;None&nbsp;if&nbsp;no&nbsp;certificate&nbsp;was&nbsp;provided,&nbsp;{}&nbsp;if&nbsp;a&nbsp;certificate&nbsp;was<br>
+provided,&nbsp;but&nbsp;not&nbsp;validated.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-pending"><strong>pending</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;bytes&nbsp;that&nbsp;can&nbsp;be&nbsp;read&nbsp;immediately.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-read"><strong>read</strong></a>(self, len=1024, buffer=None)</dt><dd><tt>Read&nbsp;up&nbsp;to&nbsp;LEN&nbsp;bytes&nbsp;and&nbsp;return&nbsp;them.<br>
+Return&nbsp;zero-length&nbsp;string&nbsp;on&nbsp;EOF.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-recv"><strong>recv</strong></a>(self, buflen=1024, flags=0)</dt><dd><tt><a href="#SSLSocket-recv">recv</a>(buffersize[,&nbsp;flags])&nbsp;-&gt;&nbsp;data<br>
+&nbsp;<br>
+Receive&nbsp;up&nbsp;to&nbsp;buffersize&nbsp;bytes&nbsp;from&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>.&nbsp;&nbsp;For&nbsp;the&nbsp;optional&nbsp;flags<br>
+argument,&nbsp;see&nbsp;the&nbsp;Unix&nbsp;manual.&nbsp;&nbsp;When&nbsp;no&nbsp;data&nbsp;is&nbsp;available,&nbsp;block&nbsp;until<br>
+at&nbsp;least&nbsp;one&nbsp;byte&nbsp;is&nbsp;available&nbsp;or&nbsp;until&nbsp;the&nbsp;remote&nbsp;end&nbsp;is&nbsp;closed.&nbsp;&nbsp;When<br>
+the&nbsp;remote&nbsp;end&nbsp;is&nbsp;closed&nbsp;and&nbsp;all&nbsp;data&nbsp;is&nbsp;read,&nbsp;return&nbsp;the&nbsp;empty&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-recv_into"><strong>recv_into</strong></a>(self, buffer, nbytes=None, flags=0)</dt><dd><tt><a href="#SSLSocket-recv_into">recv_into</a>(buffer,&nbsp;[nbytes[,&nbsp;flags]])&nbsp;-&gt;&nbsp;nbytes_read<br>
+&nbsp;<br>
+A&nbsp;version&nbsp;of&nbsp;<a href="#SSLSocket-recv">recv</a>()&nbsp;that&nbsp;stores&nbsp;its&nbsp;data&nbsp;into&nbsp;a&nbsp;buffer&nbsp;rather&nbsp;than&nbsp;creating<br>
+a&nbsp;new&nbsp;string.&nbsp;&nbsp;Receive&nbsp;up&nbsp;to&nbsp;buffersize&nbsp;bytes&nbsp;from&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>.&nbsp;&nbsp;If&nbsp;buffersize<br>
+is&nbsp;not&nbsp;specified&nbsp;(or&nbsp;0),&nbsp;receive&nbsp;up&nbsp;to&nbsp;the&nbsp;size&nbsp;available&nbsp;in&nbsp;the&nbsp;given&nbsp;buffer.<br>
+&nbsp;<br>
+See&nbsp;<a href="#SSLSocket-recv">recv</a>()&nbsp;for&nbsp;documentation&nbsp;about&nbsp;the&nbsp;flags.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-recvfrom"><strong>recvfrom</strong></a>(self, buflen=1024, flags=0)</dt><dd><tt><a href="#SSLSocket-recvfrom">recvfrom</a>(buffersize[,&nbsp;flags])&nbsp;-&gt;&nbsp;(data,&nbsp;address&nbsp;info)<br>
+&nbsp;<br>
+Like&nbsp;<a href="#SSLSocket-recv">recv</a>(buffersize,&nbsp;flags)&nbsp;but&nbsp;also&nbsp;return&nbsp;the&nbsp;sender's&nbsp;address&nbsp;info.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-recvfrom_into"><strong>recvfrom_into</strong></a>(self, buffer, nbytes=None, flags=0)</dt><dd><tt><a href="#SSLSocket-recvfrom_into">recvfrom_into</a>(buffer[,&nbsp;nbytes[,&nbsp;flags]])&nbsp;-&gt;&nbsp;(nbytes,&nbsp;address&nbsp;info)<br>
+&nbsp;<br>
+Like&nbsp;<a href="#SSLSocket-recv_into">recv_into</a>(buffer[,&nbsp;nbytes[,&nbsp;flags]])&nbsp;but&nbsp;also&nbsp;return&nbsp;the&nbsp;sender's&nbsp;address&nbsp;info.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-recvmsg"><strong>recvmsg</strong></a>(self, *args, **kwargs)</dt></dl>
+
+<dl><dt><a name="SSLSocket-recvmsg_into"><strong>recvmsg_into</strong></a>(self, *args, **kwargs)</dt></dl>
+
+<dl><dt><a name="SSLSocket-selected_alpn_protocol"><strong>selected_alpn_protocol</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;currently&nbsp;selected&nbsp;ALPN&nbsp;protocol&nbsp;as&nbsp;a&nbsp;string,&nbsp;or&nbsp;``None``<br>
+if&nbsp;a&nbsp;next&nbsp;protocol&nbsp;was&nbsp;not&nbsp;negotiated&nbsp;or&nbsp;if&nbsp;ALPN&nbsp;is&nbsp;not&nbsp;supported&nbsp;by&nbsp;one<br>
+of&nbsp;the&nbsp;peers.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-selected_npn_protocol"><strong>selected_npn_protocol</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;currently&nbsp;selected&nbsp;NPN&nbsp;protocol&nbsp;as&nbsp;a&nbsp;string,&nbsp;or&nbsp;``None``<br>
+if&nbsp;a&nbsp;next&nbsp;protocol&nbsp;was&nbsp;not&nbsp;negotiated&nbsp;or&nbsp;if&nbsp;NPN&nbsp;is&nbsp;not&nbsp;supported&nbsp;by&nbsp;one<br>
+of&nbsp;the&nbsp;peers.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-send"><strong>send</strong></a>(self, data, flags=0)</dt><dd><tt><a href="#SSLSocket-send">send</a>(data[,&nbsp;flags])&nbsp;-&gt;&nbsp;count<br>
+&nbsp;<br>
+Send&nbsp;a&nbsp;data&nbsp;string&nbsp;to&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>.&nbsp;&nbsp;For&nbsp;the&nbsp;optional&nbsp;flags<br>
+argument,&nbsp;see&nbsp;the&nbsp;Unix&nbsp;manual.&nbsp;&nbsp;Return&nbsp;the&nbsp;number&nbsp;of&nbsp;bytes<br>
+sent;&nbsp;this&nbsp;may&nbsp;be&nbsp;less&nbsp;than&nbsp;len(data)&nbsp;if&nbsp;the&nbsp;network&nbsp;is&nbsp;busy.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-sendall"><strong>sendall</strong></a>(self, data, flags=0)</dt><dd><tt><a href="#SSLSocket-sendall">sendall</a>(data[,&nbsp;flags])<br>
+&nbsp;<br>
+Send&nbsp;a&nbsp;data&nbsp;string&nbsp;to&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>.&nbsp;&nbsp;For&nbsp;the&nbsp;optional&nbsp;flags<br>
+argument,&nbsp;see&nbsp;the&nbsp;Unix&nbsp;manual.&nbsp;&nbsp;This&nbsp;calls&nbsp;<a href="#SSLSocket-send">send</a>()&nbsp;repeatedly<br>
+until&nbsp;all&nbsp;data&nbsp;is&nbsp;sent.&nbsp;&nbsp;If&nbsp;an&nbsp;error&nbsp;occurs,&nbsp;it's&nbsp;impossible<br>
+to&nbsp;tell&nbsp;how&nbsp;much&nbsp;data&nbsp;has&nbsp;been&nbsp;sent.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-sendfile"><strong>sendfile</strong></a>(self, file, offset=0, count=None)</dt><dd><tt>Send&nbsp;a&nbsp;file,&nbsp;possibly&nbsp;by&nbsp;using&nbsp;os.<a href="#SSLSocket-sendfile">sendfile</a>()&nbsp;if&nbsp;this&nbsp;is&nbsp;a<br>
+clear-text&nbsp;<a href="socket.html#socket">socket</a>.&nbsp;&nbsp;Return&nbsp;the&nbsp;total&nbsp;number&nbsp;of&nbsp;bytes&nbsp;sent.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-sendmsg"><strong>sendmsg</strong></a>(self, *args, **kwargs)</dt></dl>
+
+<dl><dt><a name="SSLSocket-sendto"><strong>sendto</strong></a>(self, data, flags_or_addr, addr=None)</dt><dd><tt><a href="#SSLSocket-sendto">sendto</a>(data[,&nbsp;flags],&nbsp;address)&nbsp;-&gt;&nbsp;count<br>
+&nbsp;<br>
+Like&nbsp;<a href="#SSLSocket-send">send</a>(data,&nbsp;flags)&nbsp;but&nbsp;allows&nbsp;specifying&nbsp;the&nbsp;destination&nbsp;address.<br>
+For&nbsp;IP&nbsp;sockets,&nbsp;the&nbsp;address&nbsp;is&nbsp;a&nbsp;pair&nbsp;(hostaddr,&nbsp;port).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-shared_ciphers"><strong>shared_ciphers</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;ciphers&nbsp;shared&nbsp;by&nbsp;the&nbsp;client&nbsp;during&nbsp;the&nbsp;handshake&nbsp;or<br>
+None&nbsp;if&nbsp;this&nbsp;is&nbsp;not&nbsp;a&nbsp;valid&nbsp;server&nbsp;connection.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-shutdown"><strong>shutdown</strong></a>(self, how)</dt><dd><tt><a href="#SSLSocket-shutdown">shutdown</a>(flag)<br>
+&nbsp;<br>
+Shut&nbsp;down&nbsp;the&nbsp;reading&nbsp;side&nbsp;of&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>&nbsp;(flag&nbsp;==&nbsp;SHUT_RD),&nbsp;the&nbsp;writing&nbsp;side<br>
+of&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>&nbsp;(flag&nbsp;==&nbsp;SHUT_WR),&nbsp;or&nbsp;both&nbsp;ends&nbsp;(flag&nbsp;==&nbsp;SHUT_RDWR).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-unwrap"><strong>unwrap</strong></a>(self)</dt><dd><tt>Start&nbsp;the&nbsp;SSL&nbsp;shutdown&nbsp;handshake.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-verify_client_post_handshake"><strong>verify_client_post_handshake</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SSLSocket-version"><strong>version</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;string&nbsp;identifying&nbsp;the&nbsp;protocol&nbsp;version&nbsp;used&nbsp;by&nbsp;the<br>
+current&nbsp;SSL&nbsp;channel.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-write"><strong>write</strong></a>(self, data)</dt><dd><tt>Write&nbsp;DATA&nbsp;to&nbsp;the&nbsp;underlying&nbsp;SSL&nbsp;channel.&nbsp;&nbsp;Returns<br>
+number&nbsp;of&nbsp;bytes&nbsp;of&nbsp;DATA&nbsp;actually&nbsp;transmitted.</tt></dd></dl>
+
+<hr>
+Readonly properties defined here:<br>
+<dl><dt><strong>session_reused</strong></dt>
+<dd><tt>Was&nbsp;the&nbsp;client&nbsp;session&nbsp;reused&nbsp;during&nbsp;handshake</tt></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>context</strong></dt>
+<dd><tt>The&nbsp;SSLContext&nbsp;that&nbsp;is&nbsp;currently&nbsp;in&nbsp;use.</tt></dd>
+</dl>
+<dl><dt><strong>session</strong></dt>
+<dd><tt>The&nbsp;SSLSession&nbsp;for&nbsp;client&nbsp;socket.</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="socket.html#socket">socket.socket</a>:<br>
+<dl><dt><a name="SSLSocket-__enter__"><strong>__enter__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SSLSocket-__exit__"><strong>__exit__</strong></a>(self, *args)</dt></dl>
+
+<dl><dt><a name="SSLSocket-__getstate__"><strong>__getstate__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SSLSocket-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Wrap&nbsp;<a href="#SSLSocket-__repr__">__repr__</a>()&nbsp;to&nbsp;reveal&nbsp;the&nbsp;real&nbsp;class&nbsp;name&nbsp;and&nbsp;<a href="socket.html#socket">socket</a><br>
+address(es).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-close"><strong>close</strong></a>(self)</dt><dd><tt><a href="#SSLSocket-close">close</a>()<br>
+&nbsp;<br>
+Close&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>.&nbsp;&nbsp;It&nbsp;cannot&nbsp;be&nbsp;used&nbsp;after&nbsp;this&nbsp;call.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-detach"><strong>detach</strong></a>(self)</dt><dd><tt><a href="#SSLSocket-detach">detach</a>()&nbsp;-&gt;&nbsp;file&nbsp;descriptor<br>
+&nbsp;<br>
+Close&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;without&nbsp;closing&nbsp;the&nbsp;underlying&nbsp;file&nbsp;descriptor.<br>
+The&nbsp;<a href="builtins.html#object">object</a>&nbsp;cannot&nbsp;be&nbsp;used&nbsp;after&nbsp;this&nbsp;call,&nbsp;but&nbsp;the&nbsp;file&nbsp;descriptor<br>
+can&nbsp;be&nbsp;reused&nbsp;for&nbsp;other&nbsp;purposes.&nbsp;&nbsp;The&nbsp;file&nbsp;descriptor&nbsp;is&nbsp;returned.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-get_inheritable"><strong>get_inheritable</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;inheritable&nbsp;flag&nbsp;of&nbsp;the&nbsp;<a href="socket.html#socket">socket</a></tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-makefile"><strong>makefile</strong></a>(self, mode='r', buffering=None, *, encoding=None, errors=None, newline=None)</dt><dd><tt><a href="#SSLSocket-makefile">makefile</a>(...)&nbsp;-&gt;&nbsp;an&nbsp;I/O&nbsp;stream&nbsp;connected&nbsp;to&nbsp;the&nbsp;<a href="socket.html#socket">socket</a><br>
+&nbsp;<br>
+The&nbsp;arguments&nbsp;are&nbsp;as&nbsp;for&nbsp;io.open()&nbsp;after&nbsp;the&nbsp;filename,&nbsp;except&nbsp;the&nbsp;only<br>
+supported&nbsp;mode&nbsp;values&nbsp;are&nbsp;'r'&nbsp;(default),&nbsp;'w'&nbsp;and&nbsp;'b'.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-set_inheritable"><strong>set_inheritable</strong></a>(self, inheritable)</dt><dd><tt>Set&nbsp;the&nbsp;inheritable&nbsp;flag&nbsp;of&nbsp;the&nbsp;<a href="socket.html#socket">socket</a></tt></dd></dl>
+
+<hr>
+Readonly properties inherited from <a href="socket.html#socket">socket.socket</a>:<br>
+<dl><dt><strong>family</strong></dt>
+<dd><tt>Read-only&nbsp;access&nbsp;to&nbsp;the&nbsp;address&nbsp;family&nbsp;for&nbsp;this&nbsp;socket.</tt></dd>
+</dl>
+<dl><dt><strong>type</strong></dt>
+<dd><tt>Read-only&nbsp;access&nbsp;to&nbsp;the&nbsp;socket&nbsp;type.</tt></dd>
+</dl>
+<hr>
+Data descriptors inherited from <a href="socket.html#socket">socket.socket</a>:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_socket.html#socket">_socket.socket</a>:<br>
+<dl><dt><a name="SSLSocket-__del__"><strong>__del__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLSocket-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-bind"><strong>bind</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-bind">bind</a>(address)<br>
+&nbsp;<br>
+Bind&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>&nbsp;to&nbsp;a&nbsp;local&nbsp;address.&nbsp;&nbsp;For&nbsp;IP&nbsp;sockets,&nbsp;the&nbsp;address&nbsp;is&nbsp;a<br>
+pair&nbsp;(host,&nbsp;port);&nbsp;the&nbsp;host&nbsp;must&nbsp;refer&nbsp;to&nbsp;the&nbsp;local&nbsp;host.&nbsp;For&nbsp;raw&nbsp;packet<br>
+sockets&nbsp;the&nbsp;address&nbsp;is&nbsp;a&nbsp;<a href="builtins.html#tuple">tuple</a>&nbsp;(ifname,&nbsp;proto&nbsp;[,pkttype&nbsp;[,hatype&nbsp;[,addr]]])</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-fileno"><strong>fileno</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-fileno">fileno</a>()&nbsp;-&gt;&nbsp;integer<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;integer&nbsp;file&nbsp;descriptor&nbsp;of&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-getblocking"><strong>getblocking</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-getblocking">getblocking</a>()<br>
+&nbsp;<br>
+Returns&nbsp;True&nbsp;if&nbsp;<a href="socket.html#socket">socket</a>&nbsp;is&nbsp;in&nbsp;blocking&nbsp;mode,&nbsp;or&nbsp;False&nbsp;if&nbsp;it<br>
+is&nbsp;in&nbsp;non-blocking&nbsp;mode.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-getpeername"><strong>getpeername</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-getpeername">getpeername</a>()&nbsp;-&gt;&nbsp;address&nbsp;info<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;address&nbsp;of&nbsp;the&nbsp;remote&nbsp;endpoint.&nbsp;&nbsp;For&nbsp;IP&nbsp;sockets,&nbsp;the&nbsp;address<br>
+info&nbsp;is&nbsp;a&nbsp;pair&nbsp;(hostaddr,&nbsp;port).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-getsockname"><strong>getsockname</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-getsockname">getsockname</a>()&nbsp;-&gt;&nbsp;address&nbsp;info<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;address&nbsp;of&nbsp;the&nbsp;local&nbsp;endpoint.&nbsp;&nbsp;For&nbsp;IP&nbsp;sockets,&nbsp;the&nbsp;address<br>
+info&nbsp;is&nbsp;a&nbsp;pair&nbsp;(hostaddr,&nbsp;port).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-getsockopt"><strong>getsockopt</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-getsockopt">getsockopt</a>(level,&nbsp;option[,&nbsp;buffersize])&nbsp;-&gt;&nbsp;value<br>
+&nbsp;<br>
+Get&nbsp;a&nbsp;<a href="socket.html#socket">socket</a>&nbsp;option.&nbsp;&nbsp;See&nbsp;the&nbsp;Unix&nbsp;manual&nbsp;for&nbsp;level&nbsp;and&nbsp;option.<br>
+If&nbsp;a&nbsp;nonzero&nbsp;buffersize&nbsp;argument&nbsp;is&nbsp;given,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;a<br>
+string&nbsp;of&nbsp;that&nbsp;length;&nbsp;otherwise&nbsp;it&nbsp;is&nbsp;an&nbsp;integer.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-gettimeout"><strong>gettimeout</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-gettimeout">gettimeout</a>()&nbsp;-&gt;&nbsp;timeout<br>
+&nbsp;<br>
+Returns&nbsp;the&nbsp;timeout&nbsp;in&nbsp;seconds&nbsp;(float)&nbsp;associated&nbsp;with&nbsp;<a href="socket.html#socket">socket</a><br>
+operations.&nbsp;A&nbsp;timeout&nbsp;of&nbsp;None&nbsp;indicates&nbsp;that&nbsp;timeouts&nbsp;on&nbsp;<a href="socket.html#socket">socket</a><br>
+operations&nbsp;are&nbsp;disabled.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-ioctl"><strong>ioctl</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-ioctl">ioctl</a>(cmd,&nbsp;option)&nbsp;-&gt;&nbsp;long<br>
+&nbsp;<br>
+Control&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>&nbsp;with&nbsp;WSAIoctl&nbsp;syscall.&nbsp;Currently&nbsp;supported&nbsp;'cmd'&nbsp;values&nbsp;are<br>
+SIO_RCVALL:&nbsp;&nbsp;'option'&nbsp;must&nbsp;be&nbsp;one&nbsp;of&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>.RCVALL_*&nbsp;constants.<br>
+SIO_KEEPALIVE_VALS:&nbsp;&nbsp;'option'&nbsp;is&nbsp;a&nbsp;<a href="builtins.html#tuple">tuple</a>&nbsp;of&nbsp;(onoff,&nbsp;timeout,&nbsp;interval).<br>
+SIO_LOOPBACK_FAST_PATH:&nbsp;'option'&nbsp;is&nbsp;a&nbsp;boolean&nbsp;value,&nbsp;and&nbsp;is&nbsp;disabled&nbsp;by&nbsp;default</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-listen"><strong>listen</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-listen">listen</a>([backlog])<br>
+&nbsp;<br>
+Enable&nbsp;a&nbsp;server&nbsp;to&nbsp;accept&nbsp;connections.&nbsp;&nbsp;If&nbsp;backlog&nbsp;is&nbsp;specified,&nbsp;it&nbsp;must&nbsp;be<br>
+at&nbsp;least&nbsp;0&nbsp;(if&nbsp;it&nbsp;is&nbsp;lower,&nbsp;it&nbsp;is&nbsp;set&nbsp;to&nbsp;0);&nbsp;it&nbsp;specifies&nbsp;the&nbsp;number&nbsp;of<br>
+unaccepted&nbsp;connections&nbsp;that&nbsp;the&nbsp;system&nbsp;will&nbsp;allow&nbsp;before&nbsp;refusing&nbsp;new<br>
+connections.&nbsp;If&nbsp;not&nbsp;specified,&nbsp;a&nbsp;default&nbsp;reasonable&nbsp;value&nbsp;is&nbsp;chosen.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-setblocking"><strong>setblocking</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-setblocking">setblocking</a>(flag)<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>&nbsp;to&nbsp;blocking&nbsp;(flag&nbsp;is&nbsp;true)&nbsp;or&nbsp;non-blocking&nbsp;(false).<br>
+<a href="#SSLSocket-setblocking">setblocking</a>(True)&nbsp;is&nbsp;equivalent&nbsp;to&nbsp;<a href="#SSLSocket-settimeout">settimeout</a>(None);<br>
+<a href="#SSLSocket-setblocking">setblocking</a>(False)&nbsp;is&nbsp;equivalent&nbsp;to&nbsp;<a href="#SSLSocket-settimeout">settimeout</a>(0.0).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-setsockopt"><strong>setsockopt</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-setsockopt">setsockopt</a>(level,&nbsp;option,&nbsp;value:&nbsp;int)<br>
+<a href="#SSLSocket-setsockopt">setsockopt</a>(level,&nbsp;option,&nbsp;value:&nbsp;buffer)<br>
+<a href="#SSLSocket-setsockopt">setsockopt</a>(level,&nbsp;option,&nbsp;None,&nbsp;optlen:&nbsp;int)<br>
+&nbsp;<br>
+Set&nbsp;a&nbsp;<a href="socket.html#socket">socket</a>&nbsp;option.&nbsp;&nbsp;See&nbsp;the&nbsp;Unix&nbsp;manual&nbsp;for&nbsp;level&nbsp;and&nbsp;option.<br>
+The&nbsp;value&nbsp;argument&nbsp;can&nbsp;either&nbsp;be&nbsp;an&nbsp;integer,&nbsp;a&nbsp;string&nbsp;buffer,&nbsp;or<br>
+None,&nbsp;optlen.</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-settimeout"><strong>settimeout</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-settimeout">settimeout</a>(timeout)<br>
+&nbsp;<br>
+Set&nbsp;a&nbsp;timeout&nbsp;on&nbsp;<a href="socket.html#socket">socket</a>&nbsp;operations.&nbsp;&nbsp;'timeout'&nbsp;can&nbsp;be&nbsp;a&nbsp;float,<br>
+giving&nbsp;in&nbsp;seconds,&nbsp;or&nbsp;None.&nbsp;&nbsp;Setting&nbsp;a&nbsp;timeout&nbsp;of&nbsp;None&nbsp;disables<br>
+the&nbsp;timeout&nbsp;feature&nbsp;and&nbsp;is&nbsp;equivalent&nbsp;to&nbsp;<a href="#SSLSocket-setblocking">setblocking</a>(1).<br>
+Setting&nbsp;a&nbsp;timeout&nbsp;of&nbsp;zero&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;<a href="#SSLSocket-setblocking">setblocking</a>(0).</tt></dd></dl>
+
+<dl><dt><a name="SSLSocket-share"><strong>share</strong></a>(...)</dt><dd><tt><a href="#SSLSocket-share">share</a>(process_id)&nbsp;-&gt;&nbsp;bytes<br>
+&nbsp;<br>
+Share&nbsp;the&nbsp;<a href="socket.html#socket">socket</a>&nbsp;with&nbsp;another&nbsp;process.&nbsp;&nbsp;The&nbsp;target&nbsp;process&nbsp;id<br>
+must&nbsp;be&nbsp;provided&nbsp;and&nbsp;the&nbsp;resulting&nbsp;bytes&nbsp;<a href="builtins.html#object">object</a>&nbsp;passed&nbsp;to&nbsp;the&nbsp;target<br>
+process.&nbsp;&nbsp;There&nbsp;the&nbsp;shared&nbsp;<a href="socket.html#socket">socket</a>&nbsp;can&nbsp;be&nbsp;instantiated&nbsp;by&nbsp;calling<br>
+<a href="socket.html#socket">socket</a>.fromshare().</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="_socket.html#socket">_socket.socket</a>:<br>
+<dl><dt><a name="SSLSocket-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="_socket.html#socket">_socket.socket</a>:<br>
+<dl><dt><strong>proto</strong></dt>
+<dd><tt>the&nbsp;socket&nbsp;protocol</tt></dd>
+</dl>
+<dl><dt><strong>timeout</strong></dt>
+<dd><tt>the&nbsp;socket&nbsp;timeout</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLSyscallError">class <strong>SSLSyscallError</strong></a>(<a href="ssl.html#SSLError">SSLError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>System&nbsp;error&nbsp;when&nbsp;attempting&nbsp;SSL&nbsp;operation.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLSyscallError">SSLSyscallError</a></dd>
+<dd><a href="ssl.html#SSLError">SSLError</a></dd>
+<dd><a href="builtins.html#OSError">builtins.OSError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="ssl.html#SSLError">SSLError</a>:<br>
+<dl><dt><a name="SSLSyscallError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLSyscallError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLSyscallError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLSyscallError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><strong>characters_written</strong></dt>
+</dl>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>POSIX&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>filename2</strong></dt>
+<dd><tt>second&nbsp;exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<dl><dt><strong>winerror</strong></dt>
+<dd><tt>Win32&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="SSLSyscallError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLSyscallError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLSyscallError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SSLSyscallError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="SSLSyscallError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLSyscallError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt>Exception.<a href="#SSLSyscallError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLWantReadError">class <strong>SSLWantReadError</strong></a>(<a href="ssl.html#SSLError">SSLError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Non-blocking&nbsp;SSL&nbsp;<a href="socket.html#socket">socket</a>&nbsp;needs&nbsp;to&nbsp;read&nbsp;more&nbsp;data<br>
+before&nbsp;the&nbsp;requested&nbsp;operation&nbsp;can&nbsp;be&nbsp;completed.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLWantReadError">SSLWantReadError</a></dd>
+<dd><a href="ssl.html#SSLError">SSLError</a></dd>
+<dd><a href="builtins.html#OSError">builtins.OSError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="ssl.html#SSLError">SSLError</a>:<br>
+<dl><dt><a name="SSLWantReadError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLWantReadError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLWantReadError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLWantReadError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><strong>characters_written</strong></dt>
+</dl>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>POSIX&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>filename2</strong></dt>
+<dd><tt>second&nbsp;exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<dl><dt><strong>winerror</strong></dt>
+<dd><tt>Win32&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="SSLWantReadError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLWantReadError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLWantReadError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SSLWantReadError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="SSLWantReadError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLWantReadError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt>Exception.<a href="#SSLWantReadError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLWantWriteError">class <strong>SSLWantWriteError</strong></a>(<a href="ssl.html#SSLError">SSLError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Non-blocking&nbsp;SSL&nbsp;<a href="socket.html#socket">socket</a>&nbsp;needs&nbsp;to&nbsp;write&nbsp;more&nbsp;data<br>
+before&nbsp;the&nbsp;requested&nbsp;operation&nbsp;can&nbsp;be&nbsp;completed.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLWantWriteError">SSLWantWriteError</a></dd>
+<dd><a href="ssl.html#SSLError">SSLError</a></dd>
+<dd><a href="builtins.html#OSError">builtins.OSError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="ssl.html#SSLError">SSLError</a>:<br>
+<dl><dt><a name="SSLWantWriteError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLWantWriteError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLWantWriteError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLWantWriteError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><strong>characters_written</strong></dt>
+</dl>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>POSIX&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>filename2</strong></dt>
+<dd><tt>second&nbsp;exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<dl><dt><strong>winerror</strong></dt>
+<dd><tt>Win32&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="SSLWantWriteError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLWantWriteError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLWantWriteError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SSLWantWriteError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="SSLWantWriteError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLWantWriteError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt>Exception.<a href="#SSLWantWriteError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SSLZeroReturnError">class <strong>SSLZeroReturnError</strong></a>(<a href="ssl.html#SSLError">SSLError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>SSL/TLS&nbsp;session&nbsp;closed&nbsp;cleanly.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#SSLZeroReturnError">SSLZeroReturnError</a></dd>
+<dd><a href="ssl.html#SSLError">SSLError</a></dd>
+<dd><a href="builtins.html#OSError">builtins.OSError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="ssl.html#SSLError">SSLError</a>:<br>
+<dl><dt><a name="SSLZeroReturnError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLZeroReturnError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SSLZeroReturnError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><a name="SSLZeroReturnError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#OSError">builtins.OSError</a>:<br>
+<dl><dt><strong>characters_written</strong></dt>
+</dl>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>POSIX&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>filename2</strong></dt>
+<dd><tt>second&nbsp;exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<dl><dt><strong>winerror</strong></dt>
+<dd><tt>Win32&nbsp;exception&nbsp;code</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="SSLZeroReturnError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLZeroReturnError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SSLZeroReturnError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SSLZeroReturnError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="SSLZeroReturnError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SSLZeroReturnError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt>Exception.<a href="#SSLZeroReturnError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TLSVersion">class <strong>TLSVersion</strong></a>(<a href="enum.html#IntEnum">enum.IntEnum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#TLSVersion">TLSVersion</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#TLSVersion">TLSVersion</a></dd>
+<dd><a href="enum.html#IntEnum">enum.IntEnum</a></dd>
+<dd><a href="builtins.html#int">builtins.int</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>MAXIMUM_SUPPORTED</strong> = &lt;TLSVersion.MAXIMUM_SUPPORTED: -1&gt;</dl>
+
+<dl><dt><strong>MINIMUM_SUPPORTED</strong> = &lt;TLSVersion.MINIMUM_SUPPORTED: -2&gt;</dl>
+
+<dl><dt><strong>SSLv3</strong> = &lt;TLSVersion.SSLv3: 768&gt;</dl>
+
+<dl><dt><strong>TLSv1</strong> = &lt;TLSVersion.TLSv1: 769&gt;</dl>
+
+<dl><dt><strong>TLSv1_1</strong> = &lt;TLSVersion.TLSv1_1: 770&gt;</dl>
+
+<dl><dt><strong>TLSv1_2</strong> = &lt;TLSVersion.TLSv1_2: 771&gt;</dl>
+
+<dl><dt><strong>TLSv1_3</strong> = &lt;TLSVersion.TLSv1_3: 772&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="VerifyFlags">class <strong>VerifyFlags</strong></a>(<a href="enum.html#IntFlag">enum.IntFlag</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#VerifyFlags">VerifyFlags</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#VerifyFlags">VerifyFlags</a></dd>
+<dd><a href="enum.html#IntFlag">enum.IntFlag</a></dd>
+<dd><a href="builtins.html#int">builtins.int</a></dd>
+<dd><a href="enum.html#Flag">enum.Flag</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>VERIFY_CRL_CHECK_CHAIN</strong> = &lt;VerifyFlags.VERIFY_CRL_CHECK_CHAIN: 12&gt;</dl>
+
+<dl><dt><strong>VERIFY_CRL_CHECK_LEAF</strong> = &lt;VerifyFlags.VERIFY_CRL_CHECK_LEAF: 4&gt;</dl>
+
+<dl><dt><strong>VERIFY_DEFAULT</strong> = &lt;VerifyFlags.VERIFY_DEFAULT: 0&gt;</dl>
+
+<dl><dt><strong>VERIFY_X509_STRICT</strong> = &lt;VerifyFlags.VERIFY_X509_STRICT: 32&gt;</dl>
+
+<dl><dt><strong>VERIFY_X509_TRUSTED_FIRST</strong> = &lt;VerifyFlags.VERIFY_X509_TRUSTED_FIRST: 32768&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="VerifyMode">class <strong>VerifyMode</strong></a>(<a href="enum.html#IntEnum">enum.IntEnum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#VerifyMode">VerifyMode</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ssl.html#VerifyMode">VerifyMode</a></dd>
+<dd><a href="enum.html#IntEnum">enum.IntEnum</a></dd>
+<dd><a href="builtins.html#int">builtins.int</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>CERT_NONE</strong> = &lt;VerifyMode.CERT_NONE: 0&gt;</dl>
+
+<dl><dt><strong>CERT_OPTIONAL</strong> = &lt;VerifyMode.CERT_OPTIONAL: 1&gt;</dl>
+
+<dl><dt><strong>CERT_REQUIRED</strong> = &lt;VerifyMode.CERT_REQUIRED: 2&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-DER_cert_to_PEM_cert"><strong>DER_cert_to_PEM_cert</strong></a>(der_cert_bytes)</dt><dd><tt>Takes&nbsp;a&nbsp;certificate&nbsp;in&nbsp;binary&nbsp;DER&nbsp;format&nbsp;and&nbsp;returns&nbsp;the<br>
+PEM&nbsp;version&nbsp;of&nbsp;it&nbsp;as&nbsp;a&nbsp;string.</tt></dd></dl>
+ <dl><dt><a name="-PEM_cert_to_DER_cert"><strong>PEM_cert_to_DER_cert</strong></a>(pem_cert_string)</dt><dd><tt>Takes&nbsp;a&nbsp;certificate&nbsp;in&nbsp;ASCII&nbsp;PEM&nbsp;format&nbsp;and&nbsp;returns&nbsp;the<br>
+DER-encoded&nbsp;version&nbsp;of&nbsp;it&nbsp;as&nbsp;a&nbsp;byte&nbsp;sequence</tt></dd></dl>
+ <dl><dt><a name="-RAND_add"><strong>RAND_add</strong></a>(string, entropy, /)</dt><dd><tt>Mix&nbsp;string&nbsp;into&nbsp;the&nbsp;OpenSSL&nbsp;PRNG&nbsp;state.<br>
+&nbsp;<br>
+entropy&nbsp;(a&nbsp;float)&nbsp;is&nbsp;a&nbsp;lower&nbsp;bound&nbsp;on&nbsp;the&nbsp;entropy&nbsp;contained&nbsp;in<br>
+string.&nbsp;&nbsp;See&nbsp;<a href="http://www.rfc-editor.org/rfc/rfc4086.txt">RFC&nbsp;4086</a>.</tt></dd></dl>
+ <dl><dt><a name="-RAND_bytes"><strong>RAND_bytes</strong></a>(n, /)</dt><dd><tt>Generate&nbsp;n&nbsp;cryptographically&nbsp;strong&nbsp;pseudo-random&nbsp;bytes.</tt></dd></dl>
+ <dl><dt><a name="-RAND_pseudo_bytes"><strong>RAND_pseudo_bytes</strong></a>(n, /)</dt><dd><tt>Generate&nbsp;n&nbsp;pseudo-random&nbsp;bytes.<br>
+&nbsp;<br>
+Return&nbsp;a&nbsp;pair&nbsp;(bytes,&nbsp;is_cryptographic).&nbsp;&nbsp;is_cryptographic&nbsp;is&nbsp;True<br>
+if&nbsp;the&nbsp;bytes&nbsp;generated&nbsp;are&nbsp;cryptographically&nbsp;strong.</tt></dd></dl>
+ <dl><dt><a name="-RAND_status"><strong>RAND_status</strong></a>()</dt><dd><tt>Returns&nbsp;1&nbsp;if&nbsp;the&nbsp;OpenSSL&nbsp;PRNG&nbsp;has&nbsp;been&nbsp;seeded&nbsp;with&nbsp;enough&nbsp;data&nbsp;and&nbsp;0&nbsp;if&nbsp;not.<br>
+&nbsp;<br>
+It&nbsp;is&nbsp;necessary&nbsp;to&nbsp;seed&nbsp;the&nbsp;PRNG&nbsp;with&nbsp;<a href="#-RAND_add">RAND_add</a>()&nbsp;on&nbsp;some&nbsp;platforms&nbsp;before<br>
+using&nbsp;the&nbsp;ssl()&nbsp;function.</tt></dd></dl>
+ <dl><dt><a name="-cert_time_to_seconds"><strong>cert_time_to_seconds</strong></a>(cert_time)</dt><dd><tt>Return&nbsp;the&nbsp;time&nbsp;in&nbsp;seconds&nbsp;since&nbsp;the&nbsp;Epoch,&nbsp;given&nbsp;the&nbsp;timestring<br>
+representing&nbsp;the&nbsp;"notBefore"&nbsp;or&nbsp;"notAfter"&nbsp;date&nbsp;from&nbsp;a&nbsp;certificate<br>
+in&nbsp;``"%b&nbsp;%d&nbsp;%H:%M:%S&nbsp;%Y&nbsp;%Z"``&nbsp;strptime&nbsp;format&nbsp;(C&nbsp;locale).<br>
+&nbsp;<br>
+"notBefore"&nbsp;or&nbsp;"notAfter"&nbsp;dates&nbsp;must&nbsp;use&nbsp;UTC&nbsp;(<a href="http://www.rfc-editor.org/rfc/rfc5280.txt">RFC&nbsp;5280</a>).<br>
+&nbsp;<br>
+Month&nbsp;is&nbsp;one&nbsp;of:&nbsp;Jan&nbsp;Feb&nbsp;Mar&nbsp;Apr&nbsp;May&nbsp;Jun&nbsp;Jul&nbsp;Aug&nbsp;Sep&nbsp;Oct&nbsp;Nov&nbsp;Dec<br>
+UTC&nbsp;should&nbsp;be&nbsp;specified&nbsp;as&nbsp;GMT&nbsp;(see&nbsp;ASN1_TIME_print())</tt></dd></dl>
+ <dl><dt><a name="-create_default_context"><strong>create_default_context</strong></a>(purpose=&lt;Purpose.SERVER_AUTH: _ASN1Object(nid=129, shortname='serverAuth', longname='TLS Web Server Authentication', oid='1.3.6.1.5.5.7.3.1')&gt;, *, cafile=None, capath=None, cadata=None)</dt><dd><tt>Create&nbsp;a&nbsp;<a href="#SSLContext">SSLContext</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;with&nbsp;default&nbsp;settings.<br>
+&nbsp;<br>
+NOTE:&nbsp;The&nbsp;protocol&nbsp;and&nbsp;settings&nbsp;may&nbsp;change&nbsp;anytime&nbsp;without&nbsp;prior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deprecation.&nbsp;The&nbsp;values&nbsp;represent&nbsp;a&nbsp;fair&nbsp;balance&nbsp;between&nbsp;maximum<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;compatibility&nbsp;and&nbsp;security.</tt></dd></dl>
+ <dl><dt><a name="-enum_certificates"><strong>enum_certificates</strong></a>(store_name)</dt><dd><tt>Retrieve&nbsp;certificates&nbsp;from&nbsp;Windows'&nbsp;cert&nbsp;store.<br>
+&nbsp;<br>
+store_name&nbsp;may&nbsp;be&nbsp;one&nbsp;of&nbsp;'CA',&nbsp;'ROOT'&nbsp;or&nbsp;'MY'.&nbsp;&nbsp;The&nbsp;system&nbsp;may&nbsp;provide<br>
+more&nbsp;cert&nbsp;storages,&nbsp;too.&nbsp;&nbsp;The&nbsp;function&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;(bytes,<br>
+encoding_type,&nbsp;trust)&nbsp;tuples.&nbsp;&nbsp;The&nbsp;encoding_type&nbsp;flag&nbsp;can&nbsp;be&nbsp;interpreted<br>
+with&nbsp;X509_ASN_ENCODING&nbsp;or&nbsp;PKCS_7_ASN_ENCODING.&nbsp;The&nbsp;trust&nbsp;setting&nbsp;is&nbsp;either<br>
+a&nbsp;set&nbsp;of&nbsp;OIDs&nbsp;or&nbsp;the&nbsp;boolean&nbsp;True.</tt></dd></dl>
+ <dl><dt><a name="-enum_crls"><strong>enum_crls</strong></a>(store_name)</dt><dd><tt>Retrieve&nbsp;CRLs&nbsp;from&nbsp;Windows'&nbsp;cert&nbsp;store.<br>
+&nbsp;<br>
+store_name&nbsp;may&nbsp;be&nbsp;one&nbsp;of&nbsp;'CA',&nbsp;'ROOT'&nbsp;or&nbsp;'MY'.&nbsp;&nbsp;The&nbsp;system&nbsp;may&nbsp;provide<br>
+more&nbsp;cert&nbsp;storages,&nbsp;too.&nbsp;&nbsp;The&nbsp;function&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;(bytes,<br>
+encoding_type)&nbsp;tuples.&nbsp;&nbsp;The&nbsp;encoding_type&nbsp;flag&nbsp;can&nbsp;be&nbsp;interpreted&nbsp;with<br>
+X509_ASN_ENCODING&nbsp;or&nbsp;PKCS_7_ASN_ENCODING.</tt></dd></dl>
+ <dl><dt><a name="-get_default_verify_paths"><strong>get_default_verify_paths</strong></a>()</dt><dd><tt>Return&nbsp;paths&nbsp;to&nbsp;default&nbsp;cafile&nbsp;and&nbsp;capath.</tt></dd></dl>
+ <dl><dt><a name="-get_protocol_name"><strong>get_protocol_name</strong></a>(protocol_code)</dt></dl>
+ <dl><dt><a name="-get_server_certificate"><strong>get_server_certificate</strong></a>(addr, ssl_version=&lt;_SSLMethod.PROTOCOL_TLS: 2&gt;, ca_certs=None)</dt><dd><tt>Retrieve&nbsp;the&nbsp;certificate&nbsp;from&nbsp;the&nbsp;server&nbsp;at&nbsp;the&nbsp;specified&nbsp;address,<br>
+and&nbsp;return&nbsp;it&nbsp;as&nbsp;a&nbsp;PEM-encoded&nbsp;string.<br>
+If&nbsp;'ca_certs'&nbsp;is&nbsp;specified,&nbsp;validate&nbsp;the&nbsp;server&nbsp;cert&nbsp;against&nbsp;it.<br>
+If&nbsp;'ssl_version'&nbsp;is&nbsp;specified,&nbsp;use&nbsp;it&nbsp;in&nbsp;the&nbsp;connection&nbsp;attempt.</tt></dd></dl>
+ <dl><dt><a name="-match_hostname"><strong>match_hostname</strong></a>(cert, hostname)</dt><dd><tt>Verify&nbsp;that&nbsp;*cert*&nbsp;(in&nbsp;decoded&nbsp;format&nbsp;as&nbsp;returned&nbsp;by<br>
+<a href="#SSLSocket">SSLSocket</a>.getpeercert())&nbsp;matches&nbsp;the&nbsp;*hostname*.&nbsp;&nbsp;<a href="http://www.rfc-editor.org/rfc/rfc2818.txt">RFC&nbsp;2818</a>&nbsp;and&nbsp;<a href="http://www.rfc-editor.org/rfc/rfc6125.txt">RFC&nbsp;6125</a><br>
+rules&nbsp;are&nbsp;followed.<br>
+&nbsp;<br>
+The&nbsp;function&nbsp;matches&nbsp;IP&nbsp;addresses&nbsp;rather&nbsp;than&nbsp;dNSNames&nbsp;if&nbsp;hostname&nbsp;is&nbsp;a<br>
+valid&nbsp;ipaddress&nbsp;string.&nbsp;IPv4&nbsp;addresses&nbsp;are&nbsp;supported&nbsp;on&nbsp;all&nbsp;platforms.<br>
+IPv6&nbsp;addresses&nbsp;are&nbsp;supported&nbsp;on&nbsp;platforms&nbsp;with&nbsp;IPv6&nbsp;support&nbsp;(AF_INET6<br>
+and&nbsp;inet_pton).<br>
+&nbsp;<br>
+<a href="#CertificateError">CertificateError</a>&nbsp;is&nbsp;raised&nbsp;on&nbsp;failure.&nbsp;On&nbsp;success,&nbsp;the&nbsp;function<br>
+returns&nbsp;nothing.</tt></dd></dl>
+ <dl><dt><a name="-wrap_socket"><strong>wrap_socket</strong></a>(sock, keyfile=None, certfile=None, server_side=False, cert_reqs=&lt;VerifyMode.CERT_NONE: 0&gt;, ssl_version=&lt;_SSLMethod.PROTOCOL_TLS: 2&gt;, ca_certs=None, do_handshake_on_connect=True, suppress_ragged_eofs=True, ciphers=None)</dt></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ALERT_DESCRIPTION_ACCESS_DENIED</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_ACCESS_DENIED: 49&gt;<br>
+<strong>ALERT_DESCRIPTION_BAD_CERTIFICATE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_BAD_CERTIFICATE: 42&gt;<br>
+<strong>ALERT_DESCRIPTION_BAD_CERTIFICATE_HASH_VALUE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_BAD_CERTIFICATE_HASH_VALUE: 114&gt;<br>
+<strong>ALERT_DESCRIPTION_BAD_CERTIFICATE_STATUS_RESPONSE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_BAD_CERTIFICATE_STATUS_RESPONSE: 113&gt;<br>
+<strong>ALERT_DESCRIPTION_BAD_RECORD_MAC</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_BAD_RECORD_MAC: 20&gt;<br>
+<strong>ALERT_DESCRIPTION_CERTIFICATE_EXPIRED</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CERTIFICATE_EXPIRED: 45&gt;<br>
+<strong>ALERT_DESCRIPTION_CERTIFICATE_REVOKED</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CERTIFICATE_REVOKED: 44&gt;<br>
+<strong>ALERT_DESCRIPTION_CERTIFICATE_UNKNOWN</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CERTIFICATE_UNKNOWN: 46&gt;<br>
+<strong>ALERT_DESCRIPTION_CERTIFICATE_UNOBTAINABLE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CERTIFICATE_UNOBTAINABLE: 111&gt;<br>
+<strong>ALERT_DESCRIPTION_CLOSE_NOTIFY</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_CLOSE_NOTIFY: 0&gt;<br>
+<strong>ALERT_DESCRIPTION_DECODE_ERROR</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_DECODE_ERROR: 50&gt;<br>
+<strong>ALERT_DESCRIPTION_DECOMPRESSION_FAILURE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_DECOMPRESSION_FAILURE: 30&gt;<br>
+<strong>ALERT_DESCRIPTION_DECRYPT_ERROR</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_DECRYPT_ERROR: 51&gt;<br>
+<strong>ALERT_DESCRIPTION_HANDSHAKE_FAILURE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_HANDSHAKE_FAILURE: 40&gt;<br>
+<strong>ALERT_DESCRIPTION_ILLEGAL_PARAMETER</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_ILLEGAL_PARAMETER: 47&gt;<br>
+<strong>ALERT_DESCRIPTION_INSUFFICIENT_SECURITY</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_INSUFFICIENT_SECURITY: 71&gt;<br>
+<strong>ALERT_DESCRIPTION_INTERNAL_ERROR</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_INTERNAL_ERROR: 80&gt;<br>
+<strong>ALERT_DESCRIPTION_NO_RENEGOTIATION</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_NO_RENEGOTIATION: 100&gt;<br>
+<strong>ALERT_DESCRIPTION_PROTOCOL_VERSION</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_PROTOCOL_VERSION: 70&gt;<br>
+<strong>ALERT_DESCRIPTION_RECORD_OVERFLOW</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_RECORD_OVERFLOW: 22&gt;<br>
+<strong>ALERT_DESCRIPTION_UNEXPECTED_MESSAGE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNEXPECTED_MESSAGE: 10&gt;<br>
+<strong>ALERT_DESCRIPTION_UNKNOWN_CA</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNKNOWN_CA: 48&gt;<br>
+<strong>ALERT_DESCRIPTION_UNKNOWN_PSK_IDENTITY</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNKNOWN_PSK_IDENTITY: 115&gt;<br>
+<strong>ALERT_DESCRIPTION_UNRECOGNIZED_NAME</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNRECOGNIZED_NAME: 112&gt;<br>
+<strong>ALERT_DESCRIPTION_UNSUPPORTED_CERTIFICATE</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNSUPPORTED_CERTIFICATE: 43&gt;<br>
+<strong>ALERT_DESCRIPTION_UNSUPPORTED_EXTENSION</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_UNSUPPORTED_EXTENSION: 110&gt;<br>
+<strong>ALERT_DESCRIPTION_USER_CANCELLED</strong> = &lt;AlertDescription.ALERT_DESCRIPTION_USER_CANCELLED: 90&gt;<br>
+<strong>CERT_NONE</strong> = &lt;VerifyMode.CERT_NONE: 0&gt;<br>
+<strong>CERT_OPTIONAL</strong> = &lt;VerifyMode.CERT_OPTIONAL: 1&gt;<br>
+<strong>CERT_REQUIRED</strong> = &lt;VerifyMode.CERT_REQUIRED: 2&gt;<br>
+<strong>CHANNEL_BINDING_TYPES</strong> = ['tls-unique']<br>
+<strong>HAS_ALPN</strong> = True<br>
+<strong>HAS_ECDH</strong> = True<br>
+<strong>HAS_NEVER_CHECK_COMMON_NAME</strong> = True<br>
+<strong>HAS_NPN</strong> = False<br>
+<strong>HAS_SNI</strong> = True<br>
+<strong>HAS_SSLv2</strong> = False<br>
+<strong>HAS_SSLv3</strong> = False<br>
+<strong>HAS_TLSv1</strong> = True<br>
+<strong>HAS_TLSv1_1</strong> = True<br>
+<strong>HAS_TLSv1_2</strong> = True<br>
+<strong>HAS_TLSv1_3</strong> = True<br>
+<strong>OPENSSL_VERSION</strong> = 'OpenSSL 1.1.1g  21 Apr 2020'<br>
+<strong>OPENSSL_VERSION_INFO</strong> = (1, 1, 1, 7, 15)<br>
+<strong>OPENSSL_VERSION_NUMBER</strong> = 269488255<br>
+<strong>OP_ALL</strong> = &lt;Options.OP_ALL: -2147483564&gt;<br>
+<strong>OP_CIPHER_SERVER_PREFERENCE</strong> = &lt;Options.OP_CIPHER_SERVER_PREFERENCE: 4194304&gt;<br>
+<strong>OP_ENABLE_MIDDLEBOX_COMPAT</strong> = &lt;Options.OP_ENABLE_MIDDLEBOX_COMPAT: 1048576&gt;<br>
+<strong>OP_NO_COMPRESSION</strong> = &lt;Options.OP_NO_COMPRESSION: 131072&gt;<br>
+<strong>OP_NO_RENEGOTIATION</strong> = &lt;Options.OP_NO_RENEGOTIATION: 1073741824&gt;<br>
+<strong>OP_NO_SSLv2</strong> = &lt;Options.OP_NO_SSLv2: 0&gt;<br>
+<strong>OP_NO_SSLv3</strong> = &lt;Options.OP_NO_SSLv3: 33554432&gt;<br>
+<strong>OP_NO_TICKET</strong> = &lt;Options.OP_NO_TICKET: 16384&gt;<br>
+<strong>OP_NO_TLSv1</strong> = &lt;Options.OP_NO_TLSv1: 67108864&gt;<br>
+<strong>OP_NO_TLSv1_1</strong> = &lt;Options.OP_NO_TLSv1_1: 268435456&gt;<br>
+<strong>OP_NO_TLSv1_2</strong> = &lt;Options.OP_NO_TLSv1_2: 134217728&gt;<br>
+<strong>OP_NO_TLSv1_3</strong> = &lt;Options.OP_NO_TLSv1_3: 536870912&gt;<br>
+<strong>OP_SINGLE_DH_USE</strong> = &lt;Options.OP_NO_SSLv2: 0&gt;<br>
+<strong>OP_SINGLE_ECDH_USE</strong> = &lt;Options.OP_NO_SSLv2: 0&gt;<br>
+<strong>PEM_FOOTER</strong> = '-----END CERTIFICATE-----'<br>
+<strong>PEM_HEADER</strong> = '-----BEGIN CERTIFICATE-----'<br>
+<strong>PROTOCOL_SSLv23</strong> = &lt;_SSLMethod.PROTOCOL_TLS: 2&gt;<br>
+<strong>PROTOCOL_TLS</strong> = &lt;_SSLMethod.PROTOCOL_TLS: 2&gt;<br>
+<strong>PROTOCOL_TLS_CLIENT</strong> = &lt;_SSLMethod.PROTOCOL_TLS_CLIENT: 16&gt;<br>
+<strong>PROTOCOL_TLS_SERVER</strong> = &lt;_SSLMethod.PROTOCOL_TLS_SERVER: 17&gt;<br>
+<strong>PROTOCOL_TLSv1</strong> = &lt;_SSLMethod.PROTOCOL_TLSv1: 3&gt;<br>
+<strong>PROTOCOL_TLSv1_1</strong> = &lt;_SSLMethod.PROTOCOL_TLSv1_1: 4&gt;<br>
+<strong>PROTOCOL_TLSv1_2</strong> = &lt;_SSLMethod.PROTOCOL_TLSv1_2: 5&gt;<br>
+<strong>SOCK_STREAM</strong> = &lt;SocketKind.SOCK_STREAM: 1&gt;<br>
+<strong>SOL_SOCKET</strong> = 65535<br>
+<strong>SO_TYPE</strong> = 4104<br>
+<strong>SSL_ERROR_EOF</strong> = &lt;SSLErrorNumber.SSL_ERROR_EOF: 8&gt;<br>
+<strong>SSL_ERROR_INVALID_ERROR_CODE</strong> = &lt;SSLErrorNumber.SSL_ERROR_INVALID_ERROR_CODE: 10&gt;<br>
+<strong>SSL_ERROR_SSL</strong> = &lt;SSLErrorNumber.SSL_ERROR_SSL: 1&gt;<br>
+<strong>SSL_ERROR_SYSCALL</strong> = &lt;SSLErrorNumber.SSL_ERROR_SYSCALL: 5&gt;<br>
+<strong>SSL_ERROR_WANT_CONNECT</strong> = &lt;SSLErrorNumber.SSL_ERROR_WANT_CONNECT: 7&gt;<br>
+<strong>SSL_ERROR_WANT_READ</strong> = &lt;SSLErrorNumber.SSL_ERROR_WANT_READ: 2&gt;<br>
+<strong>SSL_ERROR_WANT_WRITE</strong> = &lt;SSLErrorNumber.SSL_ERROR_WANT_WRITE: 3&gt;<br>
+<strong>SSL_ERROR_WANT_X509_LOOKUP</strong> = &lt;SSLErrorNumber.SSL_ERROR_WANT_X509_LOOKUP: 4&gt;<br>
+<strong>SSL_ERROR_ZERO_RETURN</strong> = &lt;SSLErrorNumber.SSL_ERROR_ZERO_RETURN: 6&gt;<br>
+<strong>VERIFY_CRL_CHECK_CHAIN</strong> = &lt;VerifyFlags.VERIFY_CRL_CHECK_CHAIN: 12&gt;<br>
+<strong>VERIFY_CRL_CHECK_LEAF</strong> = &lt;VerifyFlags.VERIFY_CRL_CHECK_LEAF: 4&gt;<br>
+<strong>VERIFY_DEFAULT</strong> = &lt;VerifyFlags.VERIFY_DEFAULT: 0&gt;<br>
+<strong>VERIFY_X509_STRICT</strong> = &lt;VerifyFlags.VERIFY_X509_STRICT: 32&gt;<br>
+<strong>VERIFY_X509_TRUSTED_FIRST</strong> = &lt;VerifyFlags.VERIFY_X509_TRUSTED_FIRST: 32768&gt;</td></tr></table>
+</body></html>

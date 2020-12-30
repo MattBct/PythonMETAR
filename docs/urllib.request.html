@@ -1,0 +1,1512 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module urllib.request</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="urllib.html"><font color="#ffffff">urllib</font></a>.request</strong></big></big> (version 3.9)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cprogram%20files%5Cpython39%5Clib%5Curllib%5Crequest.py">c:\program files\python39\lib\urllib\request.py</a><br><a href="https://docs.python.org/3.9/library/urllib.request">Module Reference</a></font></td></tr></table>
+    <p><tt>An&nbsp;extensible&nbsp;library&nbsp;for&nbsp;opening&nbsp;URLs&nbsp;using&nbsp;a&nbsp;variety&nbsp;of&nbsp;protocols<br>
+&nbsp;<br>
+The&nbsp;simplest&nbsp;way&nbsp;to&nbsp;use&nbsp;this&nbsp;module&nbsp;is&nbsp;to&nbsp;call&nbsp;the&nbsp;urlopen&nbsp;function,<br>
+which&nbsp;accepts&nbsp;a&nbsp;string&nbsp;containing&nbsp;a&nbsp;URL&nbsp;or&nbsp;a&nbsp;<a href="#Request">Request</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;(described<br>
+below).&nbsp;&nbsp;It&nbsp;opens&nbsp;the&nbsp;URL&nbsp;and&nbsp;returns&nbsp;the&nbsp;results&nbsp;as&nbsp;file-like<br>
+<a href="builtins.html#object">object</a>;&nbsp;the&nbsp;returned&nbsp;<a href="builtins.html#object">object</a>&nbsp;has&nbsp;some&nbsp;extra&nbsp;methods&nbsp;described&nbsp;below.<br>
+&nbsp;<br>
+The&nbsp;<a href="#OpenerDirector">OpenerDirector</a>&nbsp;manages&nbsp;a&nbsp;collection&nbsp;of&nbsp;Handler&nbsp;objects&nbsp;that&nbsp;do<br>
+all&nbsp;the&nbsp;actual&nbsp;work.&nbsp;&nbsp;Each&nbsp;Handler&nbsp;implements&nbsp;a&nbsp;particular&nbsp;protocol&nbsp;or<br>
+option.&nbsp;&nbsp;The&nbsp;<a href="#OpenerDirector">OpenerDirector</a>&nbsp;is&nbsp;a&nbsp;composite&nbsp;<a href="builtins.html#object">object</a>&nbsp;that&nbsp;invokes&nbsp;the<br>
+Handlers&nbsp;needed&nbsp;to&nbsp;open&nbsp;the&nbsp;requested&nbsp;URL.&nbsp;&nbsp;For&nbsp;example,&nbsp;the<br>
+<a href="#HTTPHandler">HTTPHandler</a>&nbsp;performs&nbsp;HTTP&nbsp;GET&nbsp;and&nbsp;POST&nbsp;requests&nbsp;and&nbsp;deals&nbsp;with<br>
+non-error&nbsp;returns.&nbsp;&nbsp;The&nbsp;<a href="#HTTPRedirectHandler">HTTPRedirectHandler</a>&nbsp;automatically&nbsp;deals&nbsp;with<br>
+HTTP&nbsp;301,&nbsp;302,&nbsp;303&nbsp;and&nbsp;307&nbsp;redirect&nbsp;errors,&nbsp;and&nbsp;the&nbsp;<a href="#HTTPDigestAuthHandler">HTTPDigestAuthHandler</a><br>
+deals&nbsp;with&nbsp;digest&nbsp;authentication.<br>
+&nbsp;<br>
+<a href="#-urlopen">urlopen</a>(url,&nbsp;data=None)&nbsp;--&nbsp;Basic&nbsp;usage&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;original<br>
+urllib.&nbsp;&nbsp;pass&nbsp;the&nbsp;url&nbsp;and&nbsp;optionally&nbsp;data&nbsp;to&nbsp;post&nbsp;to&nbsp;an&nbsp;HTTP&nbsp;URL,&nbsp;and<br>
+get&nbsp;a&nbsp;file-like&nbsp;<a href="builtins.html#object">object</a>&nbsp;back.&nbsp;&nbsp;One&nbsp;difference&nbsp;is&nbsp;that&nbsp;you&nbsp;can&nbsp;also&nbsp;pass<br>
+a&nbsp;<a href="#Request">Request</a>&nbsp;instance&nbsp;instead&nbsp;of&nbsp;URL.&nbsp;&nbsp;Raises&nbsp;a&nbsp;URLError&nbsp;(subclass&nbsp;of<br>
+OSError);&nbsp;for&nbsp;HTTP&nbsp;errors,&nbsp;raises&nbsp;an&nbsp;HTTPError,&nbsp;which&nbsp;can&nbsp;also&nbsp;be<br>
+treated&nbsp;as&nbsp;a&nbsp;valid&nbsp;response.<br>
+&nbsp;<br>
+build_opener&nbsp;--&nbsp;Function&nbsp;that&nbsp;creates&nbsp;a&nbsp;new&nbsp;<a href="#OpenerDirector">OpenerDirector</a>&nbsp;instance.<br>
+Will&nbsp;install&nbsp;the&nbsp;default&nbsp;handlers.&nbsp;&nbsp;Accepts&nbsp;one&nbsp;or&nbsp;more&nbsp;Handlers&nbsp;as<br>
+arguments,&nbsp;either&nbsp;instances&nbsp;or&nbsp;Handler&nbsp;classes&nbsp;that&nbsp;it&nbsp;will<br>
+instantiate.&nbsp;&nbsp;If&nbsp;one&nbsp;of&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;subclass&nbsp;of&nbsp;the&nbsp;default<br>
+handler,&nbsp;the&nbsp;argument&nbsp;will&nbsp;be&nbsp;installed&nbsp;instead&nbsp;of&nbsp;the&nbsp;default.<br>
+&nbsp;<br>
+install_opener&nbsp;--&nbsp;Installs&nbsp;a&nbsp;new&nbsp;opener&nbsp;as&nbsp;the&nbsp;default&nbsp;opener.<br>
+&nbsp;<br>
+objects&nbsp;of&nbsp;interest:<br>
+&nbsp;<br>
+<a href="#OpenerDirector">OpenerDirector</a>&nbsp;--&nbsp;Sets&nbsp;up&nbsp;the&nbsp;User&nbsp;Agent&nbsp;as&nbsp;the&nbsp;Python-urllib&nbsp;client&nbsp;and&nbsp;manages<br>
+the&nbsp;Handler&nbsp;classes,&nbsp;while&nbsp;dealing&nbsp;with&nbsp;requests&nbsp;and&nbsp;responses.<br>
+&nbsp;<br>
+<a href="#Request">Request</a>&nbsp;--&nbsp;An&nbsp;<a href="builtins.html#object">object</a>&nbsp;that&nbsp;encapsulates&nbsp;the&nbsp;state&nbsp;of&nbsp;a&nbsp;request.&nbsp;&nbsp;The<br>
+state&nbsp;can&nbsp;be&nbsp;as&nbsp;simple&nbsp;as&nbsp;the&nbsp;URL.&nbsp;&nbsp;It&nbsp;can&nbsp;also&nbsp;include&nbsp;extra&nbsp;HTTP<br>
+headers,&nbsp;e.g.&nbsp;a&nbsp;User-Agent.<br>
+&nbsp;<br>
+<a href="#BaseHandler">BaseHandler</a>&nbsp;--<br>
+&nbsp;<br>
+internals:<br>
+<a href="#BaseHandler">BaseHandler</a>&nbsp;and&nbsp;parent<br>
+_call_chain&nbsp;conventions<br>
+&nbsp;<br>
+Example&nbsp;usage:<br>
+&nbsp;<br>
+import&nbsp;urllib.request<br>
+&nbsp;<br>
+#&nbsp;set&nbsp;up&nbsp;authentication&nbsp;info<br>
+authinfo&nbsp;=&nbsp;urllib.request.<a href="#HTTPBasicAuthHandler">HTTPBasicAuthHandler</a>()<br>
+authinfo.add_password(realm='PDQ&nbsp;Application',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri='<a href="https://mahler:8092/site-updates.py">https://mahler:8092/site-updates.py</a>',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user='klem',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;passwd='geheim$parole')<br>
+&nbsp;<br>
+proxy_support&nbsp;=&nbsp;urllib.request.<a href="#ProxyHandler">ProxyHandler</a>({"http"&nbsp;:&nbsp;"<a href="http://ahad-haam:3128">http://ahad-haam:3128</a>"})<br>
+&nbsp;<br>
+#&nbsp;build&nbsp;a&nbsp;new&nbsp;opener&nbsp;that&nbsp;adds&nbsp;authentication&nbsp;and&nbsp;caching&nbsp;FTP&nbsp;handlers<br>
+opener&nbsp;=&nbsp;urllib.request.<a href="#-build_opener">build_opener</a>(proxy_support,&nbsp;authinfo,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;urllib.request.<a href="#CacheFTPHandler">CacheFTPHandler</a>)<br>
+&nbsp;<br>
+#&nbsp;install&nbsp;it<br>
+urllib.request.<a href="#-install_opener">install_opener</a>(opener)<br>
+&nbsp;<br>
+f&nbsp;=&nbsp;urllib.request.<a href="#-urlopen">urlopen</a>('<a href="http://www.python.org/">http://www.python.org/</a>')</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="base64.html">base64</a><br>
+<a href="bisect.html">bisect</a><br>
+<a href="contextlib.html">contextlib</a><br>
+<a href="email.html">email</a><br>
+<a href="hashlib.html">hashlib</a><br>
+</td><td width="25%" valign=top><a href="http.html">http</a><br>
+<a href="io.html">io</a><br>
+<a href="os.html">os</a><br>
+<a href="posixpath.html">posixpath</a><br>
+<a href="re.html">re</a><br>
+</td><td width="25%" valign=top><a href="socket.html">socket</a><br>
+<a href="ssl.html">ssl</a><br>
+<a href="string.html">string</a><br>
+<a href="sys.html">sys</a><br>
+<a href="tempfile.html">tempfile</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+<a href="warnings.html">warnings</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPBasicAuthHandler">HTTPBasicAuthHandler</a>(<a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>, <a href="urllib.request.html#BaseHandler">BaseHandler</a>)
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#ProxyBasicAuthHandler">ProxyBasicAuthHandler</a>(<a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>, <a href="urllib.request.html#BaseHandler">BaseHandler</a>)
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#BaseHandler">BaseHandler</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#DataHandler">DataHandler</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#FTPHandler">FTPHandler</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#CacheFTPHandler">CacheFTPHandler</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#FileHandler">FileHandler</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPCookieProcessor">HTTPCookieProcessor</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPDefaultErrorHandler">HTTPDefaultErrorHandler</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPDigestAuthHandler">HTTPDigestAuthHandler</a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>, <a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a>)
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPErrorProcessor">HTTPErrorProcessor</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPRedirectHandler">HTTPRedirectHandler</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#ProxyDigestAuthHandler">ProxyDigestAuthHandler</a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>, <a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a>)
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#ProxyHandler">ProxyHandler</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#UnknownHandler">UnknownHandler</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPPasswordMgr">HTTPPasswordMgr</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPPasswordMgrWithDefaultRealm">HTTPPasswordMgrWithDefaultRealm</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPPasswordMgrWithPriorAuth">HTTPPasswordMgrWithPriorAuth</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#OpenerDirector">OpenerDirector</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#Request">Request</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#URLopener">URLopener</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#FancyURLopener">FancyURLopener</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#AbstractHTTPHandler">AbstractHTTPHandler</a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPHandler">HTTPHandler</a>
+</font></dt><dt><font face="helvetica, arial"><a href="urllib.request.html#HTTPSHandler">HTTPSHandler</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AbstractBasicAuthHandler">class <strong>AbstractBasicAuthHandler</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>(password_mgr=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="AbstractBasicAuthHandler-__init__"><strong>__init__</strong></a>(self, password_mgr=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="AbstractBasicAuthHandler-http_error_auth_reqed"><strong>http_error_auth_reqed</strong></a>(self, authreq, host, req, headers)</dt></dl>
+
+<dl><dt><a name="AbstractBasicAuthHandler-http_request"><strong>http_request</strong></a>(self, req)</dt></dl>
+
+<dl><dt><a name="AbstractBasicAuthHandler-http_response"><strong>http_response</strong></a>(self, req, response)</dt></dl>
+
+<dl><dt><a name="AbstractBasicAuthHandler-https_request"><strong>https_request</strong></a> = <a href="#AbstractBasicAuthHandler-http_request">http_request</a>(self, req)</dt></dl>
+
+<dl><dt><a name="AbstractBasicAuthHandler-https_response"><strong>https_response</strong></a> = <a href="#AbstractBasicAuthHandler-http_response">http_response</a>(self, req, response)</dt></dl>
+
+<dl><dt><a name="AbstractBasicAuthHandler-retry_http_basic_auth"><strong>retry_http_basic_auth</strong></a>(self, host, req, realm)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>rx</strong> = re.compile('(?:^|,)[ \t]*([^ \t]+)[ \t]+realm=(["\']?)([^"\']*)\\2', re.IGNORECASE)</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AbstractDigestAuthHandler">class <strong>AbstractDigestAuthHandler</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a>(passwd=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="AbstractDigestAuthHandler-__init__"><strong>__init__</strong></a>(self, passwd=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="AbstractDigestAuthHandler-get_algorithm_impls"><strong>get_algorithm_impls</strong></a>(self, algorithm)</dt></dl>
+
+<dl><dt><a name="AbstractDigestAuthHandler-get_authorization"><strong>get_authorization</strong></a>(self, req, chal)</dt></dl>
+
+<dl><dt><a name="AbstractDigestAuthHandler-get_cnonce"><strong>get_cnonce</strong></a>(self, nonce)</dt></dl>
+
+<dl><dt><a name="AbstractDigestAuthHandler-get_entity_digest"><strong>get_entity_digest</strong></a>(self, data, chal)</dt></dl>
+
+<dl><dt><a name="AbstractDigestAuthHandler-http_error_auth_reqed"><strong>http_error_auth_reqed</strong></a>(self, auth_header, host, req, headers)</dt></dl>
+
+<dl><dt><a name="AbstractDigestAuthHandler-reset_retry_count"><strong>reset_retry_count</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AbstractDigestAuthHandler-retry_http_digest_auth"><strong>retry_http_digest_auth</strong></a>(self, req, auth)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BaseHandler">class <strong>BaseHandler</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BaseHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="BaseHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="BaseHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CacheFTPHandler">class <strong>CacheFTPHandler</strong></a>(<a href="urllib.request.html#FTPHandler">FTPHandler</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#CacheFTPHandler">CacheFTPHandler</a></dd>
+<dd><a href="urllib.request.html#FTPHandler">FTPHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="CacheFTPHandler-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="CacheFTPHandler-check_cache"><strong>check_cache</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CacheFTPHandler-clear_cache"><strong>clear_cache</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CacheFTPHandler-connect_ftp"><strong>connect_ftp</strong></a>(self, user, passwd, host, port, dirs, timeout)</dt></dl>
+
+<dl><dt><a name="CacheFTPHandler-setMaxConns"><strong>setMaxConns</strong></a>(self, m)</dt></dl>
+
+<dl><dt><a name="CacheFTPHandler-setTimeout"><strong>setTimeout</strong></a>(self, t)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#FTPHandler">FTPHandler</a>:<br>
+<dl><dt><a name="CacheFTPHandler-ftp_open"><strong>ftp_open</strong></a>(self, req)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="CacheFTPHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="CacheFTPHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="CacheFTPHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DataHandler">class <strong>DataHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#DataHandler">DataHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="DataHandler-data_open"><strong>data_open</strong></a>(self, req)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="DataHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="DataHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="DataHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="FTPHandler">class <strong>FTPHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#FTPHandler">FTPHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="FTPHandler-connect_ftp"><strong>connect_ftp</strong></a>(self, user, passwd, host, port, dirs, timeout)</dt></dl>
+
+<dl><dt><a name="FTPHandler-ftp_open"><strong>ftp_open</strong></a>(self, req)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="FTPHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="FTPHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="FTPHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="FancyURLopener">class <strong>FancyURLopener</strong></a>(<a href="urllib.request.html#URLopener">URLopener</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#FancyURLopener">FancyURLopener</a>(*args,&nbsp;**kwargs)<br>
+&nbsp;<br>
+Derived&nbsp;class&nbsp;with&nbsp;handlers&nbsp;for&nbsp;errors&nbsp;we&nbsp;can&nbsp;handle&nbsp;(perhaps).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#FancyURLopener">FancyURLopener</a></dd>
+<dd><a href="urllib.request.html#URLopener">URLopener</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="FancyURLopener-__init__"><strong>__init__</strong></a>(self, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-get_user_passwd"><strong>get_user_passwd</strong></a>(self, host, realm, clear_cache=0)</dt></dl>
+
+<dl><dt><a name="FancyURLopener-http_error_301"><strong>http_error_301</strong></a>(self, url, fp, errcode, errmsg, headers, data=None)</dt><dd><tt>Error&nbsp;301&nbsp;--&nbsp;also&nbsp;relocated&nbsp;(permanently).</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-http_error_302"><strong>http_error_302</strong></a>(self, url, fp, errcode, errmsg, headers, data=None)</dt><dd><tt>Error&nbsp;302&nbsp;--&nbsp;relocated&nbsp;(temporarily).</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-http_error_303"><strong>http_error_303</strong></a>(self, url, fp, errcode, errmsg, headers, data=None)</dt><dd><tt>Error&nbsp;303&nbsp;--&nbsp;also&nbsp;relocated&nbsp;(essentially&nbsp;identical&nbsp;to&nbsp;302).</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-http_error_307"><strong>http_error_307</strong></a>(self, url, fp, errcode, errmsg, headers, data=None)</dt><dd><tt>Error&nbsp;307&nbsp;--&nbsp;relocated,&nbsp;but&nbsp;turn&nbsp;POST&nbsp;into&nbsp;error.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-http_error_401"><strong>http_error_401</strong></a>(self, url, fp, errcode, errmsg, headers, data=None, retry=False)</dt><dd><tt>Error&nbsp;401&nbsp;--&nbsp;authentication&nbsp;required.<br>
+This&nbsp;function&nbsp;supports&nbsp;Basic&nbsp;authentication&nbsp;only.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-http_error_407"><strong>http_error_407</strong></a>(self, url, fp, errcode, errmsg, headers, data=None, retry=False)</dt><dd><tt>Error&nbsp;407&nbsp;--&nbsp;proxy&nbsp;authentication&nbsp;required.<br>
+This&nbsp;function&nbsp;supports&nbsp;Basic&nbsp;authentication&nbsp;only.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-http_error_default"><strong>http_error_default</strong></a>(self, url, fp, errcode, errmsg, headers)</dt><dd><tt>Default&nbsp;error&nbsp;handling&nbsp;--&nbsp;don't&nbsp;raise&nbsp;an&nbsp;exception.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-prompt_user_passwd"><strong>prompt_user_passwd</strong></a>(self, host, realm)</dt><dd><tt>Override&nbsp;this&nbsp;in&nbsp;a&nbsp;GUI&nbsp;environment!</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-redirect_internal"><strong>redirect_internal</strong></a>(self, url, fp, errcode, errmsg, headers, data)</dt></dl>
+
+<dl><dt><a name="FancyURLopener-retry_http_basic_auth"><strong>retry_http_basic_auth</strong></a>(self, url, realm, data=None)</dt></dl>
+
+<dl><dt><a name="FancyURLopener-retry_https_basic_auth"><strong>retry_https_basic_auth</strong></a>(self, url, realm, data=None)</dt></dl>
+
+<dl><dt><a name="FancyURLopener-retry_proxy_http_basic_auth"><strong>retry_proxy_http_basic_auth</strong></a>(self, url, realm, data=None)</dt></dl>
+
+<dl><dt><a name="FancyURLopener-retry_proxy_https_basic_auth"><strong>retry_proxy_https_basic_auth</strong></a>(self, url, realm, data=None)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#URLopener">URLopener</a>:<br>
+<dl><dt><a name="FancyURLopener-__del__"><strong>__del__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="FancyURLopener-addheader"><strong>addheader</strong></a>(self, *args)</dt><dd><tt>Add&nbsp;a&nbsp;header&nbsp;to&nbsp;be&nbsp;used&nbsp;by&nbsp;the&nbsp;HTTP&nbsp;interface&nbsp;only<br>
+e.g.&nbsp;u.<a href="#FancyURLopener-addheader">addheader</a>('Accept',&nbsp;'sound/basic')</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-cleanup"><strong>cleanup</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="FancyURLopener-close"><strong>close</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="FancyURLopener-http_error"><strong>http_error</strong></a>(self, url, fp, errcode, errmsg, headers, data=None)</dt><dd><tt>Handle&nbsp;http&nbsp;errors.<br>
+&nbsp;<br>
+Derived&nbsp;class&nbsp;can&nbsp;override&nbsp;this,&nbsp;or&nbsp;provide&nbsp;specific&nbsp;handlers<br>
+named&nbsp;http_error_DDD&nbsp;where&nbsp;DDD&nbsp;is&nbsp;the&nbsp;3-digit&nbsp;error&nbsp;code.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open"><strong>open</strong></a>(self, fullurl, data=None)</dt><dd><tt>Use&nbsp;<a href="#URLopener">URLopener</a>().<a href="#FancyURLopener-open">open</a>(file)&nbsp;instead&nbsp;of&nbsp;<a href="#FancyURLopener-open">open</a>(file,&nbsp;'r').</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open_data"><strong>open_data</strong></a>(self, url, data=None)</dt><dd><tt>Use&nbsp;"data"&nbsp;URL.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open_file"><strong>open_file</strong></a>(self, url)</dt><dd><tt>Use&nbsp;local&nbsp;file&nbsp;or&nbsp;FTP&nbsp;depending&nbsp;on&nbsp;form&nbsp;of&nbsp;URL.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open_ftp"><strong>open_ftp</strong></a>(self, url)</dt><dd><tt>Use&nbsp;FTP&nbsp;protocol.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open_http"><strong>open_http</strong></a>(self, url, data=None)</dt><dd><tt>Use&nbsp;HTTP&nbsp;protocol.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open_https"><strong>open_https</strong></a>(self, url, data=None)</dt><dd><tt>Use&nbsp;HTTPS&nbsp;protocol.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open_local_file"><strong>open_local_file</strong></a>(self, url)</dt><dd><tt>Use&nbsp;local&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open_unknown"><strong>open_unknown</strong></a>(self, fullurl, data=None)</dt><dd><tt>Overridable&nbsp;interface&nbsp;to&nbsp;open&nbsp;unknown&nbsp;URL&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-open_unknown_proxy"><strong>open_unknown_proxy</strong></a>(self, proxy, fullurl, data=None)</dt><dd><tt>Overridable&nbsp;interface&nbsp;to&nbsp;open&nbsp;unknown&nbsp;URL&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="FancyURLopener-retrieve"><strong>retrieve</strong></a>(self, url, filename=None, reporthook=None, data=None)</dt><dd><tt><a href="#FancyURLopener-retrieve">retrieve</a>(url)&nbsp;returns&nbsp;(filename,&nbsp;headers)&nbsp;for&nbsp;a&nbsp;local&nbsp;<a href="builtins.html#object">object</a><br>
+or&nbsp;(tempfilename,&nbsp;headers)&nbsp;for&nbsp;a&nbsp;remote&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#URLopener">URLopener</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#URLopener">URLopener</a>:<br>
+<dl><dt><strong>version</strong> = 'Python-urllib/3.9'</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="FileHandler">class <strong>FileHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#FileHandler">FileHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="FileHandler-file_open"><strong>file_open</strong></a>(self, req)</dt><dd><tt>#&nbsp;Use&nbsp;local&nbsp;file&nbsp;or&nbsp;FTP&nbsp;depending&nbsp;on&nbsp;form&nbsp;of&nbsp;URL</tt></dd></dl>
+
+<dl><dt><a name="FileHandler-get_names"><strong>get_names</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="FileHandler-open_local_file"><strong>open_local_file</strong></a>(self, req)</dt><dd><tt>#&nbsp;not&nbsp;entirely&nbsp;sure&nbsp;what&nbsp;the&nbsp;rules&nbsp;are&nbsp;here</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>names</strong> = None</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="FileHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="FileHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="FileHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPBasicAuthHandler">class <strong>HTTPBasicAuthHandler</strong></a>(<a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>, <a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HTTPBasicAuthHandler">HTTPBasicAuthHandler</a>(password_mgr=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPBasicAuthHandler">HTTPBasicAuthHandler</a></dd>
+<dd><a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPBasicAuthHandler-http_error_401"><strong>http_error_401</strong></a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>auth_header</strong> = 'Authorization'</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>:<br>
+<dl><dt><a name="HTTPBasicAuthHandler-__init__"><strong>__init__</strong></a>(self, password_mgr=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="HTTPBasicAuthHandler-http_error_auth_reqed"><strong>http_error_auth_reqed</strong></a>(self, authreq, host, req, headers)</dt></dl>
+
+<dl><dt><a name="HTTPBasicAuthHandler-http_request"><strong>http_request</strong></a>(self, req)</dt></dl>
+
+<dl><dt><a name="HTTPBasicAuthHandler-http_response"><strong>http_response</strong></a>(self, req, response)</dt></dl>
+
+<dl><dt><a name="HTTPBasicAuthHandler-https_request"><strong>https_request</strong></a> = <a href="#HTTPBasicAuthHandler-http_request">http_request</a>(self, req)</dt></dl>
+
+<dl><dt><a name="HTTPBasicAuthHandler-https_response"><strong>https_response</strong></a> = <a href="#HTTPBasicAuthHandler-http_response">http_response</a>(self, req, response)</dt></dl>
+
+<dl><dt><a name="HTTPBasicAuthHandler-retry_http_basic_auth"><strong>retry_http_basic_auth</strong></a>(self, host, req, realm)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>:<br>
+<dl><dt><strong>rx</strong> = re.compile('(?:^|,)[ \t]*([^ \t]+)[ \t]+realm=(["\']?)([^"\']*)\\2', re.IGNORECASE)</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="HTTPBasicAuthHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="HTTPBasicAuthHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPBasicAuthHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPCookieProcessor">class <strong>HTTPCookieProcessor</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HTTPCookieProcessor">HTTPCookieProcessor</a>(cookiejar=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPCookieProcessor">HTTPCookieProcessor</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPCookieProcessor-__init__"><strong>__init__</strong></a>(self, cookiejar=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="HTTPCookieProcessor-http_request"><strong>http_request</strong></a>(self, request)</dt></dl>
+
+<dl><dt><a name="HTTPCookieProcessor-http_response"><strong>http_response</strong></a>(self, request, response)</dt></dl>
+
+<dl><dt><a name="HTTPCookieProcessor-https_request"><strong>https_request</strong></a> = <a href="#HTTPCookieProcessor-http_request">http_request</a>(self, request)</dt></dl>
+
+<dl><dt><a name="HTTPCookieProcessor-https_response"><strong>https_response</strong></a> = <a href="#HTTPCookieProcessor-http_response">http_response</a>(self, request, response)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="HTTPCookieProcessor-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="HTTPCookieProcessor-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPCookieProcessor-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPDefaultErrorHandler">class <strong>HTTPDefaultErrorHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPDefaultErrorHandler">HTTPDefaultErrorHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPDefaultErrorHandler-http_error_default"><strong>http_error_default</strong></a>(self, req, fp, code, msg, hdrs)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="HTTPDefaultErrorHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="HTTPDefaultErrorHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPDefaultErrorHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPDigestAuthHandler">class <strong>HTTPDigestAuthHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>, <a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HTTPDigestAuthHandler">HTTPDigestAuthHandler</a>(passwd=None)<br>
+&nbsp;<br>
+An&nbsp;authentication&nbsp;protocol&nbsp;defined&nbsp;by&nbsp;<a href="http://www.rfc-editor.org/rfc/rfc2069.txt">RFC&nbsp;2069</a><br>
+&nbsp;<br>
+Digest&nbsp;authentication&nbsp;improves&nbsp;on&nbsp;basic&nbsp;authentication&nbsp;because&nbsp;it<br>
+does&nbsp;not&nbsp;transmit&nbsp;passwords&nbsp;in&nbsp;the&nbsp;clear.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPDigestAuthHandler">HTTPDigestAuthHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPDigestAuthHandler-http_error_401"><strong>http_error_401</strong></a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>auth_header</strong> = 'Authorization'</dl>
+
+<dl><dt><strong>handler_order</strong> = 490</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="HTTPDigestAuthHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a>:<br>
+<dl><dt><a name="HTTPDigestAuthHandler-__init__"><strong>__init__</strong></a>(self, passwd=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-get_algorithm_impls"><strong>get_algorithm_impls</strong></a>(self, algorithm)</dt></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-get_authorization"><strong>get_authorization</strong></a>(self, req, chal)</dt></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-get_cnonce"><strong>get_cnonce</strong></a>(self, nonce)</dt></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-get_entity_digest"><strong>get_entity_digest</strong></a>(self, data, chal)</dt></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-http_error_auth_reqed"><strong>http_error_auth_reqed</strong></a>(self, auth_header, host, req, headers)</dt></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-reset_retry_count"><strong>reset_retry_count</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="HTTPDigestAuthHandler-retry_http_digest_auth"><strong>retry_http_digest_auth</strong></a>(self, req, auth)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPErrorProcessor">class <strong>HTTPErrorProcessor</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Process&nbsp;HTTP&nbsp;error&nbsp;responses.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPErrorProcessor">HTTPErrorProcessor</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPErrorProcessor-http_response"><strong>http_response</strong></a>(self, request, response)</dt></dl>
+
+<dl><dt><a name="HTTPErrorProcessor-https_response"><strong>https_response</strong></a> = <a href="#HTTPErrorProcessor-http_response">http_response</a>(self, request, response)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>handler_order</strong> = 1000</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="HTTPErrorProcessor-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="HTTPErrorProcessor-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPErrorProcessor-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPHandler">class <strong>HTTPHandler</strong></a>(<a href="urllib.request.html#AbstractHTTPHandler">AbstractHTTPHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HTTPHandler">HTTPHandler</a>(debuglevel=0)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPHandler">HTTPHandler</a></dd>
+<dd><a href="urllib.request.html#AbstractHTTPHandler">AbstractHTTPHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPHandler-http_open"><strong>http_open</strong></a>(self, req)</dt></dl>
+
+<dl><dt><a name="HTTPHandler-http_request"><strong>http_request</strong></a> = <a href="#HTTPHandler-do_request_">do_request_</a>(self, request)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#AbstractHTTPHandler">AbstractHTTPHandler</a>:<br>
+<dl><dt><a name="HTTPHandler-__init__"><strong>__init__</strong></a>(self, debuglevel=0)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="HTTPHandler-do_open"><strong>do_open</strong></a>(self, http_class, req, **http_conn_args)</dt><dd><tt>Return&nbsp;an&nbsp;HTTPResponse&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;request,&nbsp;using&nbsp;http_class.<br>
+&nbsp;<br>
+http_class&nbsp;must&nbsp;implement&nbsp;the&nbsp;HTTPConnection&nbsp;API&nbsp;from&nbsp;http.client.</tt></dd></dl>
+
+<dl><dt><a name="HTTPHandler-do_request_"><strong>do_request_</strong></a>(self, request)</dt></dl>
+
+<dl><dt><a name="HTTPHandler-set_http_debuglevel"><strong>set_http_debuglevel</strong></a>(self, level)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="HTTPHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="HTTPHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPPasswordMgr">class <strong>HTTPPasswordMgr</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="HTTPPasswordMgr-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="HTTPPasswordMgr-add_password"><strong>add_password</strong></a>(self, realm, uri, user, passwd)</dt></dl>
+
+<dl><dt><a name="HTTPPasswordMgr-find_user_password"><strong>find_user_password</strong></a>(self, realm, authuri)</dt></dl>
+
+<dl><dt><a name="HTTPPasswordMgr-is_suburi"><strong>is_suburi</strong></a>(self, base, test)</dt><dd><tt>Check&nbsp;if&nbsp;test&nbsp;is&nbsp;below&nbsp;base&nbsp;in&nbsp;a&nbsp;URI&nbsp;tree<br>
+&nbsp;<br>
+Both&nbsp;args&nbsp;must&nbsp;be&nbsp;URIs&nbsp;in&nbsp;reduced&nbsp;form.</tt></dd></dl>
+
+<dl><dt><a name="HTTPPasswordMgr-reduce_uri"><strong>reduce_uri</strong></a>(self, uri, default_port=True)</dt><dd><tt>Accept&nbsp;authority&nbsp;or&nbsp;URI&nbsp;and&nbsp;extract&nbsp;only&nbsp;the&nbsp;authority&nbsp;and&nbsp;path.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPPasswordMgrWithDefaultRealm">class <strong>HTTPPasswordMgrWithDefaultRealm</strong></a>(<a href="urllib.request.html#HTTPPasswordMgr">HTTPPasswordMgr</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPPasswordMgrWithDefaultRealm">HTTPPasswordMgrWithDefaultRealm</a></dd>
+<dd><a href="urllib.request.html#HTTPPasswordMgr">HTTPPasswordMgr</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPPasswordMgrWithDefaultRealm-find_user_password"><strong>find_user_password</strong></a>(self, realm, authuri)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#HTTPPasswordMgr">HTTPPasswordMgr</a>:<br>
+<dl><dt><a name="HTTPPasswordMgrWithDefaultRealm-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="HTTPPasswordMgrWithDefaultRealm-add_password"><strong>add_password</strong></a>(self, realm, uri, user, passwd)</dt></dl>
+
+<dl><dt><a name="HTTPPasswordMgrWithDefaultRealm-is_suburi"><strong>is_suburi</strong></a>(self, base, test)</dt><dd><tt>Check&nbsp;if&nbsp;test&nbsp;is&nbsp;below&nbsp;base&nbsp;in&nbsp;a&nbsp;URI&nbsp;tree<br>
+&nbsp;<br>
+Both&nbsp;args&nbsp;must&nbsp;be&nbsp;URIs&nbsp;in&nbsp;reduced&nbsp;form.</tt></dd></dl>
+
+<dl><dt><a name="HTTPPasswordMgrWithDefaultRealm-reduce_uri"><strong>reduce_uri</strong></a>(self, uri, default_port=True)</dt><dd><tt>Accept&nbsp;authority&nbsp;or&nbsp;URI&nbsp;and&nbsp;extract&nbsp;only&nbsp;the&nbsp;authority&nbsp;and&nbsp;path.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#HTTPPasswordMgr">HTTPPasswordMgr</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPPasswordMgrWithPriorAuth">class <strong>HTTPPasswordMgrWithPriorAuth</strong></a>(<a href="urllib.request.html#HTTPPasswordMgrWithDefaultRealm">HTTPPasswordMgrWithDefaultRealm</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HTTPPasswordMgrWithPriorAuth">HTTPPasswordMgrWithPriorAuth</a>(*args,&nbsp;**kwargs)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPPasswordMgrWithPriorAuth">HTTPPasswordMgrWithPriorAuth</a></dd>
+<dd><a href="urllib.request.html#HTTPPasswordMgrWithDefaultRealm">HTTPPasswordMgrWithDefaultRealm</a></dd>
+<dd><a href="urllib.request.html#HTTPPasswordMgr">HTTPPasswordMgr</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPPasswordMgrWithPriorAuth-__init__"><strong>__init__</strong></a>(self, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="HTTPPasswordMgrWithPriorAuth-add_password"><strong>add_password</strong></a>(self, realm, uri, user, passwd, is_authenticated=False)</dt></dl>
+
+<dl><dt><a name="HTTPPasswordMgrWithPriorAuth-is_authenticated"><strong>is_authenticated</strong></a>(self, authuri)</dt></dl>
+
+<dl><dt><a name="HTTPPasswordMgrWithPriorAuth-update_authenticated"><strong>update_authenticated</strong></a>(self, uri, is_authenticated=False)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#HTTPPasswordMgrWithDefaultRealm">HTTPPasswordMgrWithDefaultRealm</a>:<br>
+<dl><dt><a name="HTTPPasswordMgrWithPriorAuth-find_user_password"><strong>find_user_password</strong></a>(self, realm, authuri)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#HTTPPasswordMgr">HTTPPasswordMgr</a>:<br>
+<dl><dt><a name="HTTPPasswordMgrWithPriorAuth-is_suburi"><strong>is_suburi</strong></a>(self, base, test)</dt><dd><tt>Check&nbsp;if&nbsp;test&nbsp;is&nbsp;below&nbsp;base&nbsp;in&nbsp;a&nbsp;URI&nbsp;tree<br>
+&nbsp;<br>
+Both&nbsp;args&nbsp;must&nbsp;be&nbsp;URIs&nbsp;in&nbsp;reduced&nbsp;form.</tt></dd></dl>
+
+<dl><dt><a name="HTTPPasswordMgrWithPriorAuth-reduce_uri"><strong>reduce_uri</strong></a>(self, uri, default_port=True)</dt><dd><tt>Accept&nbsp;authority&nbsp;or&nbsp;URI&nbsp;and&nbsp;extract&nbsp;only&nbsp;the&nbsp;authority&nbsp;and&nbsp;path.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#HTTPPasswordMgr">HTTPPasswordMgr</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPRedirectHandler">class <strong>HTTPRedirectHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPRedirectHandler">HTTPRedirectHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPRedirectHandler-http_error_301"><strong>http_error_301</strong></a> = <a href="#HTTPRedirectHandler-http_error_302">http_error_302</a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<dl><dt><a name="HTTPRedirectHandler-http_error_302"><strong>http_error_302</strong></a>(self, req, fp, code, msg, headers)</dt><dd><tt>#&nbsp;Implementation&nbsp;note:&nbsp;To&nbsp;avoid&nbsp;the&nbsp;server&nbsp;sending&nbsp;us&nbsp;into&nbsp;an<br>
+#&nbsp;infinite&nbsp;loop,&nbsp;the&nbsp;request&nbsp;<a href="builtins.html#object">object</a>&nbsp;needs&nbsp;to&nbsp;track&nbsp;what&nbsp;URLs&nbsp;we<br>
+#&nbsp;have&nbsp;already&nbsp;seen.&nbsp;&nbsp;Do&nbsp;this&nbsp;by&nbsp;adding&nbsp;a&nbsp;handler-specific<br>
+#&nbsp;attribute&nbsp;to&nbsp;the&nbsp;<a href="#Request">Request</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="HTTPRedirectHandler-http_error_303"><strong>http_error_303</strong></a> = <a href="#HTTPRedirectHandler-http_error_302">http_error_302</a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<dl><dt><a name="HTTPRedirectHandler-http_error_307"><strong>http_error_307</strong></a> = <a href="#HTTPRedirectHandler-http_error_302">http_error_302</a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<dl><dt><a name="HTTPRedirectHandler-redirect_request"><strong>redirect_request</strong></a>(self, req, fp, code, msg, headers, newurl)</dt><dd><tt>Return&nbsp;a&nbsp;<a href="#Request">Request</a>&nbsp;or&nbsp;None&nbsp;in&nbsp;response&nbsp;to&nbsp;a&nbsp;redirect.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;called&nbsp;by&nbsp;the&nbsp;http_error_30x&nbsp;methods&nbsp;when&nbsp;a<br>
+redirection&nbsp;response&nbsp;is&nbsp;received.&nbsp;&nbsp;If&nbsp;a&nbsp;redirection&nbsp;should<br>
+take&nbsp;place,&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="#Request">Request</a>&nbsp;to&nbsp;allow&nbsp;http_error_30x&nbsp;to<br>
+perform&nbsp;the&nbsp;redirect.&nbsp;&nbsp;Otherwise,&nbsp;raise&nbsp;HTTPError&nbsp;if&nbsp;no-one<br>
+else&nbsp;should&nbsp;try&nbsp;to&nbsp;handle&nbsp;this&nbsp;url.&nbsp;&nbsp;Return&nbsp;None&nbsp;if&nbsp;you&nbsp;can't<br>
+but&nbsp;another&nbsp;Handler&nbsp;might.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>inf_msg</strong> = 'The HTTP server returned a redirect error that w...n infinite loop.<font color="#c040c0">\n</font>The last 30x error message was:<font color="#c040c0">\n</font>'</dl>
+
+<dl><dt><strong>max_redirections</strong> = 10</dl>
+
+<dl><dt><strong>max_repeats</strong> = 4</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="HTTPRedirectHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="HTTPRedirectHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPRedirectHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPSHandler">class <strong>HTTPSHandler</strong></a>(<a href="urllib.request.html#AbstractHTTPHandler">AbstractHTTPHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HTTPSHandler">HTTPSHandler</a>(debuglevel=0,&nbsp;context=None,&nbsp;check_hostname=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#HTTPSHandler">HTTPSHandler</a></dd>
+<dd><a href="urllib.request.html#AbstractHTTPHandler">AbstractHTTPHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPSHandler-__init__"><strong>__init__</strong></a>(self, debuglevel=0, context=None, check_hostname=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="HTTPSHandler-https_open"><strong>https_open</strong></a>(self, req)</dt></dl>
+
+<dl><dt><a name="HTTPSHandler-https_request"><strong>https_request</strong></a> = <a href="#HTTPSHandler-do_request_">do_request_</a>(self, request)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#AbstractHTTPHandler">AbstractHTTPHandler</a>:<br>
+<dl><dt><a name="HTTPSHandler-do_open"><strong>do_open</strong></a>(self, http_class, req, **http_conn_args)</dt><dd><tt>Return&nbsp;an&nbsp;HTTPResponse&nbsp;<a href="builtins.html#object">object</a>&nbsp;for&nbsp;the&nbsp;request,&nbsp;using&nbsp;http_class.<br>
+&nbsp;<br>
+http_class&nbsp;must&nbsp;implement&nbsp;the&nbsp;HTTPConnection&nbsp;API&nbsp;from&nbsp;http.client.</tt></dd></dl>
+
+<dl><dt><a name="HTTPSHandler-do_request_"><strong>do_request_</strong></a>(self, request)</dt></dl>
+
+<dl><dt><a name="HTTPSHandler-set_http_debuglevel"><strong>set_http_debuglevel</strong></a>(self, level)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="HTTPSHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="HTTPSHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPSHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="OpenerDirector">class <strong>OpenerDirector</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="OpenerDirector-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="OpenerDirector-add_handler"><strong>add_handler</strong></a>(self, handler)</dt></dl>
+
+<dl><dt><a name="OpenerDirector-close"><strong>close</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="OpenerDirector-error"><strong>error</strong></a>(self, proto, *args)</dt></dl>
+
+<dl><dt><a name="OpenerDirector-open"><strong>open</strong></a>(self, fullurl, data=None, timeout=&lt;object object at 0x0000018943928A60&gt;)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ProxyBasicAuthHandler">class <strong>ProxyBasicAuthHandler</strong></a>(<a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>, <a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ProxyBasicAuthHandler">ProxyBasicAuthHandler</a>(password_mgr=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#ProxyBasicAuthHandler">ProxyBasicAuthHandler</a></dd>
+<dd><a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ProxyBasicAuthHandler-http_error_407"><strong>http_error_407</strong></a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>auth_header</strong> = 'Proxy-authorization'</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>:<br>
+<dl><dt><a name="ProxyBasicAuthHandler-__init__"><strong>__init__</strong></a>(self, password_mgr=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="ProxyBasicAuthHandler-http_error_auth_reqed"><strong>http_error_auth_reqed</strong></a>(self, authreq, host, req, headers)</dt></dl>
+
+<dl><dt><a name="ProxyBasicAuthHandler-http_request"><strong>http_request</strong></a>(self, req)</dt></dl>
+
+<dl><dt><a name="ProxyBasicAuthHandler-http_response"><strong>http_response</strong></a>(self, req, response)</dt></dl>
+
+<dl><dt><a name="ProxyBasicAuthHandler-https_request"><strong>https_request</strong></a> = <a href="#ProxyBasicAuthHandler-http_request">http_request</a>(self, req)</dt></dl>
+
+<dl><dt><a name="ProxyBasicAuthHandler-https_response"><strong>https_response</strong></a> = <a href="#ProxyBasicAuthHandler-http_response">http_response</a>(self, req, response)</dt></dl>
+
+<dl><dt><a name="ProxyBasicAuthHandler-retry_http_basic_auth"><strong>retry_http_basic_auth</strong></a>(self, host, req, realm)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#AbstractBasicAuthHandler">AbstractBasicAuthHandler</a>:<br>
+<dl><dt><strong>rx</strong> = re.compile('(?:^|,)[ \t]*([^ \t]+)[ \t]+realm=(["\']?)([^"\']*)\\2', re.IGNORECASE)</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="ProxyBasicAuthHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="ProxyBasicAuthHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="ProxyBasicAuthHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ProxyDigestAuthHandler">class <strong>ProxyDigestAuthHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>, <a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ProxyDigestAuthHandler">ProxyDigestAuthHandler</a>(passwd=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#ProxyDigestAuthHandler">ProxyDigestAuthHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ProxyDigestAuthHandler-http_error_407"><strong>http_error_407</strong></a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>auth_header</strong> = 'Proxy-Authorization'</dl>
+
+<dl><dt><strong>handler_order</strong> = 490</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="ProxyDigestAuthHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="urllib.request.html#AbstractDigestAuthHandler">AbstractDigestAuthHandler</a>:<br>
+<dl><dt><a name="ProxyDigestAuthHandler-__init__"><strong>__init__</strong></a>(self, passwd=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-get_algorithm_impls"><strong>get_algorithm_impls</strong></a>(self, algorithm)</dt></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-get_authorization"><strong>get_authorization</strong></a>(self, req, chal)</dt></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-get_cnonce"><strong>get_cnonce</strong></a>(self, nonce)</dt></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-get_entity_digest"><strong>get_entity_digest</strong></a>(self, data, chal)</dt></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-http_error_auth_reqed"><strong>http_error_auth_reqed</strong></a>(self, auth_header, host, req, headers)</dt></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-reset_retry_count"><strong>reset_retry_count</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="ProxyDigestAuthHandler-retry_http_digest_auth"><strong>retry_http_digest_auth</strong></a>(self, req, auth)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ProxyHandler">class <strong>ProxyHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ProxyHandler">ProxyHandler</a>(proxies=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#ProxyHandler">ProxyHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ProxyHandler-__init__"><strong>__init__</strong></a>(self, proxies=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="ProxyHandler-proxy_open"><strong>proxy_open</strong></a>(self, req, proxy, type)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>handler_order</strong> = 100</dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="ProxyHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="ProxyHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="ProxyHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Request">class <strong>Request</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Request">Request</a>(url,&nbsp;data=None,&nbsp;headers={},&nbsp;origin_req_host=None,&nbsp;unverifiable=False,&nbsp;method=None)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Request-__init__"><strong>__init__</strong></a>(self, url, data=None, headers={}, origin_req_host=None, unverifiable=False, method=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Request-add_header"><strong>add_header</strong></a>(self, key, val)</dt></dl>
+
+<dl><dt><a name="Request-add_unredirected_header"><strong>add_unredirected_header</strong></a>(self, key, val)</dt></dl>
+
+<dl><dt><a name="Request-get_full_url"><strong>get_full_url</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Request-get_header"><strong>get_header</strong></a>(self, header_name, default=None)</dt></dl>
+
+<dl><dt><a name="Request-get_method"><strong>get_method</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;string&nbsp;indicating&nbsp;the&nbsp;HTTP&nbsp;request&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="Request-has_header"><strong>has_header</strong></a>(self, header_name)</dt></dl>
+
+<dl><dt><a name="Request-has_proxy"><strong>has_proxy</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Request-header_items"><strong>header_items</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Request-remove_header"><strong>remove_header</strong></a>(self, header_name)</dt></dl>
+
+<dl><dt><a name="Request-set_proxy"><strong>set_proxy</strong></a>(self, host, type)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>data</strong></dt>
+</dl>
+<dl><dt><strong>full_url</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="URLopener">class <strong>URLopener</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#URLopener">URLopener</a>(proxies=None,&nbsp;**x509)<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;open&nbsp;URLs.<br>
+This&nbsp;is&nbsp;a&nbsp;class&nbsp;rather&nbsp;than&nbsp;just&nbsp;a&nbsp;subroutine&nbsp;because&nbsp;we&nbsp;may&nbsp;need<br>
+more&nbsp;than&nbsp;one&nbsp;set&nbsp;of&nbsp;global&nbsp;protocol-specific&nbsp;options.<br>
+Note&nbsp;--&nbsp;this&nbsp;is&nbsp;a&nbsp;base&nbsp;class&nbsp;for&nbsp;those&nbsp;who&nbsp;don't&nbsp;want&nbsp;the<br>
+automatic&nbsp;handling&nbsp;of&nbsp;errors&nbsp;type&nbsp;302&nbsp;(relocated)&nbsp;and&nbsp;401<br>
+(authorization&nbsp;needed).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="URLopener-__del__"><strong>__del__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="URLopener-__init__"><strong>__init__</strong></a>(self, proxies=None, **x509)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-addheader"><strong>addheader</strong></a>(self, *args)</dt><dd><tt>Add&nbsp;a&nbsp;header&nbsp;to&nbsp;be&nbsp;used&nbsp;by&nbsp;the&nbsp;HTTP&nbsp;interface&nbsp;only<br>
+e.g.&nbsp;u.<a href="#URLopener-addheader">addheader</a>('Accept',&nbsp;'sound/basic')</tt></dd></dl>
+
+<dl><dt><a name="URLopener-cleanup"><strong>cleanup</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="URLopener-close"><strong>close</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="URLopener-http_error"><strong>http_error</strong></a>(self, url, fp, errcode, errmsg, headers, data=None)</dt><dd><tt>Handle&nbsp;http&nbsp;errors.<br>
+&nbsp;<br>
+Derived&nbsp;class&nbsp;can&nbsp;override&nbsp;this,&nbsp;or&nbsp;provide&nbsp;specific&nbsp;handlers<br>
+named&nbsp;http_error_DDD&nbsp;where&nbsp;DDD&nbsp;is&nbsp;the&nbsp;3-digit&nbsp;error&nbsp;code.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-http_error_default"><strong>http_error_default</strong></a>(self, url, fp, errcode, errmsg, headers)</dt><dd><tt>Default&nbsp;error&nbsp;handler:&nbsp;close&nbsp;the&nbsp;connection&nbsp;and&nbsp;raise&nbsp;OSError.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open"><strong>open</strong></a>(self, fullurl, data=None)</dt><dd><tt>Use&nbsp;<a href="#URLopener">URLopener</a>().<a href="#URLopener-open">open</a>(file)&nbsp;instead&nbsp;of&nbsp;<a href="#URLopener-open">open</a>(file,&nbsp;'r').</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open_data"><strong>open_data</strong></a>(self, url, data=None)</dt><dd><tt>Use&nbsp;"data"&nbsp;URL.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open_file"><strong>open_file</strong></a>(self, url)</dt><dd><tt>Use&nbsp;local&nbsp;file&nbsp;or&nbsp;FTP&nbsp;depending&nbsp;on&nbsp;form&nbsp;of&nbsp;URL.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open_ftp"><strong>open_ftp</strong></a>(self, url)</dt><dd><tt>Use&nbsp;FTP&nbsp;protocol.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open_http"><strong>open_http</strong></a>(self, url, data=None)</dt><dd><tt>Use&nbsp;HTTP&nbsp;protocol.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open_https"><strong>open_https</strong></a>(self, url, data=None)</dt><dd><tt>Use&nbsp;HTTPS&nbsp;protocol.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open_local_file"><strong>open_local_file</strong></a>(self, url)</dt><dd><tt>Use&nbsp;local&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open_unknown"><strong>open_unknown</strong></a>(self, fullurl, data=None)</dt><dd><tt>Overridable&nbsp;interface&nbsp;to&nbsp;open&nbsp;unknown&nbsp;URL&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-open_unknown_proxy"><strong>open_unknown_proxy</strong></a>(self, proxy, fullurl, data=None)</dt><dd><tt>Overridable&nbsp;interface&nbsp;to&nbsp;open&nbsp;unknown&nbsp;URL&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="URLopener-retrieve"><strong>retrieve</strong></a>(self, url, filename=None, reporthook=None, data=None)</dt><dd><tt><a href="#URLopener-retrieve">retrieve</a>(url)&nbsp;returns&nbsp;(filename,&nbsp;headers)&nbsp;for&nbsp;a&nbsp;local&nbsp;<a href="builtins.html#object">object</a><br>
+or&nbsp;(tempfilename,&nbsp;headers)&nbsp;for&nbsp;a&nbsp;remote&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>version</strong> = 'Python-urllib/3.9'</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="UnknownHandler">class <strong>UnknownHandler</strong></a>(<a href="urllib.request.html#BaseHandler">BaseHandler</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="urllib.request.html#UnknownHandler">UnknownHandler</a></dd>
+<dd><a href="urllib.request.html#BaseHandler">BaseHandler</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="UnknownHandler-unknown_open"><strong>unknown_open</strong></a>(self, req)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><a name="UnknownHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="UnknownHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="UnknownHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="urllib.request.html#BaseHandler">BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-build_opener"><strong>build_opener</strong></a>(*handlers)</dt><dd><tt>Create&nbsp;an&nbsp;opener&nbsp;<a href="builtins.html#object">object</a>&nbsp;from&nbsp;a&nbsp;list&nbsp;of&nbsp;handlers.<br>
+&nbsp;<br>
+The&nbsp;opener&nbsp;will&nbsp;use&nbsp;several&nbsp;default&nbsp;handlers,&nbsp;including&nbsp;support<br>
+for&nbsp;HTTP,&nbsp;FTP&nbsp;and&nbsp;when&nbsp;applicable&nbsp;HTTPS.<br>
+&nbsp;<br>
+If&nbsp;any&nbsp;of&nbsp;the&nbsp;handlers&nbsp;passed&nbsp;as&nbsp;arguments&nbsp;are&nbsp;subclasses&nbsp;of&nbsp;the<br>
+default&nbsp;handlers,&nbsp;the&nbsp;default&nbsp;handlers&nbsp;will&nbsp;not&nbsp;be&nbsp;used.</tt></dd></dl>
+ <dl><dt><a name="-getproxies"><strong>getproxies</strong></a>()</dt><dd><tt>Return&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;scheme&nbsp;-&gt;&nbsp;proxy&nbsp;server&nbsp;URL&nbsp;mappings.<br>
+&nbsp;<br>
+Returns&nbsp;settings&nbsp;gathered&nbsp;from&nbsp;the&nbsp;environment,&nbsp;if&nbsp;specified,<br>
+or&nbsp;the&nbsp;registry.</tt></dd></dl>
+ <dl><dt><a name="-install_opener"><strong>install_opener</strong></a>(opener)</dt></dl>
+ <dl><dt><a name="-pathname2url"><strong>pathname2url</strong></a>(p)</dt><dd><tt>OS-specific&nbsp;conversion&nbsp;from&nbsp;a&nbsp;file&nbsp;system&nbsp;path&nbsp;to&nbsp;a&nbsp;relative&nbsp;URL<br>
+of&nbsp;the&nbsp;'file'&nbsp;scheme;&nbsp;not&nbsp;recommended&nbsp;for&nbsp;general&nbsp;use.</tt></dd></dl>
+ <dl><dt><a name="-url2pathname"><strong>url2pathname</strong></a>(url)</dt><dd><tt>OS-specific&nbsp;conversion&nbsp;from&nbsp;a&nbsp;relative&nbsp;URL&nbsp;of&nbsp;the&nbsp;'file'&nbsp;scheme<br>
+to&nbsp;a&nbsp;file&nbsp;system&nbsp;path;&nbsp;not&nbsp;recommended&nbsp;for&nbsp;general&nbsp;use.</tt></dd></dl>
+ <dl><dt><a name="-urlcleanup"><strong>urlcleanup</strong></a>()</dt><dd><tt>Clean&nbsp;up&nbsp;temporary&nbsp;files&nbsp;from&nbsp;urlretrieve&nbsp;calls.</tt></dd></dl>
+ <dl><dt><a name="-urlopen"><strong>urlopen</strong></a>(url, data=None, timeout=&lt;object object at 0x0000018943928A60&gt;, *, cafile=None, capath=None, cadefault=False, context=None)</dt><dd><tt>Open&nbsp;the&nbsp;URL&nbsp;url,&nbsp;which&nbsp;can&nbsp;be&nbsp;either&nbsp;a&nbsp;string&nbsp;or&nbsp;a&nbsp;<a href="#Request">Request</a>&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+*data*&nbsp;must&nbsp;be&nbsp;an&nbsp;<a href="builtins.html#object">object</a>&nbsp;specifying&nbsp;additional&nbsp;data&nbsp;to&nbsp;be&nbsp;sent&nbsp;to<br>
+the&nbsp;server,&nbsp;or&nbsp;None&nbsp;if&nbsp;no&nbsp;such&nbsp;data&nbsp;is&nbsp;needed.&nbsp;&nbsp;See&nbsp;<a href="#Request">Request</a>&nbsp;for<br>
+details.<br>
+&nbsp;<br>
+urllib.request&nbsp;module&nbsp;uses&nbsp;HTTP/1.1&nbsp;and&nbsp;includes&nbsp;a&nbsp;"Connection:close"<br>
+header&nbsp;in&nbsp;its&nbsp;HTTP&nbsp;requests.<br>
+&nbsp;<br>
+The&nbsp;optional&nbsp;*timeout*&nbsp;parameter&nbsp;specifies&nbsp;a&nbsp;timeout&nbsp;in&nbsp;seconds&nbsp;for<br>
+blocking&nbsp;operations&nbsp;like&nbsp;the&nbsp;connection&nbsp;attempt&nbsp;(if&nbsp;not&nbsp;specified,&nbsp;the<br>
+global&nbsp;default&nbsp;timeout&nbsp;setting&nbsp;will&nbsp;be&nbsp;used).&nbsp;This&nbsp;only&nbsp;works&nbsp;for&nbsp;HTTP,<br>
+HTTPS&nbsp;and&nbsp;FTP&nbsp;connections.<br>
+&nbsp;<br>
+If&nbsp;*context*&nbsp;is&nbsp;specified,&nbsp;it&nbsp;must&nbsp;be&nbsp;a&nbsp;ssl.SSLContext&nbsp;instance&nbsp;describing<br>
+the&nbsp;various&nbsp;SSL&nbsp;options.&nbsp;See&nbsp;HTTPSConnection&nbsp;for&nbsp;more&nbsp;details.<br>
+&nbsp;<br>
+The&nbsp;optional&nbsp;*cafile*&nbsp;and&nbsp;*capath*&nbsp;parameters&nbsp;specify&nbsp;a&nbsp;set&nbsp;of&nbsp;trusted&nbsp;CA<br>
+certificates&nbsp;for&nbsp;HTTPS&nbsp;requests.&nbsp;cafile&nbsp;should&nbsp;point&nbsp;to&nbsp;a&nbsp;single&nbsp;file<br>
+containing&nbsp;a&nbsp;bundle&nbsp;of&nbsp;CA&nbsp;certificates,&nbsp;whereas&nbsp;capath&nbsp;should&nbsp;point&nbsp;to&nbsp;a<br>
+directory&nbsp;of&nbsp;hashed&nbsp;certificate&nbsp;files.&nbsp;More&nbsp;information&nbsp;can&nbsp;be&nbsp;found&nbsp;in<br>
+ssl.SSLContext.load_verify_locations().<br>
+&nbsp;<br>
+The&nbsp;*cadefault*&nbsp;parameter&nbsp;is&nbsp;ignored.<br>
+&nbsp;<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;always&nbsp;returns&nbsp;an&nbsp;<a href="builtins.html#object">object</a>&nbsp;which&nbsp;can&nbsp;work&nbsp;as&nbsp;a<br>
+context&nbsp;manager&nbsp;and&nbsp;has&nbsp;the&nbsp;properties&nbsp;url,&nbsp;headers,&nbsp;and&nbsp;status.<br>
+See&nbsp;urllib.response.addinfourl&nbsp;for&nbsp;more&nbsp;detail&nbsp;on&nbsp;these&nbsp;properties.<br>
+&nbsp;<br>
+For&nbsp;HTTP&nbsp;and&nbsp;HTTPS&nbsp;URLs,&nbsp;this&nbsp;function&nbsp;returns&nbsp;a&nbsp;http.client.HTTPResponse<br>
+<a href="builtins.html#object">object</a>&nbsp;slightly&nbsp;modified.&nbsp;In&nbsp;addition&nbsp;to&nbsp;the&nbsp;three&nbsp;new&nbsp;methods&nbsp;above,&nbsp;the<br>
+msg&nbsp;attribute&nbsp;contains&nbsp;the&nbsp;same&nbsp;information&nbsp;as&nbsp;the&nbsp;reason&nbsp;attribute&nbsp;---<br>
+the&nbsp;reason&nbsp;phrase&nbsp;returned&nbsp;by&nbsp;the&nbsp;server&nbsp;---&nbsp;instead&nbsp;of&nbsp;the&nbsp;response<br>
+headers&nbsp;as&nbsp;it&nbsp;is&nbsp;specified&nbsp;in&nbsp;the&nbsp;documentation&nbsp;for&nbsp;HTTPResponse.<br>
+&nbsp;<br>
+For&nbsp;FTP,&nbsp;file,&nbsp;and&nbsp;data&nbsp;URLs&nbsp;and&nbsp;requests&nbsp;explicitly&nbsp;handled&nbsp;by&nbsp;legacy<br>
+<a href="#URLopener">URLopener</a>&nbsp;and&nbsp;<a href="#FancyURLopener">FancyURLopener</a>&nbsp;classes,&nbsp;this&nbsp;function&nbsp;returns&nbsp;a<br>
+urllib.response.addinfourl&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;None&nbsp;may&nbsp;be&nbsp;returned&nbsp;if&nbsp;no&nbsp;handler&nbsp;handles&nbsp;the&nbsp;request&nbsp;(though<br>
+the&nbsp;default&nbsp;installed&nbsp;global&nbsp;<a href="#OpenerDirector">OpenerDirector</a>&nbsp;uses&nbsp;<a href="#UnknownHandler">UnknownHandler</a>&nbsp;to&nbsp;ensure<br>
+this&nbsp;never&nbsp;happens).<br>
+&nbsp;<br>
+In&nbsp;addition,&nbsp;if&nbsp;proxy&nbsp;settings&nbsp;are&nbsp;detected&nbsp;(for&nbsp;example,&nbsp;when&nbsp;a&nbsp;*_proxy<br>
+environment&nbsp;variable&nbsp;like&nbsp;http_proxy&nbsp;is&nbsp;set),&nbsp;<a href="#ProxyHandler">ProxyHandler</a>&nbsp;is&nbsp;default<br>
+installed&nbsp;and&nbsp;makes&nbsp;sure&nbsp;the&nbsp;requests&nbsp;are&nbsp;handled&nbsp;through&nbsp;the&nbsp;proxy.</tt></dd></dl>
+ <dl><dt><a name="-urlretrieve"><strong>urlretrieve</strong></a>(url, filename=None, reporthook=None, data=None)</dt><dd><tt>Retrieve&nbsp;a&nbsp;URL&nbsp;into&nbsp;a&nbsp;temporary&nbsp;location&nbsp;on&nbsp;disk.<br>
+&nbsp;<br>
+Requires&nbsp;a&nbsp;URL&nbsp;argument.&nbsp;If&nbsp;a&nbsp;filename&nbsp;is&nbsp;passed,&nbsp;it&nbsp;is&nbsp;used&nbsp;as<br>
+the&nbsp;temporary&nbsp;file&nbsp;location.&nbsp;The&nbsp;reporthook&nbsp;argument&nbsp;should&nbsp;be<br>
+a&nbsp;callable&nbsp;that&nbsp;accepts&nbsp;a&nbsp;block&nbsp;number,&nbsp;a&nbsp;read&nbsp;size,&nbsp;and&nbsp;the<br>
+total&nbsp;file&nbsp;size&nbsp;of&nbsp;the&nbsp;URL&nbsp;target.&nbsp;The&nbsp;data&nbsp;argument&nbsp;should&nbsp;be<br>
+valid&nbsp;URL&nbsp;encoded&nbsp;data.<br>
+&nbsp;<br>
+If&nbsp;a&nbsp;filename&nbsp;is&nbsp;passed&nbsp;and&nbsp;the&nbsp;URL&nbsp;points&nbsp;to&nbsp;a&nbsp;local&nbsp;resource,<br>
+the&nbsp;result&nbsp;is&nbsp;a&nbsp;copy&nbsp;from&nbsp;local&nbsp;file&nbsp;to&nbsp;new&nbsp;file.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;tuple&nbsp;containing&nbsp;the&nbsp;path&nbsp;to&nbsp;the&nbsp;newly&nbsp;created<br>
+data&nbsp;file&nbsp;as&nbsp;well&nbsp;as&nbsp;the&nbsp;resulting&nbsp;HTTPMessage&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['Request', 'OpenerDirector', 'BaseHandler', 'HTTPDefaultErrorHandler', 'HTTPRedirectHandler', 'HTTPCookieProcessor', 'ProxyHandler', 'HTTPPasswordMgr', 'HTTPPasswordMgrWithDefaultRealm', 'HTTPPasswordMgrWithPriorAuth', 'AbstractBasicAuthHandler', 'HTTPBasicAuthHandler', 'ProxyBasicAuthHandler', 'AbstractDigestAuthHandler', 'HTTPDigestAuthHandler', 'ProxyDigestAuthHandler', 'HTTPHandler', 'FileHandler', 'FTPHandler', 'CacheFTPHandler', ...]</td></tr></table>
+</body></html>

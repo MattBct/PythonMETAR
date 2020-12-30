@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module metar</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>metar</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:d%3A%5Cprogrammation%5Cpython%5Cpython-metar%5Cmetar%5Cmetar.py">d:\programmation\python\python-metar\metar\metar.py</a></font></td></tr></table>
+    <p><tt>Class&nbsp;METAR<br>
+Author:&nbsp;Matthieu&nbsp;BOUCHET<br>
+&nbsp;<br>
+5cfd588b1a5871105cad98a099c67d44562fb2524bf8b4d00a7e3f9baca33ee2<br>
+&nbsp;<br>
+For&nbsp;documentation,&nbsp;you&nbsp;can&nbsp;visit&nbsp;:&nbsp;<a href="https://www.link.url">https://www.link.url</a><br>
+and&nbsp;read&nbsp;the&nbsp;ReadMe</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="re.html">re</a><br>
+</td><td width="25%" valign=top><a href="ssl.html">ssl</a><br>
+</td><td width="25%" valign=top><a href="urllib.request.html">urllib.request</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#Exception">builtins.Exception</a>(<a href="builtins.html#BaseException">builtins.BaseException</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="metar.html#NOAAServError">NOAAServError</a>
+</font></dt><dt><font face="helvetica, arial"><a href="metar.html#ReadFileError">ReadFileError</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="metar.html#Metar">Metar</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Metar">class <strong>Metar</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Metar">Metar</a>(code,&nbsp;text=None)<br>
+&nbsp;<br>
+Class&nbsp;METAR&nbsp;represents&nbsp;a&nbsp;METeorogical&nbsp;Aerodrome&nbsp;Report.<br>
+&nbsp;<br>
+Each&nbsp;attribute&nbsp;represent&nbsp;each&nbsp;information&nbsp;contained&nbsp;in<br>
+METAR&nbsp;(International&nbsp;METAR&nbsp;Code).&nbsp;Informations&nbsp;are&nbsp;recovered&nbsp;from<br>
+text&nbsp;message.&nbsp;Units&nbsp;returned&nbsp;are&nbsp;units&nbsp;used&nbsp;in&nbsp;text.<br>
+This&nbsp;class&nbsp;can&nbsp;be&nbsp;imported&nbsp;in&nbsp;programm.<br>
+&nbsp;<br>
+More&nbsp;informations&nbsp;about&nbsp;METAR&nbsp;here:&nbsp;<br>
+-&nbsp;<a href="https://en.wikipedia.org/wiki/METAR/">https://en.wikipedia.org/wiki/METAR/</a><br>
+-&nbsp;<a href="https://www.skybrary.aero/index.php/Meteorological_Terminal_Air_Report_(METAR)/">https://www.skybrary.aero/index.php/Meteorological_Terminal_Air_Report_(METAR)/</a><br>
+&nbsp;<br>
+Args:<br>
+-----<br>
+code&nbsp;(string):&nbsp;OACI&nbsp;code&nbsp;of&nbsp;airport&nbsp;searched<br>
+&nbsp;<br>
+Attributes:<br>
+-----------<br>
+-&nbsp;airport&nbsp;(string):&nbsp;OACI&nbsp;code&nbsp;of&nbsp;METAR&nbsp;airport<br>
+-&nbsp;data_date&nbsp;(string):&nbsp;Date&nbsp;provided&nbsp;by&nbsp;NOAA&nbsp;server.&nbsp;None&nbsp;if&nbsp;text&nbsp;enter&nbsp;manually<br>
+-&nbsp;metar&nbsp;(string):&nbsp;Complete&nbsp;METAR&nbsp;message<br>
+-<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Metar-__init__"><strong>__init__</strong></a>(self, code, text=None)</dt><dd><tt>Constructor&nbsp;of&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+-----<br>
+&nbsp;&nbsp;&nbsp;&nbsp;code&nbsp;(string):&nbsp;OACI&nbsp;code&nbsp;of&nbsp;airport&nbsp;searched</tt></dd></dl>
+
+<dl><dt><a name="Metar-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Overload&nbsp;__str__</tt></dd></dl>
+
+<dl><dt><a name="Metar-analyzeAuto"><strong>analyzeAuto</strong></a>(self)</dt><dd><tt>Method&nbsp;verify&nbsp;if&nbsp;a&nbsp;METAR&nbsp;comes&nbsp;form&nbsp;an&nbsp;automatic&nbsp;station.<br>
+If&nbsp;it&nbsp;is&nbsp;a&nbsp;METAR&nbsp;AUTO,&nbsp;return&nbsp;True.<br>
+&nbsp;<br>
+Returns:<br>
+--------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;boolean:&nbsp;True&nbsp;if&nbsp;auto,&nbsp;False&nbsp;if&nbsp;not&nbsp;auto</tt></dd></dl>
+
+<dl><dt><a name="Metar-analyzeDateTime"><strong>analyzeDateTime</strong></a>(self)</dt><dd><tt>Method&nbsp;parse&nbsp;METAR&nbsp;and&nbsp;return&nbsp;datetime&nbsp;portion<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;date_time&nbsp;(tuple):&nbsp;Tuple&nbsp;of&nbsp;strings&nbsp;(Day,Hour,Minute)&nbsp;in&nbsp;UTC.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Ex:&nbsp;("29","19","00")&nbsp;=&gt;&nbsp;29th&nbsp;day&nbsp;of&nbsp;month,&nbsp;19:00&nbsp;UTC<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;METAR&nbsp;date&nbsp;time.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None&nbsp;(NoneType):&nbsp;Return&nbsp;None&nbsp;if&nbsp;no&nbsp;date&nbsp;time&nbsp;found</tt></dd></dl>
+
+<dl><dt><a name="Metar-analyzeWind"><strong>analyzeWind</strong></a>(self)</dt><dd><tt>Method&nbsp;parse&nbsp;and&nbsp;analyze&nbsp;wind&nbsp;datas&nbsp;from&nbsp;METAR&nbsp;message&nbsp;and<br>
+returns&nbsp;a&nbsp;dictionnary&nbsp;with&nbsp;wind&nbsp;informations.<br>
+Support&nbsp;Knots&nbsp;(KT)&nbsp;and&nbsp;Meter&nbsp;Per&nbsp;Second&nbsp;(MPS)&nbsp;units.<br>
+Units&nbsp;are&nbsp;not&nbsp;informations&nbsp;returned&nbsp;by&nbsp;method.<br>
+If&nbsp;`<a href="#Metar-analyzeWind">analyzeWind</a>()`&nbsp;can't&nbsp;decode&nbsp;wind&nbsp;information&nbsp;(in&nbsp;case&nbsp;of&nbsp;unavaibility<br>
+indicated&nbsp;by&nbsp;///////KT),&nbsp;method&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wind_tot&nbsp;(dict):&nbsp;Dictionnary&nbsp;with&nbsp;wind&nbsp;informations.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Keys:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;direction&nbsp;(integer),&nbsp;direction&nbsp;of&nbsp;wind<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;direction&nbsp;(string),&nbsp;"VRB"&nbsp;for&nbsp;variable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;speed&nbsp;(integer),&nbsp;speed&nbsp;of&nbsp;wind<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;gust_speed&nbsp;(integer&nbsp;or&nbsp;None),&nbsp;speed&nbsp;of&nbsp;gust,&nbsp;None&nbsp;if&nbsp;no&nbsp;gust<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None&nbsp;(NoneType):&nbsp;None&nbsp;if&nbsp;method&nbsp;can't&nbsp;decode&nbsp;wind&nbsp;informations.</tt></dd></dl>
+
+<dl><dt><a name="Metar-getAuto"><strong>getAuto</strong></a>(self, display=False)</dt><dd><tt>Getter&nbsp;auto&nbsp;attribute<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;display&nbsp;(bool,&nbsp;optional):&nbsp;If&nbsp;true,&nbsp;print&nbsp;attribute.&nbsp;Defaults&nbsp;to&nbsp;False.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>auto</strong>&nbsp;(boolean):&nbsp;METAR&nbsp;AUTO</tt></dd></dl>
+
+<dl><dt><a name="Metar-getDataDate"><strong>getDataDate</strong></a>(self, display=False)</dt><dd><tt>Getter&nbsp;data_date&nbsp;attribute<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;display&nbsp;(bool,&nbsp;optional):&nbsp;If&nbsp;true,&nbsp;print&nbsp;attribute.&nbsp;Defaults&nbsp;to&nbsp;False.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>data_date</strong>&nbsp;(string):&nbsp;DateTime</tt></dd></dl>
+
+<dl><dt><a name="Metar-getDateTime"><strong>getDateTime</strong></a>(self, display=False)</dt><dd><tt>Getter&nbsp;date_time&nbsp;attribute<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;display&nbsp;(bool,&nbsp;optional):&nbsp;If&nbsp;true,&nbsp;print&nbsp;date&nbsp;&amp;&nbsp;time.&nbsp;Defaults&nbsp;to&nbsp;False.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>date_time</strong>&nbsp;(dict):&nbsp;DateTime</tt></dd></dl>
+
+<dl><dt><a name="Metar-getMetar"><strong>getMetar</strong></a>(self, display=False)</dt><dd><tt>Getter&nbsp;metar&nbsp;attribute<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;display&nbsp;(bool,&nbsp;optional):&nbsp;If&nbsp;true,&nbsp;print&nbsp;METAR.&nbsp;Defaults&nbsp;to&nbsp;False.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>metar</strong>&nbsp;(string):&nbsp;Entire&nbsp;METAR</tt></dd></dl>
+
+<dl><dt><a name="Metar-getWind"><strong>getWind</strong></a>(self, display=False)</dt><dd><tt>Getter&nbsp;wind&nbsp;attribute<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;display&nbsp;(bool,&nbsp;optional):&nbsp;If&nbsp;true,&nbsp;print&nbsp;attribute.&nbsp;Defaults&nbsp;to&nbsp;False.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>wind</strong>&nbsp;(dict):&nbsp;Wind&nbsp;information</tt></dd></dl>
+
+<dl><dt><a name="Metar-text_recover"><strong>text_recover</strong></a>(self)</dt><dd><tt>`<a href="#Metar-text_recover">text_recover</a>()`&nbsp;method&nbsp;recover&nbsp;text&nbsp;file&nbsp;from&nbsp;NOAA<br>
+weather&nbsp;FTP&nbsp;server&nbsp;(<a href="https://tgftp.nws.noaa.gov/data/observations/metar/stations/">https://tgftp.nws.noaa.gov/data/observations/metar/stations/</a>).<br>
+&nbsp;<br>
+Recovers&nbsp;text&nbsp;file&nbsp;with&nbsp;`url.urlretrieve()`&nbsp;function.<br>
+Read&nbsp;the&nbsp;file&nbsp;with&nbsp;`readlines()`&nbsp;method.&nbsp;This&nbsp;method&nbsp;return&nbsp;a&nbsp;list<br>
+of&nbsp;lines&nbsp;([0]&nbsp;=&nbsp;Datetime&nbsp;;&nbsp;[1]&nbsp;=&nbsp;METAR).<br>
+A&nbsp;`for`&nbsp;loop&nbsp;browses&nbsp;list&nbsp;to&nbsp;remove&nbsp;line&nbsp;break&nbsp;character.<br>
+Return&nbsp;a&nbsp;list&nbsp;with&nbsp;datetime&nbsp;index&nbsp;0&nbsp;and&nbsp;METAR&nbsp;index&nbsp;1.<br>
+&nbsp;<br>
+&nbsp;<br>
+Require:<br>
+--------<br>
+`<a href="#NOAAServError">NOAAServError</a>(<a href="builtins.html#Exception">Exception</a>)`&nbsp;from&nbsp;metar_error&nbsp;<br>
+&nbsp;<br>
+`ulrlib.request`&nbsp;from&nbsp;built-in&nbsp;Pyhon&nbsp;modules&nbsp;<br>
+&nbsp;<br>
+`re`&nbsp;from&nbsp;built-in&nbsp;Python&nbsp;modules&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+Returns:<br>
+--------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;datas&nbsp;(tuple):&nbsp;List&nbsp;recovered&nbsp;from&nbsp;text&nbsp;file&nbsp;([0]&nbsp;=&nbsp;Datetime&nbsp;;&nbsp;[1]&nbsp;=&nbsp;METAR).<br>
+&nbsp;<br>
+<a href="builtins.html#Exception">Exception</a>&nbsp;raised:<br>
+-------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;<a href="#NOAAServError">NOAAServError</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;<a href="#ReadFileError">ReadFileError</a></tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="NOAAServError">class <strong>NOAAServError</strong></a>(<a href="builtins.html#Exception">builtins.Exception</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#NOAAServError">NOAAServError</a>(airport,&nbsp;code=None)<br>
+&nbsp;<br>
+`<a href="#NOAAServError">NOAAServError</a>`&nbsp;is&nbsp;an&nbsp;exception&nbsp;based&nbsp;on&nbsp;<a href="builtins.html#Exception">Exception</a>&nbsp;basic&nbsp;class<br>
+This&nbsp;exception&nbsp;is&nbsp;raised&nbsp;in&nbsp;methods&nbsp;of&nbsp;`<a href="#Metar">Metar</a>`&nbsp;class&nbsp;if&nbsp;an&nbsp;error&nbsp;occured<br>
+during&nbsp;connection&nbsp;with&nbsp;servor&nbsp;(HTTP&nbsp;error&nbsp;404,&nbsp;or&nbsp;another)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="metar.html#NOAAServError">NOAAServError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="NOAAServError-__init__"><strong>__init__</strong></a>(self, airport, code=None)</dt><dd><tt>Constructor<br>
+&nbsp;<br>
+Args:<br>
+-----<br>
+&nbsp;&nbsp;&nbsp;&nbsp;airport&nbsp;(string):&nbsp;OACI&nbsp;Code&nbsp;of&nbsp;airport&nbsp;(airport&nbsp;attribute&nbsp;of&nbsp;`<a href="#Metar">Metar</a>`&nbsp;class)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;code&nbsp;(integer,&nbsp;optional):&nbsp;Error&nbsp;code,&nbsp;code&nbsp;possible&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;404&nbsp;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Defaults&nbsp;to&nbsp;None.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Static methods inherited from <a href="builtins.html#Exception">builtins.Exception</a>:<br>
+<dl><dt><a name="NOAAServError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="NOAAServError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="NOAAServError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="NOAAServError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<dl><dt><a name="NOAAServError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="NOAAServError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="NOAAServError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="NOAAServError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="NOAAServError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt><a href="builtins.html#Exception">Exception</a>.<a href="#NOAAServError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ReadFileError">class <strong>ReadFileError</strong></a>(<a href="builtins.html#Exception">builtins.Exception</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>`<a href="#ReadFileError">ReadFileError</a>`&nbsp;is&nbsp;an&nbsp;exception&nbsp;based&nbsp;on&nbsp;<a href="builtins.html#Exception">Exception</a>&nbsp;basic&nbsp;class<br>
+This&nbsp;exception&nbsp;is&nbsp;raised&nbsp;in&nbsp;methods&nbsp;of&nbsp;`<a href="#Metar">Metar</a>`&nbsp;class&nbsp;if&nbsp;an&nbsp;error&nbsp;occured<br>
+during&nbsp;reading&nbsp;of&nbsp;file&nbsp;downloaded&nbsp;in&nbsp;temp&nbsp;file&nbsp;by&nbsp;`readlines()`&nbsp;method.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="metar.html#ReadFileError">ReadFileError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ReadFileError-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Constructor</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Static methods inherited from <a href="builtins.html#Exception">builtins.Exception</a>:<br>
+<dl><dt><a name="ReadFileError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="ReadFileError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="ReadFileError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="ReadFileError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<dl><dt><a name="ReadFileError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="ReadFileError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="ReadFileError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ReadFileError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="ReadFileError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt><a href="builtins.html#Exception">Exception</a>.<a href="#ReadFileError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>a</strong> = &lt;metar.Metar object&gt;<br>
+<strong>b</strong> = &lt;metar.Metar object&gt;<br>
+<strong>c</strong> = &lt;metar.Metar object&gt;</td></tr></table>
+</body></html>
