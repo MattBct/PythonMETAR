@@ -1,5 +1,11 @@
 """
 Class METAR
+Author: Matthieu BOUCHET
+
+5cfd588b1a5871105cad98a099c67d44562fb2524bf8b4d00a7e3f9baca33ee2
+
+For documentation, you can visit : https://www.link.url
+and read the ReadMe
 """
 
 import urllib.request as url
@@ -53,6 +59,7 @@ class Metar:
 
         self.auto = self.analyzeAuto()
         self.date_time = self.analyzeDateTime()
+        self.wind = self.analyzeWind()
 
     def __str__(self):
         """Overload __str__
@@ -117,15 +124,15 @@ class Metar:
         """Method parse METAR and return datetime portion
 
         Returns:
-            date_time (tuple): Tuple (Day,Hour,Minute) in UTC.
-            Ex: (29,19,00) => 29th day of month, 19:00 UTC
+            date_time (tuple): Tuple of strings (Day,Hour,Minute) in UTC.
+            Ex: ("29","19","00") => 29th day of month, 19:00 UTC
             This is METAR date time.
 
-            False (boolean): Return False if no date time found
+            None (NoneType): Return None if no date time found
         """
         date_time = re.findall(r'\d{6}Z', self.metar)
         if(len(date_time) == 0 or len(date_time) > 1):  # No match
-            return False
+            return None
 
         date_time = date_time[0]
         date_time = re.sub(r'Z', '', date_time)
@@ -135,26 +142,84 @@ class Metar:
 
     def analyzeAuto(self):
         """Method verify if a METAR comes form an automatic station.
-        If it is a METAR AUTO, return True and erase AUTO from `self.metar`.
-        If it's not a METAR AUTO, return False and no treatment done.
+        If it is a METAR AUTO, return True.
 
         Returns:
         --------
             boolean: True if auto, False if not auto
         """
 
-        if("AUTO") in self.metar:
-            re.sub(r'AUTO ', '', self.metar)  # Space after AUTO
-            return True
+        search = re.search(r'AUTO', self.metar)
+        if search is None:
+            return False
 
-        return False
+        return True
 
     def analyzeWind(self):
-        search = re.search(r'\d{5}KT', self.metar)
-        if search is not None:
-            wind_total = search.string
+        """Method parse and analyze wind datas from METAR message and
+        returns a dictionnary with wind informations.
+        Support Knots (KT) and Meter Per Second (MPS) units.
+        Units are not informations returned by method.
+        If `analyzeWind()` can't decode wind information (in case of unavaibility
+        indicated by ///////KT), method return None.
+
+        Returns:
+            wind_tot (dict): Dictionnary with wind informations.
+            Keys:
+                - direction (integer), direction of wind
+                - direction (string), "VRB" for variable
+                - speed (integer), speed of wind
+                - gust_speed (integer or None), speed of gust, None if no gust
+            
+            None (NoneType): None if method can't decode wind informations.
+        """
+        search = None
+
+        regex_list_kt = [r'\d{5}KT', r'\d{5}G\d{2}KT', r'VRB\d{2}KT']
+        # [0] Normal (33005KT) [1] Gust (33010G25KT) [2] Variable direction (VRB03KT)
+        regex_list_mps = [r'\d{5}MPS', r'\d{5}G\d{2}MPS', r'VRB\d{2}MPS']
+        # Meters per second
+        
+        i = 0
+        end = len(regex_list_kt)
+
+        while search is None and i < end:
+            search = re.search(regex_list_kt[i], self.metar)
+            i += 1
+
+        if search is None: # Knot verification failed, MPS verification
+            i = 0
+            end = len(regex_list_mps)
+
+            while search is None and i < end:
+                search = re.search(regex_list_mps[i], self.metar)
+                i += 1
+            
+            if search is None:
+                return None
+
+
+        wind_tot = search.group()
+        direction = wind_tot[:3]
+
+        if direction != 'VRB':
+            direction = int(direction)
+        
+        speed = wind_tot[3:5]
+        speed = int(speed)
+
+        if 'G' in wind_tot: #Gust
+            gust_speed = int(wind_tot[6:8])
         else:
-            search= re.search(r'\d{5}G\d{2}KT')
+            gust_speed = None
+        
+        wind_infos = {
+            'direction':direction,
+            'speed':speed,
+            'gust_speed':gust_speed
+        }
+
+        return wind_infos
 
     def getMetar(self, display=False):
         """Getter metar attribute
@@ -171,18 +236,60 @@ class Metar:
         return self.metar
 
     def getDateTime(self, display=False):
-        """Getter datetime attribute
+        """Getter date_time attribute
 
         Args:
             display (bool, optional): If true, print date & time. Defaults to False.
 
         Returns:
-            self.datetime (string): DateTime
+            self.date_time (dict): DateTime
         """
         if display:
-            print(self.datetime)
+            print(self.date_time)
 
-        return self.datetime
+        return self.date_time
+
+    def getDataDate(self,display=False):
+        """Getter data_date attribute
+
+        Args:
+            display (bool, optional): If true, print attribute. Defaults to False.
+
+        Returns:
+            self.data_date (string): DateTime
+        """
+        if display:
+            print(self.data_date)
+
+        return self.data_date
+
+    def getAuto(self,display=False):
+        """Getter auto attribute
+
+        Args:
+            display (bool, optional): If true, print attribute. Defaults to False.
+
+        Returns:
+            self.auto (boolean): METAR AUTO
+        """
+        if display:
+            print(self.auto)
+
+        return self.auto
+
+    def getWind(self,display=False):
+        """Getter wind attribute
+
+        Args:
+            display (bool, optional): If true, print attribute. Defaults to False.
+
+        Returns:
+            self.wind (dict): Wind information
+        """
+        if display:
+            print(self.wind)
+
+        return self.wind
 
 
 ## ERRORS ##
@@ -228,5 +335,6 @@ class ReadFileError(Exception):
 
 
 a = Metar('LFPO', 'LFPO 041300Z 27010G25KT 320V040 1200 R26/0400 +RASH BKN040TCU 17/15 Q1015 RETS M2 26791299')
-b = Metar('LFLY')
+b = Metar('LFLY', 'LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
+c = Metar('LFPG')
 pass
