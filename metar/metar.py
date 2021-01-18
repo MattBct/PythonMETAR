@@ -181,6 +181,7 @@ class Metar:
         regex_list_mps = [r'\d{5}MPS', r'\d{5}G\d{2}MPS', r'VRB\d{2}MPS']
         # Meters per second
         
+        
         i = 0
         end = len(regex_list_kt)
 
@@ -231,23 +232,44 @@ class Metar:
         wind_infos = {
             'direction':direction,
             'speed':speed,
-            'gust_speed':gust_speed,
+            'gust':gust_speed,
             'variation':variation
         }
 
         return wind_infos
 
     def analyzeVisibility(self):
-        regex = r'KT \d{4}'
+        """Method analyzes the Visibility (distance, direction).
+        Return a tuple with meter & direction
+        If CAVOK, return (9999,'')
+        Else, return (distance,direction)
+
+        Returns:
+            (tuple): A tuple as (distance, direction). E.g -> (9999,'N'),(5000,None)
+            Distance (tuple[0] is Integer) & Direction (tuple[1] is String or None if no direction)
+        """
+        verify = self.verifyWindAttribute('variation')
+        if not verify:
+            regex = r'KT \d{4}|KT CAVOK|KT \d{4}[A-Z]+'
+        else:
+            regex = r'\d{3}V\d{3} \d{4}|\d{3}V\d{3} \d{4}|\d{3}V\d{3} \d{4}[A-Z]+'
 
         search = re.search(regex,self.metar)
         if search is None:
             return None
-
+        
         visibility = search.group()
-        visibility = re.sub(r'KT ',visibility)
+        #print(visibility)
 
-        return int(visibility)
+        if not verify:
+            visibility = re.sub(r'KT ','',visibility)
+        else:
+            visibility = re.sub(r'\d{3}V\d{3} ','',visibility)
+
+        if visibility == 'CAVOK':
+            return 9999,None
+
+        return (int(visibility[:4]),visibility[4:])
 
     def verifyWindAttribute(self, key):
         """Verify if a key exists (gust or variation)
@@ -264,7 +286,7 @@ class Metar:
                 return False
             
             return True
-            
+
         except KeyError:
             return False
 
