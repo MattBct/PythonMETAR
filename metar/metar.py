@@ -221,6 +221,13 @@ class Metar:
 
         return wind_infos
 
+    def analyzeVisibility(self):
+        regex = r'KT \d{4}'
+
+        search = re.search(regex,self.metar)
+        if search is None:
+            raise 
+
     def getMetar(self, display=False):
         """Getter metar attribute
 
@@ -318,6 +325,18 @@ class NOAAServError(Exception):
 
         super().__init__(self.message)
 
+class ReadingMETARError(Exception):
+    """Errror raised during reading of one data from METAR
+    """
+    def __init__(self, data):
+        """Constructor
+
+        Args:
+            data (string): Parameter readen during raising
+            E.g->'Visibility','Wind',...
+        """
+        self.message = 'Error during reading of {0} data from METAR'.format(data)
+        super().__init__(self.message)
 
 class ReadFileError(Exception):
     """`ReadFileError` is an exception based on Exception basic class
