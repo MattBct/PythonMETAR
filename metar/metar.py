@@ -170,6 +170,7 @@ class Metar:
                 - direction (string), "VRB" for variable
                 - speed (integer), speed of wind
                 - gust_speed (integer or None), speed of gust, None if no gust
+                - variation(tuple), variation of wind (tuple of integer), None if no variation
             
             None (NoneType): None if method can't decode wind informations.
         """
@@ -212,11 +213,26 @@ class Metar:
             gust_speed = int(wind_tot[6:8])
         else:
             gust_speed = None
+
+        ##Variations##
+        regex = r'\d{3}V\d{3}'
+        search = re.search(regex,self.metar)
+
+        
+
+        if search is not None:
+            variation = search.group()
+            variation = variation.split('V')
+            variation = [int(value) for value in variation]
+            variation = tuple(variation)
+        else:
+            variation = None
         
         wind_infos = {
             'direction':direction,
             'speed':speed,
-            'gust_speed':gust_speed
+            'gust_speed':gust_speed,
+            'variation':variation
         }
 
         return wind_infos
@@ -226,7 +242,12 @@ class Metar:
 
         search = re.search(regex,self.metar)
         if search is None:
-            raise 
+            return None
+
+        visibility = search.group()
+        visibility = re.sub(r'KT ',visibility)
+
+        return int(visibility)
 
     def getMetar(self, display=False):
         """Getter metar attribute
@@ -332,7 +353,7 @@ class ReadingMETARError(Exception):
         """Constructor
 
         Args:
-            data (string): Parameter readen during raising
+            data (STRING): Parameter readen during raising
             E.g->'Visibility','Wind',...
         """
         self.message = 'Error during reading of {0} data from METAR'.format(data)
