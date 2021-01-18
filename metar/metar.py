@@ -249,6 +249,25 @@ class Metar:
 
         return int(visibility)
 
+    def verifyWindAttribute(self, key):
+        """Verify if a key exists (gust or variation)
+
+        Returns:
+            boolean: False => No key, True => Key attributed
+        """
+        wind = self.analyzeWind()
+        if wind is None:
+            return False
+        
+        try:
+            if wind[key] is None:
+                return False
+            
+            return True
+            
+        except KeyError:
+            return False
+
     def getMetar(self, display=False):
         """Getter metar attribute
 
