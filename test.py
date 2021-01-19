@@ -17,6 +17,30 @@ class testsMetar(unittest.TestCase):
         metar = Metar('LFLY','LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
         self.assertEquals(metar.getDateTime(),("29","22","00"))
 
+    def test_analyzeChangements(self):
+        metar = Metar('LFLY','LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 BECMG 19020G35KT')
+        self.assertEquals(metar.analyzeChangements(),{
+            'TEMPO':None,
+            'BECMG':'19020G35KT',
+            'GRADU':None,
+            'RAPID':None,
+            'INTER':None,
+            'TEND':None
+        })
+
+        metar = Metar('LFLY','LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 TEMPO 19020G35KT')
+        self.assertEquals(metar.analyzeChangements(),{
+            'TEMPO':'19020G35KT',
+            'BECMG':None,
+            'GRADU':None,
+            'RAPID':None,
+            'INTER':None,
+            'TEND':None
+        })
+
+        metar = Metar('LFLY','LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 NOSIG')
+        self.assertEquals(metar.analyzeChangements(),None)
+        
     def test_analyzeDateTime(self):
         metar = Metar('LFLY','LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
         self.assertEquals(metar.analyzeDateTime(),("29","22","00"))

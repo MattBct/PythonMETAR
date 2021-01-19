@@ -56,7 +56,9 @@ class Metar:
         else:
             self.data_date = None
             self.metar = text
-
+        
+        self.metarWithoutChangements = ''
+        self.changements = self.analyzeChangements() #delcare self.metarAnalysis
         self.auto = self.analyzeAuto()
         self.date_time = self.analyzeDateTime()
         self.wind = self.analyzeWind()
@@ -119,6 +121,62 @@ class Metar:
 
         file_txt.close()
         return datas[0], datas[1]
+
+    def analyzeChangements(self):
+        """Method analysis and erase changements portions (create metarWithoutChangements variable)
+
+        Returns:
+            (dict): Dictionnary of changements (TEMPO & BECOMING). Return None if NOSIG
+        """
+
+        def changementsRecuperation(marker):
+            regex = marker+'.+'
+            search = re.search(regex,self.metar)
+            if search is not None:
+                search = search.group()
+                portion = re.sub(marker + ' ','',search)
+                self.metarWithoutChangements = re.sub(regex,'',self.metarWithoutChangements)
+            else:
+                return None
+            
+            return portion
+                
+
+        ##NOSIG##
+        regex_nosig = r'NOSIG'
+        search_nosig = re.search(regex_nosig,self.metar)
+        if search_nosig is not None:
+            self.metarWithoutChangements = re.sub(regex_nosig,'',self.metar)
+            return None
+
+        ##TEMPO##
+        tempo = changementsRecuperation('TEMPO')
+
+        ##BECMG##
+        becoming = changementsRecuperation('BECMG')
+
+        ##GRADU##
+        gradu = changementsRecuperation('GRADU')
+
+        ##RAPID##
+        rapid = changementsRecuperation('RAPID')
+
+        ##INTER##
+        inter = changementsRecuperation('INTER')
+
+        ##TEND##
+        tend = changementsRecuperation('TEND')
+
+        changements = {
+            'TEMPO':tempo,
+            'BECMG':becoming,
+            'GRADU':gradu,
+            'RAPID':rapid,
+            'INTER':inter,
+            'TEND':tend
+        }
+
+        return changements
 
     def analyzeDateTime(self):
         """Method parse METAR and return datetime portion
@@ -186,7 +244,7 @@ class Metar:
         end = len(regex_list_kt)
 
         while search is None and i < end:
-            search = re.search(regex_list_kt[i], self.metar)
+            search = re.search(regex_list_kt[i], self.metarWithoutChangements)
             i += 1
 
         if search is None: # Knot verification failed, MPS verification
@@ -194,7 +252,7 @@ class Metar:
             end = len(regex_list_mps)
 
             while search is None and i < end:
-                search = re.search(regex_list_mps[i], self.metar)
+                search = re.search(regex_list_mps[i], self.metarWithoutChangements)
                 i += 1
             
             if search is None:
@@ -217,7 +275,7 @@ class Metar:
 
         ##Variations##
         regex = r'\d{3}V\d{3}'
-        search = re.search(regex,self.metar)
+        search = re.search(regex,self.metarWithoutChangements)
 
         
 
@@ -254,7 +312,7 @@ class Metar:
         else:
             regex = r'\d{3}V\d{3} \d{4}|\d{3}V\d{3} \d{4}|\d{3}V\d{3} \d{4}[A-Z]+'
 
-        search = re.search(regex,self.metar)
+        search = re.search(regex,self.metarWithoutChangements)
         if search is None:
             return None
         
@@ -360,6 +418,19 @@ class Metar:
 
         return self.wind
 
+    def getChangements(self,display=False):
+        """Getter changements attribute
+
+        Args:
+            display (bool, optional): If true, print attribute. Defaults to False.
+
+        Returns:
+            self.changements (dict): Changements
+        """
+        if display:
+            print(self.changements)
+
+        return self.changements
 
 ## ERRORS ##
 class NOAAServError(Exception):
@@ -418,4 +489,5 @@ class ReadFileError(Exception):
 a = Metar('LFPO', 'LFPO 041300Z 27010G25KT 320V040 1200 R26/0400 +RASH BKN040TCU 17/15 Q1015 RETS M2 26791299')
 b = Metar('LFLY', 'LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 c = Metar('LFPG')
+d = Metar('LFLY','LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 BECMG 19020G35KT')
 pass
