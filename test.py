@@ -94,4 +94,15 @@ class testsMetar(unittest.TestCase):
         for k in range(len(metar)):
             self.assertEquals(metar[k].analyzeVisibility(),results[k])
 
+    def test_analyzeRVR(self):
+        metar = Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R26R/0450 06/M00 Q1000 NOSIG')
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R26L/5000 06/M00 Q1000 NOSIG')
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R27L/N4100 06/M00 Q1000 NOSIG')
+
+        results = (None,{'runway':'26R','visibility':450},{'runway':'26L','visibility':5000},{'runway':'27L','visibility':4100})
+
+        for k in range(len(metar)):
+            self.assertEquals(metar[k].analyzeRVR(),results[k])
+
 unittest.main()

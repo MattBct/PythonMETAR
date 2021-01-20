@@ -57,11 +57,24 @@ class Metar:
             self.data_date = None
             self.metar = text
         
-        self.metarWithoutChangements = ''
+        self.metarWithoutChangements = self.metar
         self.changements = self.analyzeChangements() #delcare self.metarAnalysis
         self.auto = self.analyzeAuto()
         self.date_time = self.analyzeDateTime()
         self.wind = self.analyzeWind()
+        self.rvr = self.analyzeRVR()
+
+        self.properties = {
+            'dateTime': self.date_time,
+            'metar':self.metar,
+            'auto':self.auto,
+            'wind':self.wind,
+            'rvr':self.rvr,
+
+
+            'changements':self.changements
+
+        }
 
     def __str__(self):
         """Overload __str__
@@ -329,6 +342,45 @@ class Metar:
 
         return (int(visibility[:4]),visibility[4:])
 
+    def analyzeRVR(self):
+        """Method parses and recovers RVR
+
+        Returns:
+            (tuple): Tuple of dictionnries : {
+                'runway':runway (string)
+                'visibility':visibility (integer)
+            }
+
+            (NoneType): If no RVR mentionned
+        """
+        ##PORTION METAR RECOVERING##
+        regex_runway = r'R\d{2}[LCR]*'
+        regex_rvr = r'[MP]*\d{4}'
+        regex = regex_runway + '/' + regex_rvr
+        
+        search = re.findall(regex,self.metarWithoutChangements)
+        if search == []:
+            return None
+
+        ##DATAS RECOVERING##
+        rvr = []
+        for k in search:
+            search_runway = re.search(regex_runway,k)
+            runway = search_runway.group()
+            runway = runway[1:]
+
+            search_visibility = re.search(r'\d{4}',k)
+            visibility = int(search_visibility.group())
+
+            rvr.append(
+                {
+                    'runway':runway,
+                    'visibility':visibility
+                }
+            )
+        
+        return tuple(rvr)
+               
     def verifyWindAttribute(self, key):
         """Verify if a key exists (gust or variation)
 
@@ -418,6 +470,20 @@ class Metar:
 
         return self.wind
 
+    def getRVR(self,display=False):
+        """Getter changements attribute
+
+        Args:
+            display (bool, optional): If true, print attribute. Defaults to False.
+
+        Returns:
+            self.rvr (dict): Runway Visual Range
+        """
+        if display:
+            print(self.rvr)
+
+        return self.rvr
+
     def getChangements(self,display=False):
         """Getter changements attribute
 
@@ -431,6 +497,20 @@ class Metar:
             print(self.changements)
 
         return self.changements
+
+    def getProperties(self,display=False):
+        """Getter changements attribute
+
+        Args:
+            display (bool, optional): If true, print attribute. Defaults to False.
+
+        Returns:
+            self.changements (dict): Properties
+        """
+        if display:
+            print(self.properties)
+
+        return self.properties
 
 ## ERRORS ##
 class NOAAServError(Exception):
@@ -486,8 +566,9 @@ class ReadFileError(Exception):
         super().__init__(self.message)
 
 
-a = Metar('LFPO', 'LFPO 041300Z 27010G25KT 320V040 1200 R26/0400 +RASH BKN040TCU 17/15 Q1015 RETS M2 26791299')
+a = Metar('LFPO', 'LFPO 041300Z 27010G25KT 320V040 1200 R26/0400 R26R/0450 +RASH BKN040TCU 17/15 Q1015 RETS M2 26791299')
 b = Metar('LFLY', 'LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 c = Metar('LFPG')
 d = Metar('LFLY','LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 BECMG 19020G35KT')
+e = Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 pass
