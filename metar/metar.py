@@ -56,9 +56,9 @@ class Metar:
         else:
             self.data_date = None
             self.metar = text
-        
+
         self.metarWithoutChangements = self.metar
-        self.changements = self.analyzeChangements() #delcare self.metarAnalysis
+        self.changements = self.analyzeChangements()  # delcare self.metarAnalysis
         self.auto = self.analyzeAuto()
         self.date_time = self.analyzeDateTime()
         self.wind = self.analyzeWind()
@@ -66,13 +66,13 @@ class Metar:
 
         self.properties = {
             'dateTime': self.date_time,
-            'metar':self.metar,
-            'auto':self.auto,
-            'wind':self.wind,
-            'rvr':self.rvr,
+            'metar': self.metar,
+            'auto': self.auto,
+            'wind': self.wind,
+            'rvr': self.rvr,
 
 
-            'changements':self.changements
+            'changements': self.changements
 
         }
 
@@ -144,22 +144,22 @@ class Metar:
 
         def changementsRecuperation(marker):
             regex = marker+'.+'
-            search = re.search(regex,self.metar)
+            search = re.search(regex, self.metar)
             if search is not None:
                 search = search.group()
-                portion = re.sub(marker + ' ','',search)
-                self.metarWithoutChangements = re.sub(regex,'',self.metarWithoutChangements)
+                portion = re.sub(marker + ' ', '', search)
+                self.metarWithoutChangements = re.sub(
+                    regex, '', self.metarWithoutChangements)
             else:
                 return None
-            
+
             return portion
-                
 
         ##NOSIG##
         regex_nosig = r'NOSIG'
-        search_nosig = re.search(regex_nosig,self.metar)
+        search_nosig = re.search(regex_nosig, self.metar)
         if search_nosig is not None:
-            self.metarWithoutChangements = re.sub(regex_nosig,'',self.metar)
+            self.metarWithoutChangements = re.sub(regex_nosig, '', self.metar)
             return None
 
         ##TEMPO##
@@ -181,12 +181,12 @@ class Metar:
         tend = changementsRecuperation('TEND')
 
         changements = {
-            'TEMPO':tempo,
-            'BECMG':becoming,
-            'GRADU':gradu,
-            'RAPID':rapid,
-            'INTER':inter,
-            'TEND':tend
+            'TEMPO': tempo,
+            'BECMG': becoming,
+            'GRADU': gradu,
+            'RAPID': rapid,
+            'INTER': inter,
+            'TEND': tend
         }
 
         return changements
@@ -242,7 +242,7 @@ class Metar:
                 - speed (integer), speed of wind
                 - gust_speed (integer or None), speed of gust, None if no gust
                 - variation(tuple), variation of wind (tuple of integer), None if no variation
-            
+
             None (NoneType): None if method can't decode wind informations.
         """
         search = None
@@ -251,8 +251,7 @@ class Metar:
         # [0] Normal (33005KT) [1] Gust (33010G25KT) [2] Variable direction (VRB03KT)
         regex_list_mps = [r'\d{5}MPS', r'\d{5}G\d{2}MPS', r'VRB\d{2}MPS']
         # Meters per second
-        
-        
+
         i = 0
         end = len(regex_list_kt)
 
@@ -260,37 +259,35 @@ class Metar:
             search = re.search(regex_list_kt[i], self.metarWithoutChangements)
             i += 1
 
-        if search is None: # Knot verification failed, MPS verification
+        if search is None:  # Knot verification failed, MPS verification
             i = 0
             end = len(regex_list_mps)
 
             while search is None and i < end:
-                search = re.search(regex_list_mps[i], self.metarWithoutChangements)
+                search = re.search(
+                    regex_list_mps[i], self.metarWithoutChangements)
                 i += 1
-            
+
             if search is None:
                 return None
-
 
         wind_tot = search.group()
         direction = wind_tot[:3]
 
         if direction != 'VRB':
             direction = int(direction)
-        
+
         speed = wind_tot[3:5]
         speed = int(speed)
 
-        if 'G' in wind_tot: #Gust
+        if 'G' in wind_tot:  # Gust
             gust_speed = int(wind_tot[6:8])
         else:
             gust_speed = None
 
         ##Variations##
         regex = r'\d{3}V\d{3}'
-        search = re.search(regex,self.metarWithoutChangements)
-
-        
+        search = re.search(regex, self.metarWithoutChangements)
 
         if search is not None:
             variation = search.group()
@@ -299,12 +296,12 @@ class Metar:
             variation = tuple(variation)
         else:
             variation = None
-        
+
         wind_infos = {
-            'direction':direction,
-            'speed':speed,
-            'gust':gust_speed,
-            'variation':variation
+            'direction': direction,
+            'speed': speed,
+            'gust': gust_speed,
+            'variation': variation
         }
 
         return wind_infos
@@ -312,12 +309,11 @@ class Metar:
     def analyzeVisibility(self):
         """Method analyzes the Visibility (distance, direction).
         Return a tuple with meter & direction
-        If CAVOK, return (9999,'')
-        Else, return (distance,direction)
+        If CAVOK, return (9999)
+        Else, return (distance)
 
         Returns:
-            (tuple): A tuple as (distance, direction). E.g -> (9999,'N'),(5000,None)
-            Distance (tuple[0] is Integer) & Direction (tuple[1] is String or None if no direction)
+            (integer): A integer as (distance). E.g -> (9999),(5000)
         """
         verify = self.verifyWindAttribute('variation')
         if not verify:
@@ -325,22 +321,22 @@ class Metar:
         else:
             regex = r'\d{3}V\d{3} \d{4}|\d{3}V\d{3} \d{4}|\d{3}V\d{3} \d{4}[A-Z]+'
 
-        search = re.search(regex,self.metarWithoutChangements)
+        search = re.search(regex, self.metarWithoutChangements)
         if search is None:
             return None
-        
+
         visibility = search.group()
-        #print(visibility)
+        # print(visibility)
 
         if not verify:
-            visibility = re.sub(r'KT ','',visibility)
+            visibility = re.sub(r'KT ', '', visibility)
         else:
-            visibility = re.sub(r'\d{3}V\d{3} ','',visibility)
+            visibility = re.sub(r'\d{3}V\d{3} ', '', visibility)
 
         if visibility == 'CAVOK':
-            return 9999,None
+            return 9999
 
-        return (int(visibility[:4]),visibility[4:])
+        return (int(visibility[:4]))
 
     def analyzeRVR(self):
         """Method parses and recovers RVR
@@ -357,30 +353,240 @@ class Metar:
         regex_runway = r'R\d{2}[LCR]*'
         regex_rvr = r'[MP]*\d{4}'
         regex = regex_runway + '/' + regex_rvr
-        
-        search = re.findall(regex,self.metarWithoutChangements)
+
+        search = re.findall(regex, self.metarWithoutChangements)
         if search == []:
             return None
 
         ##DATAS RECOVERING##
         rvr = []
         for k in search:
-            search_runway = re.search(regex_runway,k)
+            search_runway = re.search(regex_runway, k)
             runway = search_runway.group()
             runway = runway[1:]
 
-            search_visibility = re.search(r'\d{4}',k)
+            search_visibility = re.search(r'\d{4}', k)
             visibility = int(search_visibility.group())
 
             rvr.append(
                 {
-                    'runway':runway,
-                    'visibility':visibility
+                    'runway': runway,
+                    'visibility': visibility
                 }
             )
-        
+
         return tuple(rvr)
-               
+
+    def analyzeWeather(self):
+        """Method parses METAR and analyze significant weather.
+        Return a tuple of dictionnaries.
+        Keys :
+        ------
+        'intensity' (boolean): False (if -), True (if +)
+        'prefix' (string): Prefix (e.G = Freezing for FE)
+        'weather' (string): Weather code (e.G = Rain for RA)
+
+        If element not found (prefix or intensity), value is None
+
+        Returns:
+            (tuple): Tuple of dictionnaries (see above)
+        """
+        regex_intensity = r'[-+]+'
+
+        prefixes = ({
+            'code': 'VC',
+            'meaning': 'in Vicinity'
+        },
+        {
+            'code': 'MI',
+            'meaning': 'Thin'
+        },
+        {
+            'code': 'PR',
+            'meaning': 'Partial'
+        },
+        {
+            'code': 'DR',
+            'meaning': 'Low Drifting'
+        },
+        {
+            'code': 'BL',
+            'meaning': 'Blowing'
+        },
+        {
+            'code': 'FZ',
+            'meaning': 'Freezing'
+        },
+        {
+            'code': 'RE',
+            'meaning': 'Recent'
+        },
+        {
+            'code': 'BC',
+            'meaning': 'Bank'
+        },
+        {
+            'code': 'SH',
+            'meaning': 'Shower'
+        },
+        {
+            'code': 'XX',
+            'meaning': 'Violent'
+        })
+
+        weathers = ({
+            'code': 'RA',
+            'meaning': 'Rain'
+        },
+        {
+            'code': 'SN',
+            'meaning': 'Snow'
+        },
+        {
+            'code': 'GR',
+            'meaning': 'Hail'
+        },
+        {
+            'code': 'DZ',
+            'meaning': 'Drizzle'
+        },
+        {
+            'code': 'PL',
+            'meaning': 'Ice Pellets'
+        },
+        {
+            'code': 'GS',
+            'meaning': 'Gresil'
+        },
+        {
+            'code': 'SG',
+            'meaning': 'Snow Grains'
+        },
+        {
+            'code': 'IC',
+            'meaning': 'Ice Crystals'
+        },
+        {
+            'code': 'UP',
+            'meaning': 'Unknown'
+        },
+        {
+            'code': 'BR',
+            'meaning': 'Brume'
+        },
+        {
+            'code': 'FG',
+            'meaning': 'Fog'
+        },
+        {
+            'code': 'HZ',
+            'meaning': 'Haze'
+        },
+        {
+            'code': 'FU',
+            'meaning': 'Smoke'
+        },
+        {
+            'code': 'SA',
+            'meaning': 'Sand'
+        },
+        {
+            'code': 'DU',
+            'meaning': 'Dust'
+        },
+        {
+            'code': 'VA',
+            'meaning': 'Volcanic Ash'
+        },
+        {
+            'code': 'PO',
+            'meaning': 'Dust whirlpool'
+        },
+        {
+            'code': 'SS',
+            'meaning': 'Sand Storm'
+        },
+        {
+            'code': 'DS',
+            'meaning': 'Dust Storm'
+        },
+        {
+            'code': 'SQ',
+            'meaning': 'Squalls'
+        },
+        {
+            'code': 'FC',
+            'meaning': 'Funnel Cloud'
+        },
+        {
+            'code': 'TS',
+            'meaning': 'Thunderstorm'
+        })
+
+        portions = []
+        for code in weathers:
+            regex = r'...{0}+'.format(code['code'])
+                
+            search = re.search(regex,self.metarWithoutChangements)
+            if search is not None:
+                portions.append(search.group())
+
+        for i in range(len(portions)):
+            #Intensity#
+            search_intensity = re.search(regex_intensity,portions[i])
+
+            if search_intensity is None:
+                intensity = None
+            else:
+                intensity = search_intensity.group()
+            
+                if intensity == '-':
+                    intensity = False
+                elif intensity == '+':
+                    intensity = True
+                else:
+                    intensity = None
+            
+            #Prefixes#
+            prefix = None
+            search_prefixes = None
+            k = 0
+            while (prefix is None and search_prefixes is None) and k < len(prefixes):
+                regex = prefixes[k]['code']+'+'
+                
+                search_prefixes = re.search(regex,portions[i])
+
+                if search_prefixes is not None:
+                    prefix = prefixes[k]['meaning']
+                
+                k += 1
+            
+            #Weather
+            weather = None
+            search_weather = None
+            k = 0
+            while (weather is None and search_weather is None) and k < len(weathers):
+                regex = weathers[k]['code']+'+'
+                search_weather = re.search(regex,portions[i])
+                
+                if search_weather is not None:
+                    weather = weathers[k]['meaning']
+                
+                k += 1
+            
+            portions[i] = {
+                'intensity':intensity,
+                'prefix':prefix,
+                'weather':weather
+            }
+            
+
+        portions = tuple(portions)
+        if portions == ():
+            return None
+
+        return portions
+
     def verifyWindAttribute(self, key):
         """Verify if a key exists (gust or variation)
 
@@ -390,11 +596,11 @@ class Metar:
         wind = self.analyzeWind()
         if wind is None:
             return False
-        
+
         try:
             if wind[key] is None:
                 return False
-            
+
             return True
 
         except KeyError:
@@ -428,7 +634,7 @@ class Metar:
 
         return self.date_time
 
-    def getDataDate(self,display=False):
+    def getDataDate(self, display=False):
         """Getter data_date attribute
 
         Args:
@@ -442,7 +648,7 @@ class Metar:
 
         return self.data_date
 
-    def getAuto(self,display=False):
+    def getAuto(self, display=False):
         """Getter auto attribute
 
         Args:
@@ -456,7 +662,7 @@ class Metar:
 
         return self.auto
 
-    def getWind(self,display=False):
+    def getWind(self, display=False):
         """Getter wind attribute
 
         Args:
@@ -470,7 +676,7 @@ class Metar:
 
         return self.wind
 
-    def getRVR(self,display=False):
+    def getRVR(self, display=False):
         """Getter changements attribute
 
         Args:
@@ -484,7 +690,7 @@ class Metar:
 
         return self.rvr
 
-    def getChangements(self,display=False):
+    def getChangements(self, display=False):
         """Getter changements attribute
 
         Args:
@@ -498,7 +704,7 @@ class Metar:
 
         return self.changements
 
-    def getProperties(self,display=False):
+    def getProperties(self, display=False):
         """Getter changements attribute
 
         Args:
@@ -541,6 +747,7 @@ class NOAAServError(Exception):
 class ReadingMETARError(Exception):
     """Errror raised during reading of one data from METAR
     """
+
     def __init__(self, data):
         """Constructor
 
@@ -548,7 +755,8 @@ class ReadingMETARError(Exception):
             data (STRING): Parameter readen during raising
             E.g->'Visibility','Wind',...
         """
-        self.message = 'Error during reading of {0} data from METAR'.format(data)
+        self.message = 'Error during reading of {0} data from METAR'.format(
+            data)
         super().__init__(self.message)
 
 class ReadFileError(Exception):
@@ -565,10 +773,10 @@ class ReadFileError(Exception):
 
         super().__init__(self.message)
 
-
-a = Metar('LFPO', 'LFPO 041300Z 27010G25KT 320V040 1200 R26/0400 R26R/0450 +RASH BKN040TCU 17/15 Q1015 RETS M2 26791299')
-b = Metar('LFLY', 'LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
+a = Metar('LFQN','METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050 18/12 Q1014 NOSIG=')
+b = Metar('LFLY', 'METAR LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 c = Metar('LFPG')
-d = Metar('LFLY','LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 BECMG 19020G35KT')
-e = Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
+d = Metar('LFLY', 'METAR LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 BECMG 19020G35KT')
+e = Metar('LFPG', 'METAR LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
+f = Metar('CYWG','METAR CYWG 172000Z 30015G25KT 3/4SM R36/4000FT/D -SN BLSN BKN008 OVC040 M05/M08 A2992 REFZRA WS RWY36 RMK SF5NS3 SLP134')
 pass

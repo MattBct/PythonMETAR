@@ -82,27 +82,46 @@ class testsMetar(unittest.TestCase):
         self.assertEquals(metar.analyzeWind(),None)
 
     def test_analyzeVizibility(self):
-        metar = Metar('LFLY','LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG'),
-        Metar('LFLY','LFLY 292200Z AUTO VRB03KT 350V040 CAVOK 06/M00 Q1000 NOSIG'),
+        metar = (Metar('LFLY','LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG'),
         Metar('LFLY','LFLY 292200Z AUTO VRB03KT 5200 06/M00 Q1000 NOSIG'),
         Metar('LFLY','LFLY 292200Z AUTO VRB03KT 350V040 5200NE 06/M00 Q1000 NOSIG'),
         Metar('LFLY','LFLY 292200Z AUTO VRB03KT 06/M00 Q1000 NOSIG'),
-        Metar('LFLY','LFLY 292200Z AUTO VRB03KT 9950 06/M00 Q1000 NOSIG')
+        Metar('LFLY','LFLY 292200Z AUTO VRB03KT 9950 06/M00 Q1000 NOSIG'))
 
-        results = [(9999,None),(9999,None),(5200,None),(5200,'NE'),None,(9950,None)]
+        results = [(9999),(5200),(5200),None,(9950)]
 
         for k in range(len(metar)):
             self.assertEquals(metar[k].analyzeVisibility(),results[k])
 
     def test_analyzeRVR(self):
-        metar = Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG'),
-        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R26R/0450 06/M00 Q1000 NOSIG')
-        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R26L/5000 06/M00 Q1000 NOSIG')
-        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R27L/N4100 06/M00 Q1000 NOSIG')
+        metar = (Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R26R/0450 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R26L/5000 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT CAVOK R27L/M4100 06/M00 Q1000 NOSIG'))
 
-        results = (None,{'runway':'26R','visibility':450},{'runway':'26L','visibility':5000},{'runway':'27L','visibility':4100})
+        results = (None,({'runway':'26R','visibility':450},),({'runway':'26L','visibility':5000},),({'runway':'27L','visibility':4100},))
 
         for k in range(len(metar)):
+            print(metar[k].analyzeRVR())
             self.assertEquals(metar[k].analyzeRVR(),results[k])
+
+    def test_analyzeWeather(self):
+        metar = (Metar('LFLY','LFLY 231830Z AUTO 19012KT CAVOK 06/02 Q0997'),
+        Metar('LFLY','LFLY 231830Z AUTO 19012KT +RETS 06/02 Q0997'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT -VCRA R26R/0450 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT +VCSN R26L/5000 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT XXGR +RETS R27L/N4100 06/M00 Q1000 NOSIG'))
+
+        results = (None,({'intensity':True,'prefix':'Recent','weather':'Thunderstorm'},),
+        ({'intensity':False,'prefix':'in Vicinity','weather':'Rain'},),
+        ({'intensity':True,'prefix':'in Vicinity','weather':'Snow'},),
+        ({'intensity':None,'prefix':'Violent','weather':'Hail'},{'intensity':True,'prefix':'Recent','weather':'Thunderstorm'},)
+        )
+
+        
+        for k in range(len(metar)):
+            print(metar[k].analyzeWeather())
+            
+            self.assertEquals(metar[k].analyzeWeather(),results[k])
 
 unittest.main()
