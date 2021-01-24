@@ -8,6 +8,7 @@ For documentation, you can visit : https://www.link.url
 and read the ReadMe
 """
 
+from http.client import PRECONDITION_FAILED
 import urllib.request as url
 import ssl
 import re
@@ -63,6 +64,7 @@ class Metar:
         self.date_time = self.analyzeDateTime()
         self.wind = self.analyzeWind()
         self.rvr = self.analyzeRVR()
+        self.weather = self.analyzeWeather()
 
         self.properties = {
             'dateTime': self.date_time,
@@ -70,7 +72,7 @@ class Metar:
             'auto': self.auto,
             'wind': self.wind,
             'rvr': self.rvr,
-
+            'weather': self.weather,
 
             'changements': self.changements
 
@@ -379,16 +381,18 @@ class Metar:
 
     def analyzeWeather(self):
         """Method parses METAR and analyze significant weather.
-        Return a tuple of dictionnaries.
+        Return a dictionnary of tuples and boolean.
+
         Keys :
         ------
-        'intensity' (boolean): False (if -), True (if +)
-        'prefix' (string): Prefix (e.G = Freezing for FE)
-        'weather' (string): Weather code (e.G = Rain for RA)
+        - `intensity` (boolean): False (if -), True (if +)
+        - `prefix` (tuple): Prefix (e.G = ('in Vicinity', 'Freezing'))
+        - `weather` (tuple): Weather code (e.G = ('Rain','Snow'))
 
         If element not found (prefix or intensity), value is None
 
         Returns:
+        --------
             (tuple): Tuple of dictionnaries (see above)
         """
         regex_intensity = r'[-+]+'
@@ -397,39 +401,39 @@ class Metar:
             'code': 'VC',
             'meaning': 'in Vicinity'
         },
-        {
+            {
             'code': 'MI',
             'meaning': 'Thin'
         },
-        {
+            {
             'code': 'PR',
             'meaning': 'Partial'
         },
-        {
+            {
             'code': 'DR',
             'meaning': 'Low Drifting'
         },
-        {
+            {
             'code': 'BL',
             'meaning': 'Blowing'
         },
-        {
+            {
             'code': 'FZ',
             'meaning': 'Freezing'
         },
-        {
+            {
             'code': 'RE',
             'meaning': 'Recent'
         },
-        {
+            {
             'code': 'BC',
             'meaning': 'Bank'
         },
-        {
+            {
             'code': 'SH',
             'meaning': 'Shower'
         },
-        {
+            {
             'code': 'XX',
             'meaning': 'Violent'
         })
@@ -438,154 +442,146 @@ class Metar:
             'code': 'RA',
             'meaning': 'Rain'
         },
-        {
+            {
             'code': 'SN',
             'meaning': 'Snow'
         },
-        {
+            {
             'code': 'GR',
             'meaning': 'Hail'
         },
-        {
+            {
             'code': 'DZ',
             'meaning': 'Drizzle'
         },
-        {
+            {
             'code': 'PL',
             'meaning': 'Ice Pellets'
         },
-        {
+            {
             'code': 'GS',
             'meaning': 'Gresil'
         },
-        {
+            {
             'code': 'SG',
             'meaning': 'Snow Grains'
         },
-        {
+            {
             'code': 'IC',
             'meaning': 'Ice Crystals'
         },
-        {
+            {
             'code': 'UP',
             'meaning': 'Unknown'
         },
-        {
+            {
             'code': 'BR',
             'meaning': 'Brume'
         },
-        {
+            {
             'code': 'FG',
             'meaning': 'Fog'
         },
-        {
+            {
             'code': 'HZ',
             'meaning': 'Haze'
         },
-        {
+            {
             'code': 'FU',
             'meaning': 'Smoke'
         },
-        {
+            {
             'code': 'SA',
             'meaning': 'Sand'
         },
-        {
+            {
             'code': 'DU',
             'meaning': 'Dust'
         },
-        {
+            {
             'code': 'VA',
             'meaning': 'Volcanic Ash'
         },
-        {
+            {
             'code': 'PO',
             'meaning': 'Dust whirlpool'
         },
-        {
+            {
             'code': 'SS',
             'meaning': 'Sand Storm'
         },
-        {
+            {
             'code': 'DS',
             'meaning': 'Dust Storm'
         },
-        {
+            {
             'code': 'SQ',
             'meaning': 'Squalls'
         },
-        {
+            {
             'code': 'FC',
             'meaning': 'Funnel Cloud'
         },
-        {
+            {
             'code': 'TS',
             'meaning': 'Thunderstorm'
         })
 
-        portions = []
-        for code in weathers:
-            regex = r'...{0}+'.format(code['code'])
-                
-            search = re.search(regex,self.metarWithoutChangements)
-            if search is not None:
-                portions.append(search.group())
+        #Intensity#
+        search_intensity = re.search(
+            regex_intensity, self.metarWithoutChangements)
 
-        for i in range(len(portions)):
-            #Intensity#
-            search_intensity = re.search(regex_intensity,portions[i])
+        if search_intensity is None:
+            intensity = None
+        else:
+            intensity = search_intensity.group()
 
-            if search_intensity is None:
-                intensity = None
+            if intensity == '-':
+                intensity = False
+            elif intensity == '+':
+                intensity = True
             else:
-                intensity = search_intensity.group()
-            
-                if intensity == '-':
-                    intensity = False
-                elif intensity == '+':
-                    intensity = True
-                else:
-                    intensity = None
-            
-            #Prefixes#
+                intensity = None
+
+        #Prefixes#
+        prefix = []
+        for pre in prefixes:
+            regex = pre['code']+'+'
+
+            search_prefixes = re.search(regex, self.metarWithoutChangements)
+
+            if search_prefixes is not None:
+                prefix.append(pre['meaning'])
+
+        if prefix == []:
             prefix = None
-            search_prefixes = None
-            k = 0
-            while (prefix is None and search_prefixes is None) and k < len(prefixes):
-                regex = prefixes[k]['code']+'+'
-                
-                search_prefixes = re.search(regex,portions[i])
+        else:
+            prefix = tuple(prefix)
 
-                if search_prefixes is not None:
-                    prefix = prefixes[k]['meaning']
-                
-                k += 1
-            
-            #Weather
+        # Weather
+        weather = []
+        for wea in weathers:
+            regex = wea['code']+'+'
+            search_weather = re.search(regex, self.metarWithoutChangements)
+
+            if search_weather is not None:
+                weather.append(wea['meaning'])
+
+        if weather == []:
             weather = None
-            search_weather = None
-            k = 0
-            while (weather is None and search_weather is None) and k < len(weathers):
-                regex = weathers[k]['code']+'+'
-                search_weather = re.search(regex,portions[i])
-                
-                if search_weather is not None:
-                    weather = weathers[k]['meaning']
-                
-                k += 1
-            
-            portions[i] = {
-                'intensity':intensity,
-                'prefix':prefix,
-                'weather':weather
-            }
-            
+        else:
+            weather = tuple(weather)
 
-        portions = tuple(portions)
-        if portions == ():
+        if (intensity is None and prefix is None) and weather is None:
             return None
 
-        return portions
+        return {
+            'intensity': intensity,
+            'prefix': prefix,
+            'weather': weather
+        }
+
+        return returns
 
     def verifyWindAttribute(self, key):
         """Verify if a key exists (gust or variation)
@@ -606,112 +602,31 @@ class Metar:
         except KeyError:
             return False
 
-    def getMetar(self, display=False):
-        """Getter metar attribute
+    def getAttribute(self, attribute, display=False):
+        """Getter attribute
 
         Args:
-            display (bool, optional): If true, print METAR. Defaults to False.
+            attribute (string): Attribute searched. If attribute does not exist, raise `AttributeError`
+            display (bool, optional): If True, print attribute. Defaults to False.
 
         Returns:
-            self.metar (string): Entire METAR
+            (mixed): Attribute searched
         """
+        attr = self.__getattribute__(attribute)
+
         if display:
-            print(self)
+            print(attr)
 
-        return self.metar
-
-    def getDateTime(self, display=False):
-        """Getter date_time attribute
-
-        Args:
-            display (bool, optional): If true, print date & time. Defaults to False.
-
-        Returns:
-            self.date_time (dict): DateTime
-        """
-        if display:
-            print(self.date_time)
-
-        return self.date_time
-
-    def getDataDate(self, display=False):
-        """Getter data_date attribute
-
-        Args:
-            display (bool, optional): If true, print attribute. Defaults to False.
-
-        Returns:
-            self.data_date (string): DateTime
-        """
-        if display:
-            print(self.data_date)
-
-        return self.data_date
-
-    def getAuto(self, display=False):
-        """Getter auto attribute
-
-        Args:
-            display (bool, optional): If true, print attribute. Defaults to False.
-
-        Returns:
-            self.auto (boolean): METAR AUTO
-        """
-        if display:
-            print(self.auto)
-
-        return self.auto
-
-    def getWind(self, display=False):
-        """Getter wind attribute
-
-        Args:
-            display (bool, optional): If true, print attribute. Defaults to False.
-
-        Returns:
-            self.wind (dict): Wind information
-        """
-        if display:
-            print(self.wind)
-
-        return self.wind
-
-    def getRVR(self, display=False):
-        """Getter changements attribute
-
-        Args:
-            display (bool, optional): If true, print attribute. Defaults to False.
-
-        Returns:
-            self.rvr (dict): Runway Visual Range
-        """
-        if display:
-            print(self.rvr)
-
-        return self.rvr
-
-    def getChangements(self, display=False):
-        """Getter changements attribute
-
-        Args:
-            display (bool, optional): If true, print attribute. Defaults to False.
-
-        Returns:
-            self.changements (dict): Changements
-        """
-        if display:
-            print(self.changements)
-
-        return self.changements
+        return attr
 
     def getProperties(self, display=False):
-        """Getter changements attribute
+        """Getter properties attribute
 
         Args:
             display (bool, optional): If true, print attribute. Defaults to False.
 
         Returns:
-            self.changements (dict): Properties
+            self.properties (dict): Properties
         """
         if display:
             print(self.properties)
@@ -719,6 +634,8 @@ class Metar:
         return self.properties
 
 ## ERRORS ##
+
+
 class NOAAServError(Exception):
     """`NOAAServError` is an exception based on Exception basic class
     This exception is raised in methods of `Metar` class if an error occured
@@ -744,6 +661,7 @@ class NOAAServError(Exception):
 
         super().__init__(self.message)
 
+
 class ReadingMETARError(Exception):
     """Errror raised during reading of one data from METAR
     """
@@ -759,6 +677,7 @@ class ReadingMETARError(Exception):
             data)
         super().__init__(self.message)
 
+
 class ReadFileError(Exception):
     """`ReadFileError` is an exception based on Exception basic class
     This exception is raised in methods of `Metar` class if an error occured
@@ -773,10 +692,12 @@ class ReadFileError(Exception):
 
         super().__init__(self.message)
 
-a = Metar('LFQN','METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050 18/12 Q1014 NOSIG=')
+
+a = Metar(
+    'LFQN', 'METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050 18/12 Q1014 NOSIG=')
 b = Metar('LFLY', 'METAR LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 c = Metar('LFPG')
-d = Metar('LFLY', 'METAR LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 BECMG 19020G35KT')
+d = Metar('LFLY', 'METAR LFLY 192100Z AUTO 17012KT RASN 06/M02 Q1017 BECMG 19020G35KT')
 e = Metar('LFPG', 'METAR LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
-f = Metar('CYWG','METAR CYWG 172000Z 30015G25KT 3/4SM R36/4000FT/D -SN BLSN BKN008 OVC040 M05/M08 A2992 REFZRA WS RWY36 RMK SF5NS3 SLP134')
+f = Metar('CYWG', 'METAR CYWG 172000Z 30015G25KT 3/4SM R36/4000FT/D -SN BLSN BKN008 OVC040 M05/M08 A2992 REFZRA WS RWY36 RMK SF5NS3 SLP134')
 pass

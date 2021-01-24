@@ -9,14 +9,7 @@ class testsMetar(unittest.TestCase):
     """Class of unitary tests for METAR Library
     """
 
-    def test_getMetar(self):
-        metar = Metar('LFLY','LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
-        self.assertEquals(metar.getMetar(),'LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
-
-    def test_getDateTime(self):
-        metar = Metar('LFLY','LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
-        self.assertEquals(metar.getDateTime(),("29","22","00"))
-
+  
     def test_analyzeChangements(self):
         metar = Metar('LFLY','LFLY 192100Z AUTO 17012KT CAVOK 06/M02 Q1017 BECMG 19020G35KT')
         self.assertEquals(metar.analyzeChangements(),{
@@ -112,10 +105,10 @@ class testsMetar(unittest.TestCase):
         Metar('LFPG','LFPG 292200Z AUTO VRB03KT +VCSN R26L/5000 06/M00 Q1000 NOSIG'),
         Metar('LFPG','LFPG 292200Z AUTO VRB03KT XXGR +RETS R27L/N4100 06/M00 Q1000 NOSIG'))
 
-        results = (None,({'intensity':True,'prefix':'Recent','weather':'Thunderstorm'},),
-        ({'intensity':False,'prefix':'in Vicinity','weather':'Rain'},),
-        ({'intensity':True,'prefix':'in Vicinity','weather':'Snow'},),
-        ({'intensity':None,'prefix':'Violent','weather':'Hail'},{'intensity':True,'prefix':'Recent','weather':'Thunderstorm'},)
+        results = (None,{'intensity':True,'prefix':('Recent',),'weather':('Thunderstorm',)},
+        {'intensity':False,'prefix':('in Vicinity',),'weather':('Rain',)},
+        {'intensity':True,'prefix':('in Vicinity',),'weather':('Snow',)},
+        {'intensity':True,'prefix':('Recent','Violent'),'weather':('Hail','Thunderstorm')}
         )
 
         
