@@ -8,7 +8,7 @@ For documentation, you can visit : https://www.link.url
 and read the ReadMe
 """
 
-from http.client import PRECONDITION_FAILED
+from http.client import NOT_EXTENDED, PRECONDITION_FAILED
 import urllib.request as url
 import ssl
 import re
@@ -690,6 +690,55 @@ class Metar:
 
         return None if returnList == [] else tuple(returnList)
 
+    def analyzeTemperature(self):
+        """analayzeTemperature() is a method from `Metar` class.
+        If no temperature or dewpoint detected, return None.
+        Else, return dictionnary with temperature and dewpoint.
+
+        Keys:
+        -----
+        - `temperature` (integer): temperature
+        - `dewpoint` (integer): dewpoint
+
+
+        Returns:
+            (dict): See keys above
+            (None): If no temperature expression parsed
+        """
+        regexTemperature = r'[M]*\d{2}[/][M]*\d{2}'
+        search = re.search(regexTemperature,self.metarWithoutChangements)
+
+        if search is None:
+            return None
+        
+        metarPortion = search.group()
+        separation = metarPortion.split('/') #[0]=Temperature ; [1] = Dewpoint
+
+        #Temperature
+        temperatureSearch = re.search(r'\d{2}',separation[0])
+        if temperatureSearch is not None:
+            temperature = int(temperatureSearch.group())
+            if 'M' in separation[0]:
+                temperature = temperature * -1
+        else:
+            temperature = None
+
+        #Dewpoint
+        dewpointSearch = re.search(r'\d{2}',separation[1])
+        if dewpointSearch is not None:
+            dewpoint = int(dewpointSearch.group())
+            if 'M' in separation[1]:
+                dewpoint = dewpoint * -1
+        else:
+            dewpoint = None
+        
+        return {
+            'temperature':temperature,
+            'dewpoint':dewpoint
+        }
+        
+
+        
     def verifyWindAttribute(self, key):
         """Verify if a key exists (gust or variation)
 
