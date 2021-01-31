@@ -691,7 +691,7 @@ class Metar:
         return None if returnList == [] else tuple(returnList)
 
     def analyzeTemperature(self):
-        """analayzeTemperature() is a method from `Metar` class.
+        """analyzeTemperature() is a method from `Metar` class.
         If no temperature or dewpoint detected, return None.
         Else, return dictionnary with temperature and dewpoint.
 
@@ -705,7 +705,7 @@ class Metar:
             (dict): See keys above
             (None): If no temperature expression parsed
         """
-        regexTemperature = r'[M]*\d{2}[/][M]*\d{2}'
+        regexTemperature = r' [M]*\d{2}[/][M]*\d{2} '
         search = re.search(regexTemperature,self.metarWithoutChangements)
 
         if search is None:
