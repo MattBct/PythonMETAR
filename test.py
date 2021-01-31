@@ -151,4 +151,19 @@ class testsMetar(unittest.TestCase):
             #print(metar[k].analyzeTemperatures())
             
             self.assertEquals(metar[k].analyzeTemperatures(),results[k])
+    
+    def test_analyzeQNH(self):
+        metar = (Metar('LFLY','LFLY 231830Z AUTO 19012KT CAVOK'),
+        Metar('LFLY','LFLY 231830Z AUTO 19012KT BKN008 06/02 Q1023'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT SCT050CB -VCRA R26R/0450 06/M00 Q1014 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT OVC150TCU BKN015 +VCSN R26L/5000 06/M01 A2992 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT XXGR +RETS R27L/N4100 06/03 A3013 NOSIG'))
+
+        results = (None,1023,1014,29.92,30.13)
+
+        
+        for k in range(len(metar)):
+            #print(metar[k].analyzeQNH())
+            
+            self.assertEquals(metar[k].analyzeQNH(),results[k])
 unittest.main()
