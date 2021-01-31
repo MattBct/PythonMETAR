@@ -136,4 +136,19 @@ class testsMetar(unittest.TestCase):
             
             self.assertEquals(metar[k].analyzeCloud(),results[k])
 
+    def test_analyzeTemperature(self):
+        metar = (Metar('LFLY','LFLY 231830Z AUTO 19012KT CAVOK /////// Q0997'),
+        Metar('LFLY','LFLY 231830Z AUTO 19012KT BKN008 06/02 Q0997'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT SCT050CB -VCRA R26R/0450 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT OVC150TCU BKN015 +VCSN R26L/5000 06/M01 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT XXGR +RETS R27L/N4100 06/03 Q1000 NOSIG'))
+
+        results = (None,{'temperature':6,'dewpoint':2},{'temperature':6,'dewpoint':0},
+        {'temperature':6,'dewpoint':-1},{'temperature':6,'dewpoint':3})
+
+        
+        for k in range(len(metar)):
+            #print(metar[k].analyzeTemperature())
+            
+            self.assertEquals(metar[k].analyzeTemperature(),results[k])
 unittest.main()
