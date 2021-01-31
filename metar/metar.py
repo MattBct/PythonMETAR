@@ -12,6 +12,7 @@ from http.client import PRECONDITION_FAILED
 import urllib.request as url
 import ssl
 import re
+import copy
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -583,6 +584,88 @@ class Metar:
 
         return returns
 
+    def analyzeCloud(self):
+        # Detect NCD
+        regexNCD = re.search(r'NCD', self.metarWithoutChangements)
+        regexNSC = re.search(r'NSC', self.metarWithoutChangements)
+        if regexNCD or regexNSC:
+            return None
+        
+        if re.search(r'VV///',self.metarWithoutChangements):
+            return ({
+                'code':'VV',
+                'meaning':'Invisible Sky',
+                'oktaMin':None,
+                'oktaMax':None
+            })
+
+        classificationClouds = (
+            {
+                'code': 'SKC',
+                'meaning': 'Sky Clear',
+                'oktaMin': 0,
+                'oktaMax': 0
+            },
+            {
+                'code': 'FEW',
+                'meaning': 'Few',
+                'oktaMin': 1,
+                'oktaMax': 2
+            },
+            {
+                'code': 'SCT',
+                'meaning': 'Scattered',
+                'oktaMin': 3,
+                'oktaMax': 4
+            },
+            {
+                'code': 'BKN',
+                'meaning': 'Broken',
+                'oktaMin': 5,
+                'oktaMax': 7
+            },
+            {
+                'code': 'OVC',
+                'meaning': 'Overcast',
+                'oktaMin': 8,
+                'oktaMax': 8
+            }
+        )
+
+        matches = []
+        for cloudClassification in classificationClouds:
+            regex = cloudClassification['code'] + r'\d{3}.{2}'
+
+            search = re.findall(regex, self.metarWithoutChangements)
+
+            if search != []:
+
+                for cloud in search:
+                    matches.append(cloud)
+
+        returnList = []
+        for match in matches:
+            search = None
+            i = -1
+            end = len(classificationClouds)
+            while search is None and i < len(classificationClouds):
+                i+=1
+                search = re.search(classificationClouds[i]['code'], match)
+
+            if search is not None:
+                searchAltitude = re.search(r'\d{3}', match)
+                searchCB = re.search(r'CB', match)
+                searchTCU = re.search(r'TCU', match)
+
+                returnDict = copy.deepcopy(classificationClouds[i])
+                returnDict['altitude'] = int(searchAltitude.group())*100
+                returnDict['presenceCB'] = False if searchCB is None else True
+                returnDict['presenceTCU'] = False if searchTCU is None else True
+
+                returnList.append(returnDict)
+
+        return None if returnList == [] else tuple(returnList)
+
     def verifyWindAttribute(self, key):
         """Verify if a key exists (gust or variation)
 
@@ -693,11 +776,11 @@ class ReadFileError(Exception):
         super().__init__(self.message)
 
 
-a = Metar(
-    'LFQN', 'METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050 18/12 Q1014 NOSIG=')
+a = Metar('LFQN', 'METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050CB 18/12 Q1014 NOSIG=')
 b = Metar('LFLY', 'METAR LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 c = Metar('LFPG')
 d = Metar('LFLY', 'METAR LFLY 192100Z AUTO 17012KT RASN 06/M02 Q1017 BECMG 19020G35KT')
 e = Metar('LFPG', 'METAR LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 f = Metar('CYWG', 'METAR CYWG 172000Z 30015G25KT 3/4SM R36/4000FT/D -SN BLSN BKN008 OVC040 M05/M08 A2992 REFZRA WS RWY36 RMK SF5NS3 SLP134')
+g = Metar('LFLY','LFLY 231830Z AUTO 19012KT BKN008 06/02 Q0997')
 pass

@@ -95,7 +95,7 @@ class testsMetar(unittest.TestCase):
         results = (None,({'runway':'26R','visibility':450},),({'runway':'26L','visibility':5000},),({'runway':'27L','visibility':4100},))
 
         for k in range(len(metar)):
-            print(metar[k].analyzeRVR())
+            #print(metar[k].analyzeRVR())
             self.assertEquals(metar[k].analyzeRVR(),results[k])
 
     def test_analyzeWeather(self):
@@ -113,8 +113,27 @@ class testsMetar(unittest.TestCase):
 
         
         for k in range(len(metar)):
-            print(metar[k].analyzeWeather())
+            #print(metar[k].analyzeWeather())
             
             self.assertEquals(metar[k].analyzeWeather(),results[k])
+
+    def test_analyzeCloud(self):
+        metar = (Metar('LFLY','LFLY 231830Z AUTO 19012KT CAVOK 06/02 Q0997'),
+        Metar('LFLY','LFLY 231830Z AUTO 19012KT BKN008 06/02 Q0997'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT SCT050CB -VCRA R26R/0450 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT OVC150TCU BKN015 +VCSN R26L/5000 06/M00 Q1000 NOSIG'),
+        Metar('LFPG','LFPG 292200Z AUTO VRB03KT XXGR +RETS R27L/N4100 06/M00 Q1000 NOSIG'))
+
+        results = (None,
+        ({'code': 'BKN', 'meaning': 'Broken', 'oktaMin': 5, 'oktaMax': 7, 'altitude': 800, 'presenceCB': False, 'presenceTCU': False},),
+        ({'code': 'SCT', 'meaning': 'Scattered', 'oktaMin': 3, 'oktaMax': 4, 'altitude': 5000, 'presenceCB': True, 'presenceTCU': False},),
+        ({'code': 'BKN', 'meaning': 'Broken', 'oktaMin': 5, 'oktaMax': 7, 'altitude': 1500, 'presenceCB': False, 'presenceTCU': False}, {'code': 'OVC', 'meaning': 'Overcast', 'oktaMin': 8, 'oktaMax': 8, 'altitude': 15000, 'presenceCB': False, 'presenceTCU': False}),
+        None)
+
+        
+        for k in range(len(metar)):
+            #print(metar[k].analyzeCloud())
+            
+            self.assertEquals(metar[k].analyzeCloud(),results[k])
 
 unittest.main()
