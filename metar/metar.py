@@ -29,11 +29,11 @@ class Metar:
     - https://en.wikipedia.org/wiki/METAR/
     - https://www.skybrary.aero/index.php/Meteorological_Terminal_Air_Report_(METAR)/
 
-    Args:
+    Args
     -----
     code (string): OACI code of airport searched
 
-    Attributes:
+    Attributes
     -----------
     - airport (string): OACI code of METAR airport
     - data_date (string): Date provided by NOAA server. None if text enter manually
@@ -44,7 +44,7 @@ class Metar:
     def __init__(self, code, text=None):
         """Constructor of class
 
-        Args:
+        Args
         -----
             code (string): OACI code of airport searched
         """
@@ -66,6 +66,7 @@ class Metar:
         self.wind = self.analyzeWind()
         self.rvr = self.analyzeRVR()
         self.weather = self.analyzeWeather()
+        self.cloud = self.analyzeCloud()
 
         self.properties = {
             'dateTime': self.date_time,
@@ -74,6 +75,7 @@ class Metar:
             'wind': self.wind,
             'rvr': self.rvr,
             'weather': self.weather,
+            'cloud': self.cloud,
 
             'changements': self.changements
 
@@ -95,17 +97,17 @@ class Metar:
         Return a list with datetime index 0 and METAR index 1.
 
 
-        Require:
+        Require
         --------
-        `NOAAServError(Exception)` from metar_error \n
-        `ulrlib.request` from built-in Pyhon modules \n
-        `re` from built-in Python modules \n
+        - `NOAAServError(Exception)` from metar_error \n
+        - `ulrlib.request` from built-in Pyhon modules \n
+        - `re` from built-in Python modules \n
 
-        Returns:
+        Returns
         --------
             datas (tuple): List recovered from text file ([0] = Datetime ; [1] = METAR).
 
-        Exception raised:
+        Exception raised
         -------
             - NOAAServError
             - ReadFileError
@@ -142,6 +144,7 @@ class Metar:
         """Method analysis and erase changements portions (create metarWithoutChangements variable)
 
         Returns:
+        --------
             (dict): Dictionnary of changements (TEMPO & BECOMING). Return None if NOSIG
         """
 
@@ -198,11 +201,12 @@ class Metar:
         """Method parse METAR and return datetime portion
 
         Returns:
-            date_time (tuple): Tuple of strings (Day,Hour,Minute) in UTC.
+        --------
+            - date_time (tuple): Tuple of strings (Day,Hour,Minute) in UTC.
             Ex: ("29","19","00") => 29th day of month, 19:00 UTC
             This is METAR date time.
 
-            None (NoneType): Return None if no date time found
+            - None (NoneType): Return None if no date time found
         """
         date_time = re.findall(r'\d{6}Z', self.metar)
         if(len(date_time) == 0 or len(date_time) > 1):  # No match
@@ -218,7 +222,7 @@ class Metar:
         """Method verify if a METAR comes form an automatic station.
         If it is a METAR AUTO, return True.
 
-        Returns:
+        Returns
         --------
             boolean: True if auto, False if not auto
         """
@@ -237,7 +241,8 @@ class Metar:
         If `analyzeWind()` can't decode wind information (in case of unavaibility
         indicated by ///////KT), method return None.
 
-        Returns:
+        Returns
+        --------
             wind_tot (dict): Dictionnary with wind informations.
             Keys:
                 - direction (integer), direction of wind
@@ -246,7 +251,7 @@ class Metar:
                 - gust_speed (integer or None), speed of gust, None if no gust
                 - variation(tuple), variation of wind (tuple of integer), None if no variation
 
-            None (NoneType): None if method can't decode wind informations.
+            - None (NoneType): None if method can't decode wind informations.
         """
         search = None
 
@@ -585,6 +590,25 @@ class Metar:
         return returns
 
     def analyzeCloud(self):
+        """`analyzeCloud()` method is a method from `Metar` class.
+        Return a tuple of dictionnary
+
+        Keys of dictionnary
+        --------------------
+        - `code` (string): class of cloud (e.G => SCT, BKN, OVC)
+        - `meaning` (string): signification of `code` (e.G => Scatterd, Broken, Overcast)
+        - `oktaMin` (integer): Okta of sky clouded (minimum)
+        - `oktaMax`(integer): Okta of sky clouded (maximum)
+        - `altitude` (integer): Altitude of clouds (in feet)
+        - `presenceCB`(boolean): Presence of CB (True if CB, else False)
+        - `presenceTCU`(boolean): Presence of TCU (True if TCU, else False)
+
+        Returns
+        -------
+            - (tuple): Tuple of dictionnaries (see keys above)
+            - (None): None if no cloud parsed, if NCD in METAR, if NSC in METAR
+
+        """
         # Detect NCD
         regexNCD = re.search(r'NCD', self.metarWithoutChangements)
         regexNSC = re.search(r'NSC', self.metarWithoutChangements)
