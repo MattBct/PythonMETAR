@@ -1,9 +1,0 @@
-README.md
-setup.py
-Python-METAR/__init__.py
-Python-METAR/metar.py
-Python-METAR/test.py
-Python_METAR_MattBOUCHET.egg-info/PKG-INFO
-Python_METAR_MattBOUCHET.egg-info/SOURCES.txt
-Python_METAR_MattBOUCHET.egg-info/dependency_links.txt
-Python_METAR_MattBOUCHET.egg-info/top_level.txt

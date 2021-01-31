@@ -1,4 +1,4 @@
-# Python-METAR
+# PythonMETAR
 Python library for aeronautical METAR (METeorological Aerodrome Report). 
 
 ## Installation
@@ -24,7 +24,7 @@ Decompress folder and copy `metar/metar.py` in your project folder.
 Use 
 
 ```python
-from Python-METAR import metar
+from PythonMETAR import metar
 ```
 
 ### Declare a METAR

@@ -11,8 +11,8 @@ setuptools.setup(
     description="METAR Python Library",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/MatthieuBOUCHET/Python-METAR",
-    packages=['Python-METAR'],
+    url="https://github.com/MatthieuBOUCHET/PythonMETAR",
+    packages=['PythonMETAR'],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
