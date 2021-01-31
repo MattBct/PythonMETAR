@@ -67,6 +67,7 @@ class Metar:
         self.rvr = self.analyzeRVR()
         self.weather = self.analyzeWeather()
         self.cloud = self.analyzeCloud()
+        self.temperatures = self.analyzeTemperatures()
 
         self.properties = {
             'dateTime': self.date_time,
@@ -76,6 +77,7 @@ class Metar:
             'rvr': self.rvr,
             'weather': self.weather,
             'cloud': self.cloud,
+            'temperatures':self.temperatures,
 
             'changements': self.changements
 
@@ -690,7 +692,7 @@ class Metar:
 
         return None if returnList == [] else tuple(returnList)
 
-    def analyzeTemperature(self):
+    def analyzeTemperatures(self):
         """analyzeTemperature() is a method from `Metar` class.
         If no temperature or dewpoint detected, return None.
         Else, return dictionnary with temperature and dewpoint.
@@ -736,8 +738,32 @@ class Metar:
             'temperature':temperature,
             'dewpoint':dewpoint
         }
-        
 
+    def analyzeQNH(self):
+        """Method from `Metar`class.
+        Analyze QNH and return integer if in HPA,
+        return float if in inHG. None if pression undetected
+
+        Returns:
+            (integer): If in hPA, (e.G => 1013)
+            (float): If in inHG, (e.G => 29.92)
+        """
+        regexHPA = r'Q\d{4}'
+        regexINCH = r'A\d{4}'
+
+        searchHPA = re.search(regexHPA,self.metarWithoutChangements)
+        
+        if searchHPA is None:
+            searchINCH = re.search(regexINCH,self.metarWithoutChangements)
+            
+            if searchINCH is None:
+                return None
+            else:
+                pression = int(searchINCH.group()[1:])
+                pression = pression/100
+                return pression
+        else:
+            return int(searchHPA.group()[1:])
         
     def verifyWindAttribute(self, key):
         """Verify if a key exists (gust or variation)
@@ -851,7 +877,7 @@ class ReadFileError(Exception):
 
 a = Metar('LFQN', 'METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050CB 18/12 Q1014 NOSIG=')
 b = Metar('LFLY', 'METAR LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
-c = Metar('LFPG')
+#c = Metar('LFPG')
 d = Metar('LFLY', 'METAR LFLY 192100Z AUTO 17012KT RASN 06/M02 Q1017 BECMG 19020G35KT')
 e = Metar('LFPG', 'METAR LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 f = Metar('CYWG', 'METAR CYWG 172000Z 30015G25KT 3/4SM R36/4000FT/D -SN BLSN BKN008 OVC040 M05/M08 A2992 REFZRA WS RWY36 RMK SF5NS3 SLP134')
