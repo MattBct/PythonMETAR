@@ -1,7 +1,7 @@
 """Test for METAR Library
 Author: Matthieu BOUCHET
 """
-from metar.metar import *
+from metar import *
 import unittest
 
 

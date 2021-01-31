@@ -874,7 +874,7 @@ class ReadingMETARError(Exception):
 
 class ReadFileError(Exception):
     """`ReadFileError` is an exception based on Exception basic class
-    This exception is raised in methods of `Metar` class if an error occured
+    This exception is raised in methods of `Metar` class if an error occurred
     during reading of file downloaded in temp file by `readlines()` method.
     """
 

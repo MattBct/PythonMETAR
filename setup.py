@@ -5,14 +5,14 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="Python-METAR-MattBOUCHET", # Replace with your own username
-    version="1.0.0",
+    version="0.9.1",
     author="Matthieu BOUCHET",
     author_email="matthieu.bouchet@outlook.com",
     description="METAR Python Library",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/MatthieuBOUCHET/Python-METAR",
-    packages=setuptools.find_packages(),
+    packages=['Python-METAR'],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
