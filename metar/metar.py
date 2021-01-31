@@ -68,6 +68,7 @@ class Metar:
         self.weather = self.analyzeWeather()
         self.cloud = self.analyzeCloud()
         self.temperatures = self.analyzeTemperatures()
+        self.qnh = self.analyzeQNH()
 
         self.properties = {
             'dateTime': self.date_time,
@@ -78,6 +79,7 @@ class Metar:
             'weather': self.weather,
             'cloud': self.cloud,
             'temperatures':self.temperatures,
+            'qnh':self.qnh,
 
             'changements': self.changements
 
