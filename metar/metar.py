@@ -25,20 +25,30 @@ class Metar:
     text message. Units returned are units used in text.
     This class can be imported in programm.
 
-    More informations about METAR here: 
+    More informations about METAR here
     - https://en.wikipedia.org/wiki/METAR/
     - https://www.skybrary.aero/index.php/Meteorological_Terminal_Air_Report_(METAR)/
 
     Args
     -----
-    code (string): OACI code of airport searched
+    - code (string): OACI code of airport searched
+    - text (string,optional): METAR
 
     Attributes
     -----------
     - airport (string): OACI code of METAR airport
     - data_date (string): Date provided by NOAA server. None if text enter manually
     - metar (string): Complete METAR message
-    - 
+    - changements (string) : Changements
+    - auto (boolean): Define if a METAR isfrom an automatic station or not
+    - date_time (tuple): Tuple of date with day, hour & minutes
+    - wind (dictionary): Dictionary with wind information
+    - rvr (tuple): Tuple of dictionnaries with RVR information
+    - weather (dictionnary): Dictionnary of tuple with significant weather information
+    - cloud (tuple): Tuple of dictionnaries with cloud detected information
+    - temperatures (dictionnary): Dictionnary of integers with temperature and dewpoint information
+    - qnh (integer OR float): Information of QNH (integer if hPA, float if inHG)
+    - properties(dictionary): Dictionnary of METAR's attribute
     """
 
     def __init__(self, code, text=None):
