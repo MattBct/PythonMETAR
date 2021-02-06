@@ -42,40 +42,28 @@ example = Metar('LFQN','METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050 18/1
 #### List of attributes analyzed
 
 - `airport` (string): ICAO code of METAR airport
-
 - `data_date` (string): Date provided by NOAA server. None if text enter manually
-
 - `metar` (string): Complete METAR message
-
 - `changements` (string) : Changements
-
 - `auto` (boolean): Define if a METAR isfrom an automatic station or not
-
 - `date_time` (tuple): Tuple of date with day, hour & minutes
-
 - `wind` (dictionary): Dictionary with wind information
-
 - `rvr` (tuple): Tuple of dictionaries with RVR information
-
 - `weather` (dictionary): Dictionary of tuple with significant weather information
-
-  \- cloud (tuple): Tuple of dictionaries with cloud detected information
-
-  \- temperatures (dictionary): Dictionary of integers with temperature and dewpoint information
-
-  \- qnh (integer OR float): Information of QNH (integer if hPA, float if inHG)
-
-  \- properties(dictionary): Dictionary of attribute
+- `cloud` (tuple): Tuple of dictionaries with cloud detected information
+- `temperatures` (dictionary): Dictionary of integers with temperature and dewpoint information
+- `qnh` (integer OR float): Information of QNH (integer if hPA, float if inHG)
+- `properties`(dictionary): Dictionary of attribute
 
 ### Getter
 
 #### All properties
 
-In order to get all properties from METAR, you can use `getProperties()` method.
+In order to get all properties from METAR, you can use `getAll()` method.
 
 ```python
 example = Metar('LFLY') #Lyon-Bron airport
-properties = example.getProperties() #Get a dictionnary with all properties
+properties = example.getAll() #Get a dictionnary with all properties
 ```
 
 If you want to display this dictionary, set `display` argument to True. Default to False

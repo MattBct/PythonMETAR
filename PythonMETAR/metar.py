@@ -79,6 +79,7 @@ class Metar:
         self.cloud = self.analyzeCloud()
         self.temperatures = self.analyzeTemperatures()
         self.qnh = self.analyzeQNH()
+        self.visibility = self.analyzeVisibility()
 
         self.properties = {
             'dateTime': self.date_time,
@@ -90,6 +91,7 @@ class Metar:
             'cloud': self.cloud,
             'temperatures':self.temperatures,
             'qnh':self.qnh,
+            'visibility':self.visibility,
 
             'changements': self.changements
 
@@ -813,7 +815,7 @@ class Metar:
 
         return attr
 
-    def getProperties(self, display=False):
+    def getAll(self, display=False):
         """Getter properties attribute
 
         Args:
