@@ -8,14 +8,8 @@ Python library for aeronautical METAR (METeorological Aerodrome Report).
 You can use pip in order to install package.
 
 ```python
-pip install -i https://test.pypi.org/simple/ Python-METAR-MattBOUCHET
+pip install -i https://test.pypi.org/simple/ PythonMETAR-MattBOUCHET
 ```
-
-### Source code
-
-You can also download source code from https://github.com/MatthieuBOUCHET/Python-METAR
-
-Decompress folder and copy `metar/metar.py` in your project folder.
 
 ## Usage
 
@@ -24,7 +18,7 @@ Decompress folder and copy `metar/metar.py` in your project folder.
 Use 
 
 ```python
-from PythonMETAR import metar
+from PythonMETAR import *
 ```
 
 ### Declare a METAR
