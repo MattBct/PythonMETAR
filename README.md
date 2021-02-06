@@ -53,6 +53,7 @@ example = Metar('LFQN','METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050 18/1
 - `cloud` (tuple): Tuple of dictionaries with cloud detected information
 - `temperatures` (dictionary): Dictionary of integers with temperature and dewpoint information
 - `qnh` (integer OR float): Information of QNH (integer if hPA, float if inHG)
+- `visibility`(integer): Information about visibility
 - `properties`(dictionary): Dictionary of attribute
 
 ### Getter
