@@ -813,12 +813,16 @@ class Metar:
         Informations given without any warrantly.
         Conditions based SERA reglemention, for an aircraft with speed below 140kt.
 
+        Return None if analysis impossible
+
         Returns:
             (dictionnary): Dictionnary with 2 keys
         """
         visibility = self.visibility
         clouds = self.cloud
-
+        if visibility is None:
+            return None
+        
         if clouds is None:
             clouds_alt_list = [1*10**6]
         else:
@@ -938,11 +942,11 @@ class ReadFileError(Exception):
         super().__init__(self.message)
 
 
-a = Metar('LFQN', 'METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050CB 18/12 Q1014 NOSIG=')
+"""a = Metar('LFQN', 'METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050CB 18/12 Q1014 NOSIG=')
 b = Metar('LFLY', 'METAR LFLY 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 #c = Metar('LFPG')
 d = Metar('LFLY', 'METAR LFLY 192100Z AUTO 17012KT RASN 06/M02 Q1017 BECMG 19020G35KT')
 e = Metar('LFPG', 'METAR LFPG 292200Z AUTO VRB03KT CAVOK 06/M00 Q1000 NOSIG')
 f = Metar('CYWG', 'METAR CYWG 172000Z 30015G25KT 3/4SM R36/4000FT/D -SN BLSN BKN008 OVC040 M05/M08 A2992 REFZRA WS RWY36 RMK SF5NS3 SLP134')
 g = Metar('LFLY','LFLY 231830Z AUTO 19012KT BKN008 06/02 Q0997')
-pass
+pass"""
