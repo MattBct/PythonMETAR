@@ -10,7 +10,7 @@ Datas, informations and analysis provided don't have **ANY WARRANTLY**. Informat
 You can use pip in order to install package.
 
 ```python
-pip install -i https://test.pypi.org/simple/ PythonMETAR-MattBOUCHET
+pip install PythonMETAR
 ```
 
 ## Usage

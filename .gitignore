@@ -4,3 +4,6 @@ Lib/
 pyvenv.cfg
 python-metar.codeworkspace
 .vscode/
+dist/
+build/
+PythonMETAR.egg-info/

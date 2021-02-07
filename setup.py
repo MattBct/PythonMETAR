@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="PythonMETAR-MattBOUCHET", # Replace with your own username
+    name="PythonMETAR", # Replace with your own username
     version="1.0.0.0",
     author="Matthieu BOUCHET",
     author_email="matthieu.bouchet@outlook.com",
