@@ -1,6 +1,8 @@
 # PythonMETAR
 Python library for aeronautical METAR (METeorological Aerodrome Report). 
 
+Datas, informations and analysis provided don't have **ANY WARRANTLY**. Informations, datas and analysis **MUST ALWAYS  BE CHECKED** by captain before a flight.
+
 ## Installation
 
 ### PIP
@@ -55,6 +57,11 @@ example = Metar('LFQN','METAR LFQN 201630Z 18005KT 4000 -SHRA SCT030 BKN050 18/1
 - `qnh` (integer OR float): Information of QNH (integer if hPA, float if inHG)
 - `visibility`(integer): Information about visibility
 - `properties`(dictionary): Dictionary of attribute
+- `vmc`(dictionnary):Dictionary of 2 booleans
+
+#### VMC
+
+VMC analysis are based on conditions from [SERA 2017 French Reglementation](https://www.ecologie.gouv.fr/sites/default/files/SERA_complet.pdf) for an aircraft flying below 140 knots
 
 ### Getter
 

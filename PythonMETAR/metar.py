@@ -49,6 +49,7 @@ class Metar:
     - temperatures (dictionnary): Dictionnary of integers with temperature and dewpoint information
     - qnh (integer OR float): Information of QNH (integer if hPA, float if inHG)
     - properties(dictionary): Dictionnary of METAR's attribute
+    - vmc(dictionnary)
     """
 
     def __init__(self, code, text=None):
@@ -80,6 +81,7 @@ class Metar:
         self.temperatures = self.analyzeTemperatures()
         self.qnh = self.analyzeQNH()
         self.visibility = self.analyzeVisibility()
+        self.vmc = self.verifyVMC()
 
         self.properties = {
             'dateTime': self.date_time,
@@ -550,20 +552,25 @@ class Metar:
         })
 
         #Intensity#
-        search_intensity = re.search(
+        intensity = []
+        search_intensity = re.findall(
             regex_intensity, self.metarWithoutChangements)
 
-        if search_intensity is None:
-            intensity = None
+        if search_intensity == []:
+            _intensity = None
         else:
-            intensity = search_intensity.group()
+            for _intensity in search_intensity:
 
-            if intensity == '-':
-                intensity = False
-            elif intensity == '+':
-                intensity = True
-            else:
-                intensity = None
+                if _intensity == '-':
+                    _intensity = False
+                elif _intensity == '+':
+                    _intensity = True
+                else:
+                    _intensity = None
+                
+                intensity.append(_intensity)
+
+        intensity = tuple(intensity)
 
         #Prefixes#
         prefix = []
@@ -797,6 +804,48 @@ class Metar:
 
         except KeyError:
             return False
+
+    def verifyVMC(self):
+        """Method parses conditions and return a dictionnary with 2keys.
+        These keys represents `controlled` and `uncontrolled` airspaces.
+        In order to access thes keys : `metar.verifyVMC()['controlled']`
+
+        Informations given without any warrantly.
+        Conditions based SERA reglemention, for an aircraft with speed below 140kt.
+
+        Returns:
+            (dictionnary): Dictionnary with 2 keys
+        """
+        visibility = self.visibility
+        clouds = self.cloud
+
+        if clouds is None:
+            clouds_alt_list = [1*10**6]
+        else:
+            clouds_alt_list = []
+
+            for cloud in clouds:
+                clouds_alt_list.append(cloud['altitude'])
+        
+        min_altitude = min(clouds_alt_list)
+
+        #UNCONTROLLED
+        if visibility >= 1500:
+            uncontroled = True
+        else:
+            uncontroled = False
+        
+        #CONTROLLED
+        if visibility >= 5000 and min_altitude >=1000:
+            controlled = True
+        else:
+            controlled = False
+
+        return {
+            'uncontrolled':uncontroled,
+            'controlled':controlled
+        }
+
 
     def getAttribute(self, attribute, display=False):
         """Getter attribute
